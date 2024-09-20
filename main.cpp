@@ -1,16 +1,19 @@
 #include <iostream>
 #include <windows.h>
 #include <conio.h>
+#include <vector>
+#include <string>
 
 //Headers
-#include "gotoxy.h"
-#include "1.menus.h"
+#include "menu/gotoxy.h"
+#include "menu/menus.h"
 
 using namespace std;
 
 int main() {
     system("CLS");
     estructura_menu();
+    menu_opcionesAdministrador();
     gotoxy(100,36);
     return 0;
 }
