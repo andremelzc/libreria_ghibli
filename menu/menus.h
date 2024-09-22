@@ -89,6 +89,8 @@ vector<string> opcionesMenuPrincipal = {"Ver catalogo",
                                         "Salir"};
 int numInicio = opcionesMenuPrincipal.size();
 
+void menu_iniciarSesion();//Declaración Previa  -> Para el Switch caso 3
+
 void menu_opcionesPrincipal()
 {
   bool repeat = true;
@@ -144,6 +146,83 @@ void menu_opcionesPrincipal()
         break;
       case 3:
         // 3. Iniciar sesión
+        menu_iniciarSesion();
+        break;
+      case 4:
+        // 4. Salir
+        repeat = false;
+        system("CLS");
+        break;
+      default:
+        cout << "Estas fuera del rango\n";
+      }
+    }
+  }
+}
+
+//Menu para Iniciar Sesión
+vector<string> opcionesMenuIniciarSesion = {"Ingresar Nombre",
+                                        "Ingresar Contrasena",
+                                        "Iniciar sesion",
+                                        "Salir"};
+int numSesion = opcionesMenuIniciarSesion.size();
+
+void menu_iniciarSesion()
+{
+  bool repeat = true;
+  int opt = 1;
+  estructura_menu();
+  while (repeat)
+  {
+    system("CLS");
+    estructura_menu();
+    // Imprimir las opciones
+    for (int i = 0; i < numSesion; i++)
+    {
+      if (i == opt - 1)
+      {
+        color(2);
+        gotoxy(46, 16 + i);
+        cout << "=>   ";
+        color(7);
+        gotoxy(48, 16 + i);
+        color(2);
+        cout << opcionesMenuIniciarSesion[i] << endl;
+        color(7);
+      }
+      else
+      {
+        gotoxy(53, 16 + i);
+        cout << "   " << opcionesMenuIniciarSesion[i] << endl;
+      }
+    }
+    // Capturamos la entrada de usuario
+    int input = _getch();
+
+    switch (input)
+    {
+    // Aumentar o disminuir la opcion en la que estamos
+    case 72: // Flecha arriba
+      opt = (opt == 1) ? numSesion : --opt;
+      break;
+    case 80: // Flecha abajo
+      opt = (opt == numSesion) ? 1 : ++opt;
+      break;
+    // Ejecutar una de las opciones del menu
+    case 13:
+      switch (opt)
+      {
+      case 1:
+      {
+        // 1. Ingresar Nombre
+        break;
+      }
+      case 2:
+        // 2. Ingresar Contraseña
+        break;
+      case 3:
+        // 3. Iniciar sesión
+        // menu_iniciarSesion();
         break;
       case 4:
         // 4. Salir

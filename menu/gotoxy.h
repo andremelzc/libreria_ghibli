@@ -70,7 +70,7 @@ void limpiarArea(int x, int y, int width, int height) { // width= ancho && heigh
         gotoxy(x, y + i);
         for (int j = 0; j < width; j++) {
             cout << " ";
- }
+}
 }
 }
 
