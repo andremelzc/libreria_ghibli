@@ -322,6 +322,7 @@ void menu_opcionesGestionLibros(){
 vector<string> opcionesMenuGestionUsuarios = {"Registrar usuario",
                                         "Modificar usuario",
                                         "Eliminar usuario",
+                                        "Leer usuarios",
                                         "Salir"};
 int numGestionUsuarios = opcionesMenuGestionUsuarios.size();
 
@@ -356,6 +357,8 @@ void menu_opcionesGestionUsuarios(){
     // Capturamos la entrada de usuario
     int input = _getch();
 
+
+    Lista listaDeUsuarios;
     switch (input)
     {
     // Aumentar o disminuir la opcion en la que estamos
@@ -383,10 +386,18 @@ void menu_opcionesGestionUsuarios(){
         // 3. Eliminar usuario
         break;
       case 4:
-        // 4. Salir
+        // 4. Mostrar usuarios
+        
+        leerCSV("usuarios.csv", listaDeUsuarios);
+        // Mostrar los usuarios cargados en la lista
+        mostrar(listaDeUsuarios);
+        getch();
+        break;
+      case 5:
+        // 5. Salir
         repeat = false;
         system("CLS");
-        break;
+        break;  
       default:
         cout << "Estas fuera del rango\n";
       }
