@@ -107,7 +107,7 @@ void estructura_menu()
   // Título
   color(2);
   gotoxy(52, 5);
-  cout << "BIBLIOTECA GHIBLI";
+  cout << "LIBRERIA GHIBLI";
   color(7);
 
   // Título
