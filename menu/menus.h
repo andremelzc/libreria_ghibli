@@ -1,6 +1,7 @@
 #pragma once
 #include "../data/gestionUsuarios.h"
 #include "gotoxy.h"
+#include "../data/gestionLibros.h"
 
 //Menu de opciones inicial
 vector<string> opcionesMenuPrincipal = {"Ver catalogo",
@@ -295,6 +296,8 @@ void menu_opcionesGestionLibros(){
       case 1:
       {
         // 1. Registrar libro
+        estructura_menu();
+        gestionLibroRegistrarLibros();
         break;
       }
       case 2:

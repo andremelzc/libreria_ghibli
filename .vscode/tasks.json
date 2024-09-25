@@ -1,0 +1,33 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "build and run",
+        "type": "shell",
+        "command": "g++",
+        "args": [
+          "-g",
+          "\"${file}\"",
+          "-o",
+          "\"${fileDirname}/${fileBasenameNoExtension}.exe\""
+        ],
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "problemMatcher": ["$gcc"],
+        "detail": "Compiling C++ program"
+      },
+      {
+        "label": "run executable",
+        "type": "shell",
+        "command": "\"${fileDirname}/${fileBasenameNoExtension}.exe\"",
+        "group": {
+          "kind": "test",
+          "isDefault": true
+        },
+        "problemMatcher": []
+      }
+    ]
+  }
+  
