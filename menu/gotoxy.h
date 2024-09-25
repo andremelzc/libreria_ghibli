@@ -101,6 +101,7 @@ void setConsoleColor(int color) {
     }
 }
 
+//Marcos de los menus
 void estructura_menu()
 {
   // Título

@@ -49,7 +49,7 @@ void gestionUsuarios_registrarUsuario()
         gotoxy(36, 18);
         cout << "Ingrese el telefono (9 digitos): ";
         getline(cin, usuario->telefono);
-
+    
         insertarFinal(lista, usuario);
         gotoxy(36, 20);
         cout << "¿Desea registrar otro usuario? (s/n): ";
