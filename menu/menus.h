@@ -296,8 +296,7 @@ void menu_opcionesGestionLibros(){
       case 1:
       {
         // 1. Registrar libro
-        estructura_menu();
-        guardarLibros();
+        adicionarCampo();
         break;
       }
       case 2:

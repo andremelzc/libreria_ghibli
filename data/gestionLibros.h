@@ -1,87 +1,129 @@
 #include<iostream>
 #include<fstream>
 #include<sstream>
-#include<string>
-
+#include<string.h>
+#include"..\menu\gotoxy.h"
+#include "persistenciaUsuario.h"
 using namespace std;
 
-struct nodoLibro {
-    string nombre_Libro, Autor, Genero;
-    int Ano, Stock_Inventario, StockActual;
-    float precio;
-    nodoLibro* sgte;
-    
-    nodoLibro() : sgte(NULL) {}
+struct Libro{
+	string nombre_Libro, Autor,Genero,estado;
+	int Ano, Stock_Inventario, StockActual;
+	float precio;
+};
+struct nodoLibros{
+	Libro libro;
+	nodoLibros *siguiente;
+	nodoLibros(Libro libro1):libro(libro1),siguiente(nullptr){}
+};
+struct ListaLibros
+{
+    nodoLibros *cabeza;
+    int longitud;  
+    ListaLibros() : cabeza(nullptr) {} // Inicializar cabeza a nullptr
 };
 
-void adicionarCampo(nodoLibro*& Lista) {
-    nodoLibro* aux = new nodoLibro;
+void insertarFinalListaLibro(ListaLibros *lista, Libro *libro)
+{
+    nodoLibros *nodoLibro = new nodoLibros (*libro);
 
-    // Capturar datos del nuevo libro
-    cout << "A continuacion agregue los siguientes campos para un conjunto de libros: " << endl;
-    cout << "Nombre del libro : "; getline(cin, aux->nombre_Libro);
-    cout << "Nombre del autor : "; getline(cin, aux->Autor);
-    cout << "Year de publicacion: "; cin >> aux->Ano;
-    cin.ignore();
-    cout << "Genero: "; getline(cin, aux->Genero);
-    cout << "Stock total en inventario: "; cin >> aux->Stock_Inventario;
-    cout << "Stock actual disponible: "; cin >> aux->StockActual;
-    cout << "Precio: "; cin >> aux->precio;
-    cin.ignore();
-    
-    aux->sgte = NULL;  // Asegurarse de que el nuevo nodo no apunte a nada
-
-    if (Lista == NULL) {
-        // Si la lista está vacía, el nuevo nodo es el primero
-        Lista = aux;
-    } else {
-        // Si la lista no está vacía, encontrar el último nodo y agregar el nuevo nodo
-        nodoLibro* temp = Lista;
-        while (temp->sgte != NULL) {
-            temp = temp->sgte;
-        }
-        temp->sgte = aux;
+    if (lista->cabeza == nullptr)
+    {
+        lista->cabeza = nodoLibro;
     }
+    else
+    {
+        nodoLibros *puntero = lista->cabeza;
+        while (puntero->siguiente)
+        {
+            puntero = puntero->siguiente;
+        }
+        puntero->siguiente = nodoLibro;
+    }
+    lista->longitud++;
 }
+void guardar_CSV_Libros(ListaLibros *lista,string nombreArchivo){
+	fstream archivo(nombreArchivo, fstream::out | fstream::app);
 
-void guardarLibros(nodoLibro* Lista) {
-    ofstream archivo("Libros.csv", ios::app);
-
-    nodoLibro* temp = Lista;
-    
-    // Encabezados CSV
-    archivo << "nombre_Libro;Autor;Ano;Genero;Stock_Inventario;StockActual;Precio\n";
-    
-    while (temp != NULL) {
-        archivo << temp->nombre_Libro << ";" << temp->Autor << ";" << temp->Ano << ";"
-                << temp->Genero << ";" << temp->Stock_Inventario << ";" 
-                << temp->StockActual << ";" << temp->precio << "\n";
-        
-        int ID = 1;
-        for (int i = 0; i < temp->Stock_Inventario; i++) {
-            archivo << "ID: " << ID++ << ",Estado: disponible;\n";
-        }
-        
-        temp = temp->sgte;
+    if (!archivo.is_open())
+    {
+        cout << "No se pudo abrir el archivo." << endl;
+        return;
     }
-    
+
+    // Recorre la lista enlazada y escribe cada nodo en el archivo
+    nodoLibros *actual = lista->cabeza;
+    while (actual != nullptr)
+    {
+        Libro libro = actual->libro;
+        archivo << libro.nombre_Libro << ","
+                << libro.Autor << ","
+                << libro.Ano << ","
+                << libro.Genero << ","
+				<< libro.Stock_Inventario << ","
+				<< libro.StockActual << ","
+				<< libro.precio << ","
+                << libro.estado << "\n";
+
+        actual = actual->siguiente;
+    }
+
     archivo.close();
+    cout << "Datos guardados en " << nombreArchivo << endl;
+}
+void adicionarCampo(){
+	ListaLibros *listaLibros = new ListaLibros();
+	char respuesta[10];
+	do{
+		system("CLS");
+        estructura_menu();
+		Libro *libro = new Libro();
+		libro->estado="Disponible";
+		cin.ignore();
+		gotoxy(36, 14);
+        color(2);
+		cout << "A continuacion agregue los siguientes campos para un conjunto de libros: "<<endl;
+		gotoxy(36, 15);
+        color(2);
+		cout << "Nombre del libro : ";
+	    getline(cin, libro->nombre_Libro);
+		cin.ignore();
+	    gotoxy(36, 16);
+        color(2);
+		cout << "Nombre del autor : ";
+	    getline(cin, libro->Autor);
+		gotoxy(36, 17);
+        color(2);
+		cout << "year de publicacion: ";
+		cin >> libro->Ano;
+		cin.ignore();
+		gotoxy(36, 18);
+        color(2);
+		cout << "Genero: ";
+	    getline(cin, libro->Genero); 
+		gotoxy(36, 19);
+        color(2);
+		cout << "Stock total en inventario: ";
+		cin >> libro->Stock_Inventario;
+		gotoxy(36, 20);
+        color(2);
+		cout << "Stock actual disponible: ";
+	    cin >> libro->StockActual;
+	    gotoxy(36, 21);
+        color(2);
+		cout << "Precio: ";
+	    cin >> libro->precio;
+	    cin.ignore();
+
+		insertarFinalListaLibro(listaLibros,libro);
+
+		gotoxy(36, 24);
+        color(2);
+        cout << "Desea registrar otro usuario? (s/n): ";
+        color(7);
+        cin >> respuesta;
+	}while(respuesta[0] =='s'||respuesta[0] =='S');
+
+	guardar_CSV_Libros(listaLibros, "Libros.csv");
 }
 
-int main() {
-    nodoLibro* Lista = NULL;  // Inicializar la lista como vacía
-    int op;
-    
-    do {
-        cout << "Deseas adicionar un campo extra si(1)/no(2): " << endl;
-        cin >> op;
-        cin.ignore();
-        if (op == 1) {
-            adicionarCampo(Lista);  // Agregar un nuevo libro
-        }
-    } while (op != 2);
-    
-    guardarLibros(Lista);  // Guardar los libros en el archivo CSV
-    
-    return 0;
-}
