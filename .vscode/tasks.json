@@ -1,33 +1,54 @@
 {
     "version": "2.0.0",
     "tasks": [
-      {
-        "label": "build and run",
-        "type": "shell",
-        "command": "g++",
-        "args": [
-          "-g",
-          "\"${file}\"",
-          "-o",
-          "\"${fileDirname}/${fileBasenameNoExtension}.exe\""
-        ],
-        "group": {
-          "kind": "build",
-          "isDefault": true
+        {
+            "label": "build and run",
+            "type": "shell",
+            "command": "C:/msys64/ucrt64/bin/g++.exe",
+            "args": [
+                "-g",
+                "\"${file}\"",
+                "-o",
+                "\"${fileDirname}/${fileBasenameNoExtension}.exe\""
+            ],
+            "group": "build",
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "detail": "Compiling C++ program using g++ from MSYS2"
         },
-        "problemMatcher": ["$gcc"],
-        "detail": "Compiling C++ program"
-      },
-      {
-        "label": "run executable",
-        "type": "shell",
-        "command": "\"${fileDirname}/${fileBasenameNoExtension}.exe\"",
-        "group": {
-          "kind": "test",
-          "isDefault": true
+        {
+            "label": "run executable",
+            "type": "shell",
+            "command": "\"${fileDirname}/${fileBasenameNoExtension}.exe\"",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "problemMatcher": []
         },
-        "problemMatcher": []
-      }
+        {
+            "type": "cppbuild",
+            "label": "C/C++: g++.exe compilar archivo activo",
+            "command": "C:\\msys64\\ucrt64\\bin\\g++.exe",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}\\${fileBasenameNoExtension}.exe"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Tarea generada por el depurador."
+        }
     ]
-  }
-  
+}

@@ -1,3 +1,9 @@
 nombre_Libro ;Autor ;Ano ;Genero ;Stock_Inventario ;StockActual ;Precio 
 ola;diablo;204;ola;3;3;3
 ID: 1,Estado: disponible; ID: 2,Estado: disponible; ID: 3,Estado: disponible; 
+nombre_Libro ;Autor ;Ano ;Genero ;Stock_Inventario ;StockActual ;Precio 
+ola;ola;203;ola;3;3;3
+ID: 1,Estado: disponible; ID: 2,Estado: disponible; ID: 3,Estado: disponible; 
+nombre_Libro ;Autor ;Ano ;Genero ;Stock_Inventario ;StockActual ;Precio 
+suyco;suyco};392;suyco;5;5;5
+ID: 1,Estado: disponible; ID: 2,Estado: disponible; ID: 3,Estado: disponible; ID: 4,Estado: disponible; ID: 5,Estado: disponible; 

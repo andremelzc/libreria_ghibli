@@ -55,7 +55,7 @@ struct Lista
 
 void guardar_CSV(Lista *lista, string nombreArchivo)
 {
-    fstream archivo(nombreArchivo, fstream::out | fstream::app);
+    fstream archivo(nombreArchivo, ios::out | ios::app);
 
     if (!archivo.is_open())
     {
@@ -66,17 +66,11 @@ void guardar_CSV(Lista *lista, string nombreArchivo)
     // Recorre la lista enlazada y escribe cada nodo en el archivo
     Nodo *actual = lista->cabeza;
     while (actual != nullptr)
-    {
+    {   
+        cout << "estoy datos en el archivo .csv";
+        system("PAUSE");
         Usuario usuario = actual->usuario;
-        archivo << usuario.estadoUsuario << ","
-                << usuario.tipo << ","
-                << usuario.ID_Usuario << ","
-                << usuario.estadoUsuario << ","
-                << usuario.usuario << ","
-                << usuario.contrasena << ","
-                << usuario.nombre << ","
-                << usuario.apellidos << ","
-                << usuario.genero << ","
+        archivo << usuario.estadoUsuario << ","<< usuario.tipo << ","<< usuario.ID_Usuario << ","<< usuario.estadoUsuario << ","<< usuario.usuario << ","<< usuario.contrasena << ","<< usuario.nombre << ","<< usuario.apellidos << ","<< usuario.genero << ","
                 << usuario.correoElectronico << ","
                 << usuario.telefono << "\n";
 
