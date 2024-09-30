@@ -125,7 +125,7 @@ void estructura_menu()
     // Título
     // Barras horizontales
     color(2);
-    for (int i = 40; i < 81; i++)
+    for (int i = 40; i < 79; i++)
     {
         gotoxy(i, 3);
         cout << (char)205;
@@ -137,18 +137,19 @@ void estructura_menu()
     cout << (char)201;
     gotoxy(39, 7);
     cout << (char)200;
-    gotoxy(81, 3);
+    gotoxy(79, 3);
     cout << (char)187;
-    gotoxy(81, 7);
+    gotoxy(79, 7);
     cout << (char)188;
     // Barras verticales
     for (int i = 4; i < 7; i++)
     {
         gotoxy(40, i);
         cout << (char)179;
-        gotoxy(80, i);
+        gotoxy(78, i);
         cout << (char)179;
     }
+
     // Conexión 1
     color(7);
     for (int i = 24; i < 40; i++)
@@ -156,38 +157,80 @@ void estructura_menu()
         gotoxy(i, 5);
         cout << (char)205;
     }
-    for (int i = 81; i < 97; i++)
+    color(2);
+    gotoxy(23, 5);
+    cout << (char)179;
+    gotoxy(18, 5);
+    cout << (char)179;
+    gotoxy(17, 4);
+    cout << (char)201;
+    gotoxy(24, 4);
+    cout << (char)187;
+    for (int i = 18; i < 24; i++)
+    {
+        gotoxy(i, 4);
+        cout << (char)205;
+    }
+    gotoxy(17, 6);
+    cout << (char)200;
+    gotoxy(24, 6);
+    cout << (char)188;
+    for (int i = 18; i < 24; i++)
+    {
+        gotoxy(i, 6);
+        cout << (char)205;
+    }
+    color(7);
+    for (int i = 7; i < 9; i++)
+    {
+        gotoxy(20, i);
+        cout << (char)186;
+    }
+
+    // Conexión 2
+    for (int i = 79; i < 95; i++)
     {
         gotoxy(i, 5);
         cout << (char)205;
     }
     color(2);
-    gotoxy(23,5);
+    gotoxy(100, 5);
     cout << (char)179;
-    gotoxy(18,5);
+    gotoxy(95, 5);
     cout << (char)179;
-    gotoxy(17,4);
+    gotoxy(94, 4);
     cout << (char)201;
-    gotoxy(24,4);
+    gotoxy(101, 4);
     cout << (char)187;
-    for(int i=18;i<24;i++){
-        gotoxy(i,4);
+    for (int i = 95; i < 101; i++)
+    {
+        gotoxy(i, 4);
         cout << (char)205;
     }
-    gotoxy(17,6);
+    gotoxy(94, 6);
     cout << (char)200;
-    gotoxy(24,6);
+    gotoxy(101, 6);
     cout << (char)188;
-    for(int i=18;i<24;i++){
-        gotoxy(i,6);
+    for (int i = 95; i < 101; i++)
+    {
+        gotoxy(i, 6);
         cout << (char)205;
     }
     color(7);
-    for(int i=7;i<9;i++){
-        gotoxy(20,i);
+    for (int i = 7; i < 9; i++)
+    {
+        gotoxy(98, i);
         cout << (char)186;
     }
-    
+    // Conexión 3
+    gotoxy(58, 8);
+    cout << (char)186;
+    gotoxy(60, 8);
+    cout << (char)186;
+    gotoxy(42, 8);
+    cout << (char)186;
+    gotoxy(76, 8);
+    cout << (char)186;
 
     // Menú
     color(2);
