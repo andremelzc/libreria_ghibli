@@ -167,6 +167,7 @@ int numAdmin = opcionesMenuAdministrador.size();
 
 void menu_opcionesGestionLibros(); // Declaración previa
 void menu_opcionesGestionUsuarios(); // Declaración previa  
+void menu_opcionesGestionPedidos(); // Declaración previa
 
 void menu_opcionesAdministrador()
 {
@@ -225,6 +226,7 @@ void menu_opcionesAdministrador()
         break;
       case 3:
         // 3. Gestionar pedidos
+        menu_opcionesGestionPedidos();
         break;
       case 4:
         // 4. Ver estadisticas
@@ -400,6 +402,83 @@ void menu_opcionesGestionUsuarios(){
         repeat = false;
         system("CLS");
         break;  
+      default:
+        cout << "Estas fuera del rango\n";
+      }
+    }
+  }
+}
+
+vector<string> opcionesMenuGestionPedidos = {"Registrar pedido",
+                                        "Modificar pedido",
+                                        "Eliminar pedido",
+                                        "Leer pedidos",
+                                        "Salir"};
+int numGestionPedidos = opcionesMenuGestionPedidos.size();
+
+void menu_opcionesGestionPedidos(){
+  bool repeat = true;
+  int opt = 1;
+  estructura_menu();
+  while (repeat)
+  {
+    system("CLS");
+    estructura_menu();
+    // Imprimir las opciones
+    for (int i = 0; i < numGestionPedidos; i++)
+    {
+      if (i == opt - 1)
+      {
+        color(2);
+        gotoxy(46, 16 + i);
+        cout << "=>   ";
+        color(7);
+        gotoxy(48, 16 + i);
+        color(2);
+        cout << opcionesMenuGestionPedidos[i] << endl;
+        color(7);
+      }
+      else
+      {
+        gotoxy(53, 16 + i);
+        cout << "   " << opcionesMenuGestionPedidos[i] << endl;
+      }
+    }
+    // Capturamos la entrada de usuario
+    int input = _getch();
+
+    switch (input)
+    {
+    // Aumentar o disminuir la opcion en la que estamos
+    case 72: // Flecha arriba
+      opt = (opt == 1) ? numGestionPedidos : --opt;
+      break;
+    case 80: // Flecha abajo
+      opt = (opt == numGestionPedidos) ? 1 : ++opt;
+      break;
+    // Ejecutar una de las opciones del menu
+    case 13:
+      switch (opt)
+      {
+      case 1:
+      {
+        // 1. Registrar pedido
+        break;
+      }
+      case 2:
+        // 2. Modificar pedido
+        break;
+      case 3:
+        // 3. Eliminar pedido
+        break;
+      case 4:
+        // 4. Mostrar pedidos
+        break;
+      case 5:
+        // 5. Salir
+        repeat = false;
+        system("CLS");
+        break;
       default:
         cout << "Estas fuera del rango\n";
       }
