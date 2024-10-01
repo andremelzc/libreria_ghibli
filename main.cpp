@@ -14,7 +14,7 @@ using namespace std;
 int main() {
     system("CLS");
     estructura_menu();
-    menu_opcionesPrincipal();
+    menu_opcionesAdministrador();
     gotoxy(100,36);
     return 0;
 }
