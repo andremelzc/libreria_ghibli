@@ -59,6 +59,14 @@ void guardar_CSV(Lista *lista, string nombreArchivo)
 
     if (!archivo.is_open())
     {
+        cout << "No se pudo abrir el archivo. " << nombreArchivo << endl;
+        perror("Error al abrir el archivo");
+        system("PAUSE");
+        return;
+    }
+
+    if (!archivo.is_open())
+    {
         cout << "No se pudo abrir el archivo." << endl;
         return;
     }
@@ -85,6 +93,14 @@ void guardar_CSV(Lista *lista, string nombreArchivo)
 void leerCSV(string nombreArchivo, Lista &lista) {
     ifstream archivo(nombreArchivo);
     string linea;
+    
+    if (!archivo.is_open())
+    {
+        cout << "No se pudo abrir el archivo. " << nombreArchivo << endl;
+        perror("Error al abrir el archivo");
+        system("PAUSE");
+        return;
+    }
     
     if (archivo.is_open()) {
         // Leer el archivo línea por línea

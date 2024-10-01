@@ -2,6 +2,7 @@
 #include<fstream>
 #include<sstream>
 #include<string.h>
+#include <filesystem>
 #include"..\menu\gotoxy.h"
 #include "persistenciaUsuario.h"
 using namespace std;
@@ -45,9 +46,17 @@ void insertarFinalListaLibro(ListaLibros *lista, Libro *libro)
 void guardar_CSV_Libros(ListaLibros *lista,string nombreArchivo){
 	fstream archivo(nombreArchivo, fstream::out | fstream::app);
 
+    if (!filesystem::exists("Libros.csv")) {
+    std::cerr << "Error: El directorio 'output' no existe." << std::endl;
+    system("PAUSE");
+    return;
+}
+
     if (!archivo.is_open())
     {
-        cout << "No se pudo abrir el archivo." << endl;
+        cout << "No se pudo abrir el archivo. " << nombreArchivo << endl;
+        perror("Error al abrir el archivo");
+        system("PAUSE");
         return;
     }
 
@@ -66,6 +75,11 @@ void guardar_CSV_Libros(ListaLibros *lista,string nombreArchivo){
                 << libro.estado << "\n";
 
         actual = actual->siguiente;
+    }
+
+    if (archivo.fail()) {
+        std::cerr << "Error: Fallo al escribir en el archivo." << std::endl;
+        return ; // Salir con error
     }
 
     archivo.close();
@@ -124,6 +138,6 @@ void adicionarCampo(){
         cin >> respuesta;
 	}while(respuesta[0] =='s'||respuesta[0] =='S');
 
-	guardar_CSV_Libros(listaLibros, "Libros.csv");
+	guardar_CSV_Libros(listaLibros, "../Libros1.csv");
 }
 
