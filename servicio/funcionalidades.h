@@ -26,3 +26,4 @@ int contarFilasCSV(string nombreArchivo) {
 
     return contador; // Devuelve el número de filas
 }
+

@@ -102,3 +102,4 @@ void insertarFinal(Lista *lista, Usuario *usuario)
     }
     lista->longitud++;
 }
+
