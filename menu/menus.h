@@ -4,15 +4,17 @@
 #include "../data/gestionLibros.h"
 #include "../servicio/iniciarSesion.h"
 
-//Menu de opciones inicial
+// Menu de opciones inicial
 vector<string> opcionesMenuPrincipal = {"Ver catalogo",
                                         "Registrarse",
                                         "Iniciar sesion",
                                         "Salir"};
 int numInicio = opcionesMenuPrincipal.size();
 
-void menu_iniciarSesion();//Declaración Previa  -> Para el Switch caso 3
-void menu_opcionesAdministrador();//Declaración Previa  -> Para el Switch caso 3
+void menu_iniciarSesion();         // Declaración Previa  -> Para el Switch caso 3
+void menu_opcionesAdministrador(); // Declaración Previa  -> Para el Switch caso 3
+void menu_opcionesRecepcionista();
+void menu_opcionesUsuario();
 
 void menu_opcionesPrincipal()
 {
@@ -72,16 +74,22 @@ void menu_opcionesPrincipal()
         int tipo;
         bool sesion;
         inicioSesion(tipo, sesion);
-        if(sesion){
-          if(tipo == 2){
+        if (sesion)
+        {
+          if (tipo == 2)
+          {
             // Tipo 2 es para administador
             menu_opcionesAdministrador();
-          }else if(tipo == 1){
+          }
+          else if (tipo == 1)
+          {
             // Tipo 1 es para recepcionista
-            
-          }else
+            menu_opcionesRecepcionista();
+          }
+          else
           {
             // Tipo 0 es para usuario
+            menu_opcionesUsuario();
           }
         }
         system("pause");
@@ -98,17 +106,17 @@ void menu_opcionesPrincipal()
   }
 }
 
-//Menu de opciones administrador
+// Menu de opciones administrador
 vector<string> opcionesMenuAdministrador = {"Gestionar libros",
-                                        "Gestionar usuarios",
-                                        "Gestionar pedidos",
-                                        "Ver estadisticas",
-                                        "Salir"};
+                                            "Gestionar usuarios",
+                                            "Gestionar pedidos",
+                                            "Ver estadisticas",
+                                            "Salir"};
 int numAdmin = opcionesMenuAdministrador.size();
 
-void menu_opcionesGestionLibros(); // Declaración previa
-void menu_opcionesGestionUsuarios(); // Declaración previa  
-void menu_opcionesGestionPedidos(); // Declaración previa
+void menu_opcionesGestionLibros();   // Declaración previa
+void menu_opcionesGestionUsuarios(); // Declaración previa
+void menu_opcionesGestionPedidos();  // Declaración previa
 
 void menu_opcionesAdministrador()
 {
@@ -184,15 +192,16 @@ void menu_opcionesAdministrador()
   }
 }
 
-//Menu de opciones de gestionar libros
+// Menu de opciones de gestionar libros (Administrador)
 vector<string> opcionesMenuGestionLibros = {"Registrar libro",
-                                        "Modificar libro",
-                                        "Aumentar stock",
-                                        "Eliminar libro",
-                                        "Salir"};
+                                            "Modificar libro",
+                                            "Aumentar stock",
+                                            "Eliminar libro",
+                                            "Salir"};
 int numGestionLibros = opcionesMenuGestionLibros.size();
 
-void menu_opcionesGestionLibros(){
+void menu_opcionesGestionLibros()
+{
   bool repeat = true;
   int opt = 1;
   estructura_menu();
@@ -263,15 +272,16 @@ void menu_opcionesGestionLibros(){
   }
 }
 
-//Menu de opciones de gestionar usuarios
+// Menu de opciones de gestionar usuarios (Administrador)
 vector<string> opcionesMenuGestionUsuarios = {"Registrar usuario",
-                                        "Modificar usuario",
-                                        "Eliminar usuario",
-                                        "Leer usuarios",
-                                        "Salir"};
+                                              "Modificar usuario",
+                                              "Eliminar usuario",
+                                              "Leer usuarios",
+                                              "Salir"};
 int numGestionUsuarios = opcionesMenuGestionUsuarios.size();
 
-void menu_opcionesGestionUsuarios(){
+void menu_opcionesGestionUsuarios()
+{
   bool repeat = true;
   int opt = 1;
   estructura_menu();
@@ -302,7 +312,6 @@ void menu_opcionesGestionUsuarios(){
     // Capturamos la entrada de usuario
     int input = _getch();
 
-
     Lista listaDeUsuarios;
     switch (input)
     {
@@ -332,7 +341,7 @@ void menu_opcionesGestionUsuarios(){
         break;
       case 4:
         // 4. Mostrar usuarios
-        
+
         leerCSV("usuarios.csv", listaDeUsuarios);
         // Mostrar los usuarios cargados en la lista
         mostrar(listaDeUsuarios);
@@ -342,7 +351,7 @@ void menu_opcionesGestionUsuarios(){
         // 5. Salir
         repeat = false;
         system("CLS");
-        break;  
+        break;
       default:
         cout << "Estas fuera del rango\n";
       }
@@ -350,14 +359,16 @@ void menu_opcionesGestionUsuarios(){
   }
 }
 
+// Menu de opciones de gestionar pedidos (Administrador)
 vector<string> opcionesMenuGestionPedidos = {"Registrar pedido",
-                                        "Modificar pedido",
-                                        "Eliminar pedido",
-                                        "Leer pedidos",
-                                        "Salir"};
+                                             "Modificar pedido",
+                                             "Eliminar pedido",
+                                             "Leer pedidos",
+                                             "Salir"};
 int numGestionPedidos = opcionesMenuGestionPedidos.size();
 
-void menu_opcionesGestionPedidos(){
+void menu_opcionesGestionPedidos()
+{
   bool repeat = true;
   int opt = 1;
   estructura_menu();
@@ -417,6 +428,160 @@ void menu_opcionesGestionPedidos(){
         break;
       case 5:
         // 5. Salir
+        repeat = false;
+        system("CLS");
+        break;
+      default:
+        cout << "Estas fuera del rango\n";
+      }
+    }
+  }
+}
+
+
+// Menu de opciones de recepcionista
+vector<string> opcionesMenuRecepcionista = {"Gestionar pedido de libro",
+                                            "Gestionar pedido de laptop",
+                                            "Activar membresia",
+                                            "Ver historial de cliente",
+                                            "Salir"};
+int numRecepcionista = opcionesMenuRecepcionista.size();
+
+void menu_opcionesRecepcionista()
+{
+  bool repeat = true;
+  int opt = 1;
+  estructura_menu();
+  while (repeat)
+  {
+    system("CLS");
+    estructura_menu();
+    // Imprimir las opciones
+    for (int i = 0; i < numRecepcionista; i++)
+    {
+      if (i == opt - 1)
+      {
+        color(2);
+        gotoxy(46, 15 + i);
+        cout << "=>   ";
+        color(7);
+        gotoxy(48, 15 + i);
+        color(2);
+        cout << opcionesMenuRecepcionista[i] << endl;
+        color(7);
+      }
+      else
+      {
+        gotoxy(53, 15 + i);
+        cout << "   " << opcionesMenuRecepcionista[i] << endl;
+      }
+    }
+    // Capturamos la entrada de usuario
+    int input = _getch();
+
+    switch (input)
+    {
+    // Aumentar o disminuir la opcion en la que estamos
+    case 72: // Flecha arriba
+      opt = (opt == 1) ? numRecepcionista : --opt;
+      break;
+    case 80: // Flecha abajo
+      opt = (opt == numRecepcionista) ? 1 : ++opt;
+      break;
+    // Ejecutar una de las opciones del menu
+    case 13:
+      switch (opt)
+      {
+      case 1:
+      {
+        // 1. Gestionar pedido de libro
+        break;
+      }
+      case 2:
+        // 2. Gestionar pedido de laptop
+        break;
+      case 3:
+        // 3. Activar membresia
+        break;
+      case 4:
+        // 4. Ver historial de cliente
+        break;
+      case 5:
+        // 5. Salir
+        repeat = false;
+        system("CLS");
+        break;
+      default:
+        cout << "Estas fuera del rango\n";
+      }
+    }
+  }
+}
+
+// Menu de opciones de cliente
+vector<string> opcionesMenuCliente = {"Ver catalogo",
+                                      "Realizar pedido",
+                                      "Ver historial de pedidos",
+                                      "Salir"};
+int numCliente = opcionesMenuCliente.size();
+
+void menu_opcionesCliente(){
+  bool repeat = true;
+  int opt = 1;
+  estructura_menu();
+  while (repeat)
+  {
+    system("CLS");
+    estructura_menu();
+    // Imprimir las opciones
+    for (int i = 0; i < numCliente; i++)
+    {
+      if (i == opt - 1)
+      {
+        color(2);
+        gotoxy(46, 15 + i);
+        cout << "=>   ";
+        color(7);
+        gotoxy(48, 15 + i);
+        color(2);
+        cout << opcionesMenuCliente[i] << endl;
+        color(7);
+      }
+      else
+      {
+        gotoxy(53, 15 + i);
+        cout << "   " << opcionesMenuCliente[i] << endl;
+      }
+    }
+    // Capturamos la entrada de usuario
+    int input = _getch();
+
+    switch (input)
+    {
+    // Aumentar o disminuir la opcion en la que estamos
+    case 72: // Flecha arriba
+      opt = (opt == 1) ? numCliente : --opt;
+      break;
+    case 80: // Flecha abajo
+      opt = (opt == numCliente) ? 1 : ++opt;
+      break;
+    // Ejecutar una de las opciones del menu
+    case 13:
+      switch (opt)
+      {
+      case 1:
+      {
+        // 1. Ver catalogo
+        break;
+      }
+      case 2:
+        // 2. Realizar pedido
+        break;
+      case 3:
+        // 3. Ver historial de pedidos
+        break;
+      case 4:
+        // 4. Salir
         repeat = false;
         system("CLS");
         break;
