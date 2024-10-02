@@ -78,7 +78,7 @@ void guardar_CSV(Lista *lista, string nombreArchivo)
         cout << "estoy datos en el archivo .csv";
         system("PAUSE");
         Usuario usuario = actual->usuario;
-        archivo << usuario.estadoUsuario << ","<< usuario.tipo << ","<< usuario.ID_Usuario << ","<< usuario.estadoUsuario << ","<< usuario.usuario << ","<< usuario.contrasena << ","<< usuario.nombre << ","<< usuario.apellidos << ","<< usuario.genero << ","
+        archivo << usuario.estadoUsuario << ","<< usuario.tipo << ","<< usuario.ID_Usuario << ","<< usuario.usuario << ","<< usuario.contrasena << ","<< usuario.nombre << ","<< usuario.apellidos << ","<< usuario.genero << ","
                 << usuario.correoElectronico << ","
                 << usuario.telefono << "\n";
 

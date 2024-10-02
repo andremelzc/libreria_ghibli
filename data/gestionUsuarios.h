@@ -80,7 +80,7 @@ void gestionUsuarios_registrarUsuario()
 
     } while (respuesta[0] == 's' || respuesta[0] == 'S');
 
-    guardar_CSV(lista, "usuarios.csv");
+    guardar_CSV(lista, "output/usuarios.csv");
 }
 
 void insertarFinal(Lista *lista, Usuario *usuario)

@@ -145,6 +145,6 @@ void adicionarCampo(){
         cin >> respuesta;
 	}while(respuesta[0] =='s'||respuesta[0] =='S');
 
-	guardar_CSV_Libros(listaLibros, "../Libros1.csv");
+	guardar_CSV_Libros(listaLibros, "output/libros.csv");
 }
 
