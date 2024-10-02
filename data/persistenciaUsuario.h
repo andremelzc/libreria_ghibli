@@ -29,29 +29,54 @@ struct Nodo
 struct Lista
 {
     Nodo *cabeza;
-    int longitud;  
+    int longitud;
     Lista() : cabeza(nullptr) {} // Inicializar cabeza a nullptr
 };
 
-    // Función para insertar un usuario en la lista
-    void insertar(Lista &lista, Usuario nuevoUsuario) {
-        Nodo *nuevoNodo = new Nodo(nuevoUsuario);
-        nuevoNodo->siguiente = lista.cabeza;
-        lista.cabeza = nuevoNodo;
-        lista.longitud++;
-    }
+// Función para insertar un usuario en la lista
+void insertar(Lista &lista, Usuario nuevoUsuario)
+{
+    Nodo *nuevoNodo = new Nodo(nuevoUsuario);
+    nuevoNodo->siguiente = lista.cabeza;
+    lista.cabeza = nuevoNodo;
+    lista.longitud++;
+}
 
-    // Función para mostrar los usuarios en la lista
-    void mostrar(Lista &lista) {
+// Función para mostrar los usuarios en la lista
+void mostrar(Lista &lista)
+{
+    Nodo *actual = lista.cabeza;
+    int contador = 0;
+    gotoxy(50, 12);
+    color(2);
+    cout << "Lista de usuarios";
+    gotoxy(20, 14);
+    cout << "ID";
+    gotoxy(33, 14);
+    cout << "Nombre";
+    gotoxy(54, 14);
+    cout << "Apellidos";
+    gotoxy(74, 14);
+    cout << "Usuario";
+    color(7);
+    while (actual != nullptr)
+    {
+        
+        gotoxy(20, 16 + contador);
+        cout << actual->usuario.ID_Usuario;
+        gotoxy(33, 16 + contador);
+        cout << actual->usuario.nombre;
+        gotoxy(54, 16 + contador);
+        cout << actual->usuario.apellidos;
+        gotoxy(74, 16 + contador);
+        cout << actual->usuario.usuario;
 
-        Nodo *actual = lista.cabeza;
-        while (actual != nullptr) {
-            cout << "ID: " << actual->usuario.ID_Usuario << ", Nombre: " 
-                 << actual->usuario.nombre << " " << actual->usuario.apellidos 
-                 << ", Usuario: " << actual->usuario.usuario << endl;
-            actual = actual->siguiente;
-        }
+        actual = actual->siguiente;
+        contador++;
     }
+    system("PAUSE>0");
+
+}
 
 void guardar_CSV(Lista *lista, string nombreArchivo)
 {
@@ -74,11 +99,11 @@ void guardar_CSV(Lista *lista, string nombreArchivo)
     // Recorre la lista enlazada y escribe cada nodo en el archivo
     Nodo *actual = lista->cabeza;
     while (actual != nullptr)
-    {   
+    {
         cout << "estoy datos en el archivo .csv";
         system("PAUSE");
         Usuario usuario = actual->usuario;
-        archivo << usuario.estadoUsuario << ","<< usuario.tipo << ","<< usuario.ID_Usuario << ","<< usuario.usuario << ","<< usuario.contrasena << ","<< usuario.nombre << ","<< usuario.apellidos << ","<< usuario.genero << ","
+        archivo << usuario.estadoUsuario << "," << usuario.tipo << "," << usuario.ID_Usuario << "," << usuario.usuario << "," << usuario.contrasena << "," << usuario.nombre << "," << usuario.apellidos << "," << usuario.genero << ","
                 << usuario.correoElectronico << ","
                 << usuario.telefono << "\n";
 
@@ -90,10 +115,13 @@ void guardar_CSV(Lista *lista, string nombreArchivo)
 }
 
 // Función para leer el CSV y llenar la lista enlazada
-void leerCSV(string nombreArchivo, Lista &lista) {
+void leerCSV(string nombreArchivo, Lista &lista)
+{
+    system("CLS");
+    estructura_menu();
     ifstream archivo(nombreArchivo);
     string linea;
-    
+
     if (!archivo.is_open())
     {
         cout << "No se pudo abrir el archivo. " << nombreArchivo << endl;
@@ -101,25 +129,27 @@ void leerCSV(string nombreArchivo, Lista &lista) {
         system("PAUSE");
         return;
     }
-    
-    if (archivo.is_open()) {
+
+    if (archivo.is_open())
+    {
         // Leer el archivo línea por línea
-        while (getline(archivo, linea)) {
+        while (getline(archivo, linea))
+        {
             stringstream ss(linea);
             string dato;
 
             Usuario usuario;
 
             // Suponiendo que el CSV tiene los campos en el siguiente orden:
-            // tipo, ID_Usuario, estadoUsuario, usuario, contrasena, nombre, apellidos, genero, correoElectronico, telefono
-            
+            // estado, tipo, ID_Usuario, usuario, contrasena, nombre, apellidos, genero, correoElectronico, telefono
+
+            getline(ss, dato, ',');
+            usuario.tipo = stoi(dato); // Convertir a entero
+
             getline(ss, dato, ',');
             usuario.tipo = stoi(dato); // Convertir a entero
 
             getline(ss, usuario.ID_Usuario, ',');
-
-            getline(ss, dato, ',');
-            usuario.estadoUsuario = stoi(dato); // Convertir a entero
 
             getline(ss, usuario.usuario, ',');
             getline(ss, usuario.contrasena, ',');
@@ -136,7 +166,10 @@ void leerCSV(string nombreArchivo, Lista &lista) {
             insertar(lista, usuario);
         }
         archivo.close();
-    } else {
+    }
+    else
+    {
         cout << "No se pudo abrir el archivo " << nombreArchivo << endl;
     }
+    
 }

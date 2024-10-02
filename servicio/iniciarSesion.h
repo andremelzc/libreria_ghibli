@@ -7,7 +7,7 @@
 
 using namespace std;
 
-bool verificarUsuarioEnCSV(const string& nombre_usuario);
+bool verificarUsuarioEnCSV(const string &nombre_usuario);
 bool verificarContrasena(const string &usua, const string &contrasena, int &tipo, bool &estados);
 bool verificacionInicioSesion(string nombre_usuario, string contraseña_usuario, int &tipo);
 int stringAInt(const string &texto);
@@ -33,8 +33,14 @@ void inicioSesion(int &tipo, bool &sesion)
     getline(cin, contra);
 
     sesion = verificacionInicioSesion(nombre, contra, tipo);
-    gotoxy(36, 19);
-    system("pause");
+   
+    if (sesion)
+    {
+        gotoxy(36, 17);
+        color(2);
+        cout << "Inicio de Sesion exitoso!" << endl;
+        system("pause>0");
+    }
 }
 
 bool verificacionInicioSesion(string nombre_usuario, string contraseña_usuario, int &tipo)
@@ -44,48 +50,55 @@ bool verificacionInicioSesion(string nombre_usuario, string contraseña_usuario,
     if (verificarUsuarioEnCSV(nombre_usuario))
     {
         gotoxy(36, 17);
-        cout << "Buscando..." << endl;
+        // cout << "Buscando..." << endl;
         if (verificarContrasena(nombre_usuario, contraseña_usuario, tipo, taActivo))
         {
 
             if (taActivo)
             {
                 gotoxy(36, 19);
-                cout << "Inicio Sesion con Exito" << endl;
+                // cout << "Inicio Sesion con Exito" << endl;
                 return true;
             }
             else
             {
                 gotoxy(36, 19);
-                cout << "Usuario no Activo" << endl;
+                // cout << "Usuario no Activo" << endl;
             }
         }
         else
         {
-            gotoxy(36, 19);
+            gotoxy(36, 17);
+            color(4);
             cout << "Contraseña o Usuario Incorrecto" << endl;
+            color(7);
         }
     }
     else
     {
         gotoxy(36, 17);
+        color(4);
         cout << "Usuario No Existente" << endl;
+        color(7);
     }
     return false;
 }
 
-bool verificarUsuarioEnCSV(const string& nombre_usuario) {
+bool verificarUsuarioEnCSV(const string &nombre_usuario)
+{
     ifstream archivoCSV("output/usuarios.csv");
 
     // Verificar si el archivo se abrió correctamente
-    if (!archivoCSV) {
-        cerr << "No se pudo abrir el archivo CSV." << endl;
+    if (!archivoCSV)
+    {
+        // cerr << "No se pudo abrir el archivo CSV." << endl;
         return false;
     }
 
     string linea;
     // Leer el archivo línea por línea
-    while (getline(archivoCSV, linea)) {
+    while (getline(archivoCSV, linea))
+    {
         stringstream ss(linea);
         string id, estado, tipo, dni, usuario, clave, nombreArchivo, apellido, genero, correo, telefono;
 
@@ -102,7 +115,8 @@ bool verificarUsuarioEnCSV(const string& nombre_usuario) {
         getline(ss, telefono, ',');
 
         // Comparar el nombre de usuario con el parámetro
-        if (usuario == nombre_usuario) {
+        if (usuario == nombre_usuario)
+        {
             archivoCSV.close();
             return true; // Usuario encontrado
         }

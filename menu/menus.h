@@ -92,7 +92,7 @@ void menu_opcionesPrincipal()
             menu_opcionesCliente();
           }
         }
-        system("pause");
+        system("pause>0");
         break;
       case 4:
         // 4. Salir
@@ -341,8 +341,7 @@ void menu_opcionesGestionUsuarios()
         break;
       case 4:
         // 4. Mostrar usuarios
-
-        leerCSV("usuarios.csv", listaDeUsuarios);
+        leerCSV("output/usuarios.csv", listaDeUsuarios);
         // Mostrar los usuarios cargados en la lista
         mostrar(listaDeUsuarios);
         getch();
