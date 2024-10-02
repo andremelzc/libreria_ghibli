@@ -1,6 +1,11 @@
-nombre_Libro ;Autor ;Ano ;Genero ;Stock_Inventario ;StockActual ;Precio; Estado 
-ola;diablo;204;ola;3;3;3, Disponible
-lilo;lilo;2003;Femenino;13;12;70;Disponible
-Maria,La del barrio,2005,Masculino,23,23,90,Disponible
-Casita,pepe,2004,femenino,9,2,29,Disponible
-das,da,31,ddas,231,32,23,Disponible
+id, nombre_Libro,Autor,Ano,Genero,Stock_Inventario,StockActual,Precio,Estado 
+1,Circe,Madeline Miller,2018,Fantasía,15,10,25.90,Disponible
+2,El infinito en un junco,María Dueñas,2019,Narrativa contemporánea,12,8,19.90,Disponible
+3,La chica del tren,Paula Hawkins,2015,Thriller psicológico,20,15,22.90,Disponible
+4,La sombra del viento,Carlos Ruiz Zafón,2001,Novela histórica,18,12,21.90,Disponible
+5,Las chicas del cable,Carmen de Icaza,2019,Romance histórico,10,5,18.50,Disponible
+6,El tiempo entre costuras,Maria Dueñas,2013,Novela histórica,9,4,23.50,Disponible
+7,El odio que das,Angie Thomas,2017,Young adult,14,9,16.90,Disponible
+8,Normal People,Sally Rooney,2018,Romance contemporáneo,11,6,20.90,Disponible
+9,Una historia de la literatura en 10 libros,Julio César Pérez,2020,Ensayo,13,7,15.90,Disponible
+10,El susurro de la ola del mar,María Oruña,2021,Thriller,16,10,17.90,Disponible
