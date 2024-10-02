@@ -14,7 +14,7 @@ int numInicio = opcionesMenuPrincipal.size();
 void menu_iniciarSesion();         // Declaración Previa  -> Para el Switch caso 3
 void menu_opcionesAdministrador(); // Declaración Previa  -> Para el Switch caso 3
 void menu_opcionesRecepcionista();
-void menu_opcionesUsuario();
+void menu_opcionesCliente();
 
 void menu_opcionesPrincipal()
 {
@@ -89,7 +89,7 @@ void menu_opcionesPrincipal()
           else
           {
             // Tipo 0 es para usuario
-            menu_opcionesUsuario();
+            menu_opcionesCliente();
           }
         }
         system("pause");
