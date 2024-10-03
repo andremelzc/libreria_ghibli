@@ -3,9 +3,28 @@
 #include "../menu/gotoxy.h"
 #include <string.h>
 #include <fstream>
+#include <sstream>
+#include <vector>
+#include <windows.h>
+#include <cstdio>
+#include <iostream>
+#include <stdexcept>
+#include <conio.h>
 
 using namespace std;
 
+int convertirCadenaAEntero(string& cadena) {
+    try {
+        // Intentar convertir la cadena a entero
+        return stoi(cadena);
+    } catch (const invalid_argument& e) {
+        cerr << "Error: La cadena '" << cadena << "' no es un número válido. " << e.what() << endl;
+        return -1; // Valor de error o alguna forma de manejar el problema
+    } catch (const out_of_range& e) {
+        cerr << "Error: El número está fuera de rango. " << e.what() << endl;
+        return -1; // Valor de error o alguna forma de manejar el problema
+    }
+}
 void gestionUsuarios_registrarUsuario();
 void insertarFinal(Lista *lista, Usuario *usuario);
 
@@ -103,3 +122,207 @@ void insertarFinal(Lista *lista, Usuario *usuario)
     lista->longitud++;
 }
 
+//Leo y Muestro Todos los Registros del CSV
+void sleerUsuariosCSV() {
+    ifstream archivo("usuarios.csv");
+    if (!archivo.is_open()) {
+        cerr << "No se pudo abrir el archivo de Usuarios " << endl;
+        system("PAUSE");
+        cout<<"\nTamos Cagaos, no podemos ni leer"<<endl;
+        return;
+        
+    }
+    int posicionFila;
+    int filaInicial = 4;
+
+    int gotoX;
+    string linea;
+    while (getline(archivo, linea)) {
+        
+        posicionFila = 0;//Usado para determinar el Tipo de dato que estoy Tratando
+        gotoX = 4;
+        stringstream ss(linea);
+        string valor;
+        while (getline(ss, valor, ',')) {
+            
+            switch(posicionFila){
+                case 0: //X mismo para la categoria - Y cambia pues son las Filas
+                    gotoxy(gotoX, filaInicial);//estado
+                    gotoX = gotoX + 4;
+                    cout<< valor;
+                break;
+                case 1:
+                    gotoxy(gotoX, filaInicial);//tipo empleado
+                    gotoX = gotoX + 4;
+                    cout<<valor;
+                break;
+                case 2:
+                    gotoxy(gotoX, filaInicial);//dni
+                    gotoX = gotoX + 11;
+                    cout<<valor;
+                break;
+                case 3:
+                    gotoxy(gotoX, filaInicial);//usuario
+                    gotoX = gotoX + 14;
+                    cout<<valor;
+                break;
+                case 4:
+                    gotoxy(gotoX, filaInicial);//contraseña
+                    gotoX = gotoX + 12;
+                    cout<<valor;
+                break;
+                case 5:
+                    gotoxy(gotoX, filaInicial);//nombre
+                    gotoX = gotoX + 15;
+                    cout<<valor;
+                break;
+                case 6:
+                    gotoxy(gotoX, filaInicial);//apellido
+                    gotoX = gotoX + 15;
+                    cout<<valor;
+                break;
+                case 7:
+                    gotoxy(gotoX, filaInicial);//genero
+                    gotoX = gotoX + 4;
+                    cout<<valor;
+                break;
+                case 8:
+                    gotoxy(gotoX, filaInicial);//gmail
+                    gotoX = gotoX + 20;
+                    cout<<valor;
+                break;
+                case 9:
+                    gotoxy(gotoX, filaInicial);//telefono
+                    gotoX = gotoX + 15;
+                    cout<<valor;
+                break;
+
+                
+            }
+            
+            posicionFila++;
+            
+        }
+        filaInicial++; //Cambia para la siguiente fila
+        //cout << endl;  // Imprimir salto de línea al final de cada registro
+    }
+    cout<<endl;
+    archivo.close();
+
+}
+
+//Luego de Mostrar Y->13 
+
+
+// Función para dividir una cadena en base a un delimitador
+vector<string> dividir(const string &cadena, char delimitador) {
+    vector<string> resultado;
+    stringstream ss(cadena);
+    string valor;
+
+    while (getline(ss, valor, delimitador)) {
+        resultado.push_back(valor);
+    }
+    return resultado;
+}
+// Función para modificar un registro en el archivo CSV sin archivo temporal
+void modificarRegistroCSV(const string &nombreArchivo, int idModificar) {
+    ifstream archivoEntrada(nombreArchivo);  // Abrimos el archivo original en modo lectura
+
+    // Verificación de la apertura del archivo
+    if (!archivoEntrada.is_open()) {
+        cerr << "No se pudo abrir el archivo CSV al inicio de la modificación" << endl;
+        return;
+    }
+
+    vector<string> contenidoArchivo;  // Vector para almacenar el contenido completo del archivo
+    string linea;
+    bool encontrado = false;
+
+    // Lectura del archivo CSV original
+    while (getline(archivoEntrada, linea)) {
+        contenidoArchivo.push_back(linea);  // Guardamos cada línea en el vector
+    }
+    archivoEntrada.close();  // Cerramos el archivo tras la lectura
+
+    // Búsqueda y modificación del registro
+    for (auto &registro : contenidoArchivo) {
+        vector<string> campos = dividir(registro, ',');
+
+        // Si el ID del registro coincide con el ID a modificar
+        if (convertirCadenaAEntero(campos[2]) == idModificar) {  // Ajusta según la posición del ID en tu CSV
+            encontrado = true;
+            int opcion;
+            string nuevoValor;
+            
+            cout << "Registro encontrado: " << registro << endl;
+            cout << "¿Qué campo deseas modificar?" << endl;
+            cout << "1. Estado \n2. Tipo\n3. DNI\n4. Usuario\n5. Contraseña\n6. Nombre\n7. Apellido\n8. Género\n9. Correo\n10. Teléfono\n";
+            cin >> opcion;
+            cin.ignore();  // Limpieza del buffer de entrada
+            cout << endl;
+            
+            cout << "Introduce el nuevo valor: " << endl;
+            getline(cin, nuevoValor);
+
+            // Validación de la opción seleccionada
+            if (opcion >= 1 && opcion <= 10) {
+                campos[opcion - 1] = nuevoValor;  // Modificación del campo seleccionado
+            } else {
+                cout << "Opción no válida." << endl;
+                return;
+            }
+
+            // Reensamblamos la línea modificada
+            stringstream ss;
+            for (size_t i = 0; i < campos.size(); ++i) {
+                ss << campos[i];
+                if (i != campos.size() - 1)
+                    ss << ",";
+            }
+            registro = ss.str();  // Actualizamos el registro en el vector
+            break;
+        }
+    }
+
+    // Reescribimos todo el contenido del archivo
+    ofstream archivoSalida(nombreArchivo);  // Abrimos el archivo en modo escritura para sobrescribirlo
+
+    if (!archivoSalida.is_open()) {
+        cerr << "No se pudo abrir el archivo CSV para escritura." << endl;
+        return;
+    }
+
+    // Escribimos todo el contenido (modificado o no) de vuelta en el archivo
+    for (const auto &linea : contenidoArchivo) {
+        archivoSalida << linea << endl;
+    }
+
+    archivoSalida.close();  // Cerramos el archivo de salida
+
+    if (encontrado) {
+        cout << "Registro modificado correctamente." << endl;
+    } else {
+        cout << "No se encontró el registro con el ID: " << idModificar << endl;
+    }
+}
+
+void gestionUsuario_modificarUsuario(){
+    int id;
+    string respuesta;
+    do{
+        system("CLS");
+        cout<<"Ingrese id a Modificar"<<endl; int id;
+        cin>>id;
+        cout<<endl;
+        modificarRegistroCSV("output/usuarios.csv", id);
+
+        cout<<endl;
+        cout<<"Modificacion Exitosa"<<endl;
+        getch();
+
+        cout<<"Ingrese si para seguir editando"<<endl;
+        cin>>respuesta;
+
+    }while(respuesta =="Si" && respuesta =="si");
+}

@@ -335,6 +335,7 @@ void menu_opcionesGestionUsuarios()
       }
       case 2:
         // 2. Modificar usuario
+        gestionUsuario_modificarUsuario();
         break;
       case 3:
         // 3. Eliminar usuario
