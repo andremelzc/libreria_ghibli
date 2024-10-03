@@ -1,6 +1,4 @@
 #pragma once
-#include "persistenciaUsuario.h"
-#include "../menu/gotoxy.h"
 #include <string.h>
 #include <fstream>
 #include <sstream>
@@ -13,20 +11,9 @@
 
 using namespace std;
 
-int convertirCadenaAEntero(string& cadena) {
-    try {
-        // Intentar convertir la cadena a entero
-        return stoi(cadena);
-    } catch (const invalid_argument& e) {
-        cerr << "Error: La cadena '" << cadena << "' no es un número válido. " << e.what() << endl;
-        return -1; // Valor de error o alguna forma de manejar el problema
-    } catch (const out_of_range& e) {
-        cerr << "Error: El número está fuera de rango. " << e.what() << endl;
-        return -1; // Valor de error o alguna forma de manejar el problema
-    }
-}
 void gestionUsuarios_registrarUsuario();
 void insertarFinal(Lista *lista, Usuario *usuario);
+
 
 void gestionUsuarios_registrarUsuario()
 {
@@ -211,9 +198,6 @@ void sleerUsuariosCSV() {
 
 }
 
-//Luego de Mostrar Y->13 
-
-
 // Función para dividir una cadena en base a un delimitador
 vector<string> dividir(const string &cadena, char delimitador) {
     vector<string> resultado;
@@ -225,6 +209,7 @@ vector<string> dividir(const string &cadena, char delimitador) {
     }
     return resultado;
 }
+
 // Función para modificar un registro en el archivo CSV sin archivo temporal
 void modificarRegistroCSV(const string &nombreArchivo, int idModificar) {
     ifstream archivoEntrada(nombreArchivo);  // Abrimos el archivo original en modo lectura
@@ -325,4 +310,57 @@ void gestionUsuario_modificarUsuario(){
         cin>>respuesta;
 
     }while(respuesta =="Si" && respuesta =="si");
+}
+
+// Activar membresia
+void activarMembresi(){
+    string dni;
+    
+
+    system("CLS");
+    estructura_menu();
+    gotoxy(52, 12);
+    color(2);
+    cout<<"Activando membresia";
+    gotoxy(36, 14);
+    cout<<"DNI del usuario: ";
+    color(7);
+    getline(cin, dni);
+
+    Lista listaUsuarios;
+    listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
+
+    Nodo *usuarioEncontrado = nullptr;  
+    Nodo *actual = listaUsuarios.cabeza;
+
+    while(actual != nullptr){
+        string respuesta;
+        if(actual->usuario.ID_Usuario == dni){
+            gotoxy(36, 16);
+            color(2);
+            cout<<"Usuario encontrado: ";
+            color(7);
+            cout<<actual->usuario.nombre<<" "<<actual->usuario.apellidos<<endl;
+            gotoxy(36, 17);
+            color(2);
+            cout<<"Desea activar la membresia? (s/n): ";
+            color(7);
+            fflush(stdin);
+            getline(cin, respuesta);
+            cout<<respuesta;
+            if(respuesta == "s" || respuesta == "S"){
+                actual->usuario.estadoUsuario = 1;
+                gotoxy(36, 18);
+                cout<<"Membresia activada correctamente";
+            }else{
+                gotoxy(36, 18);
+                cout<<"Membresia no activada";
+            }
+
+        }
+        actual = actual->siguiente;
+    }
+
+
+    system("pause>0");
 }

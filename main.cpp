@@ -4,7 +4,6 @@
 #include <vector>
 #include <string>
 
-
 //Headers
 #include "menu/gotoxy.h"
 #include "menu/menus.h"

@@ -1,4 +1,6 @@
 #pragma once
+#include "../servicio/funcionalidades.h"
+#include "../data/persistenciaUsuario.h"
 #include "../data/gestionUsuarios.h"
 #include "gotoxy.h"
 #include "../data/gestionLibros.h"
@@ -342,7 +344,7 @@ void menu_opcionesGestionUsuarios()
         break;
       case 4:
         // 4. Mostrar usuarios
-        leerCSV("output/usuarios.csv", listaDeUsuarios);
+        listaDeUsuarios = leerUsuariosCSV("output/usuarios.csv");
         // Mostrar los usuarios cargados en la lista
         mostrar(listaDeUsuarios);
         getch();
@@ -447,6 +449,8 @@ vector<string> opcionesMenuRecepcionista = {"Gestionar pedido de libro",
                                             "Salir"};
 int numRecepcionista = opcionesMenuRecepcionista.size();
 
+
+
 void menu_opcionesRecepcionista()
 {
   bool repeat = true;
@@ -502,6 +506,7 @@ void menu_opcionesRecepcionista()
         break;
       case 3:
         // 3. Activar membresia
+        activarMembresi();
         break;
       case 4:
         // 4. Ver historial de cliente

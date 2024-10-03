@@ -3,9 +3,8 @@
 #include <sstream>
 #include <string.h>
 #include <filesystem>
-#include "..\menu\gotoxy.h"
 #include "persistenciaUsuario.h"
-#include "..\servicio\funcionalidades.h"
+
 using namespace std;
 
 struct Libro
@@ -46,6 +45,7 @@ void insertarFinalListaLibro(ListaLibros *lista, Libro *libro)
     }
     lista->longitud++;
 }
+
 void guardar_CSV_Libros(ListaLibros *lista, string nombreArchivo)
 {
     fstream archivo(nombreArchivo, fstream::out | fstream::app);
@@ -93,6 +93,7 @@ void guardar_CSV_Libros(ListaLibros *lista, string nombreArchivo)
     cout << "Datos guardados en " << nombreArchivo << endl;
     system("PAUSE");
 }
+
 void adicionarCampo()
 {
     ListaLibros *listaLibros = new ListaLibros();

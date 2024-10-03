@@ -27,3 +27,16 @@ int contarFilasCSV(string nombreArchivo) {
     return contador; // Devuelve el número de filas
 }
 
+int convertirCadenaAEntero(string& cadena) {
+    try {
+        // Intentar convertir la cadena a entero
+        return stoi(cadena);
+    } catch (const invalid_argument& e) {
+        cerr << "Error: La cadena '" << cadena << "' no es un número válido. " << e.what() << endl;
+        return -1; // Valor de error o alguna forma de manejar el problema
+    } catch (const out_of_range& e) {
+        cerr << "Error: El número está fuera de rango. " << e.what() << endl;
+        return -1; // Valor de error o alguna forma de manejar el problema
+    }
+}
+
