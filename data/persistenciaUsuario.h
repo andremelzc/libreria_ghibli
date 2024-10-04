@@ -107,8 +107,8 @@ void guardar_CSV(Lista *lista, string nombreArchivo)
     Nodo *actual = lista->cabeza;
     while (actual != nullptr)
     {
-        cout << "estoy datos en el archivo .csv";
-        system("PAUSE");
+        // cout << "estoy datos en el archivo .csv";
+        // system("PAUSE");
         Usuario usuario = actual->usuario;
         if(usuario.tipo == 0){
             usuario.membresia = "INACTIVA";

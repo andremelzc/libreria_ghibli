@@ -40,3 +40,15 @@ int convertirCadenaAEntero(string& cadena) {
     }
 }
 
+void limpiarCSV(string nombreArchivo) {
+    ofstream archivoSalida(nombreArchivo); // Abrir el archivo en modo escritura
+
+    // Verificar si el archivo se abrió correctamente
+    if (!archivoSalida) {
+        cerr << "No se pudo abrir el archivo CSV para escritura." << endl;
+        return;
+    }
+
+    // Cerrar el archivo inmediatamente para limpiar su contenido
+    archivoSalida.close();
+}
