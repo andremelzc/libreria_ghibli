@@ -88,6 +88,69 @@ void gestionUsuarios_registrarUsuario()
     guardar_CSV(lista, "output/usuarios.csv");
 }
 
+void menuInicio_registrarUsuario()
+{
+    Lista *lista = new Lista();
+    char respuesta[10];
+
+    system("CLS");
+    estructura_menu();
+    Usuario *usuario = new Usuario();
+    usuario->estadoUsuario = 1;
+    gotoxy(51, 12);
+    color(2);
+    cout << "Registro de usuario";
+    color(7);
+    usuario->tipo = 0;
+    fflush(stdin);
+    gotoxy(36, 14);
+    color(2);
+    cout << "DNI: ";
+    color(7);
+    getline(cin, usuario->ID_Usuario);
+    gotoxy(36, 15);
+    fflush(stdin);
+    color(2);
+    cout << "Nombre de usuario: ";
+    color(7);
+    getline(cin, usuario->usuario);
+    gotoxy(36, 16);
+    color(2);
+    cout << "Contrasena: ";
+    color(7);
+    getline(cin, usuario->contrasena);
+    gotoxy(36, 17);
+    color(2);
+    cout << "Nombres: ";
+    color(7);
+    getline(cin, usuario->nombre);
+    gotoxy(36, 18);
+    color(2);
+    cout << "Apellidos: ";
+    color(7);
+    getline(cin, usuario->apellidos);
+    gotoxy(36, 19);
+    color(2);
+    cout << "Sexo (F = femenino o M = masculino): ";
+    color(7);
+    cin >> usuario->genero;
+    gotoxy(36, 20);
+    color(2);
+    cout << "Correo electronico: ";
+    color(7);
+    cin.ignore();
+    getline(cin, usuario->correoElectronico);
+    gotoxy(36, 21);
+    color(2);
+    cout << "Número celular (9 digitos): ";
+    color(7);
+    getline(cin, usuario->telefono);
+
+    insertarFinal(lista, usuario);
+
+    guardar_CSV(lista, "output/usuarios.csv");
+}
+
 void insertarFinal(Lista *lista, Usuario *usuario)
 {
     Nodo *nodo = new Nodo(*usuario);
@@ -505,7 +568,7 @@ void gestionUsuario_modificarUsuario()
         }
         actual = actual->siguiente;
     }
-    
+
     limpiarCSV("output/usuarios.csv");
     guardar_CSV(&listaUsuarios, "output/usuarios.csv");
 

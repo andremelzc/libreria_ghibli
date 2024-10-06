@@ -70,6 +70,8 @@ void menu_opcionesPrincipal()
       }
       case 2:
         // 2. Registrar cuenta
+        estructura_menu();
+        menuInicio_registrarUsuario();
         break;
       case 3:
         // 3. Iniciar sesión
