@@ -6,6 +6,7 @@
 
 using namespace std;
 
+// Inserta libros al final de una lista enlazada
 void insertarFinalListaLibro(ListaLibros *lista, Libro *libro)
 {
     nodoLibros *nodoLibro = new nodoLibros(*libro);
@@ -26,6 +27,7 @@ void insertarFinalListaLibro(ListaLibros *lista, Libro *libro)
     lista->longitud++;
 }
 
+// Guarda los datos de la lista de libros en un archivo CSV
 void guardar_CSV_Libros(ListaLibros *lista, string nombreArchivo)
 {
     fstream archivo(nombreArchivo, fstream::out | fstream::app);
@@ -74,6 +76,7 @@ void guardar_CSV_Libros(ListaLibros *lista, string nombreArchivo)
     system("PAUSE");
 }
 
+// Interacción con el usuario para ingresar datos
 void adicionarCampo()
 {
     ListaLibros *listaLibros = new ListaLibros();
