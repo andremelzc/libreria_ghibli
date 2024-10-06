@@ -6,7 +6,6 @@
 #include <locale>
 #include <filesystem>
 #include"..\menu\gotoxy.h"
-#include "persistenciaUsuario.h"
 
 using namespace std;
 

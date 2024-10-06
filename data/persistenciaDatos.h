@@ -59,3 +59,9 @@ struct ListaLibros
     int longitud;
     ListaLibros() : cabeza(nullptr) {} // Inicializar cabeza a nullptr
 };
+
+// Pedidos (libros)
+
+// Laptops
+
+// Compras (libros)

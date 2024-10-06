@@ -12,11 +12,9 @@
 using namespace std;
 
 // Declaraciones previas
-//void gestionUsuarios_registrarUsuario();
 void insertarFinal(Lista *lista, Usuario *usuario);
 Lista leerUsuariosCSV(string nombreArchivo); 
 void guardar_CSV(Lista *lista, string nombreArchivo);
-//void insertar(Lista &lista, Usuario usuario);
 
 // Registrar usuario (vista administrador)
 void gestionUsuarios_registrarUsuario()
