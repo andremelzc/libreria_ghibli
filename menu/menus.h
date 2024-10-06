@@ -1,6 +1,6 @@
 #pragma once
 #include "../servicio/funcionalidades.h"
-#include "../data/persistenciaUsuario.h"
+#include "../data/persistenciaDatos.h"
 #include "../data/gestionUsuarios.h"
 #include "gotoxy.h"
 #include "../data/gestionLibros.h"
@@ -348,7 +348,7 @@ void menu_opcionesGestionUsuarios()
         // 4. Mostrar usuarios
         listaDeUsuarios = leerUsuariosCSV("output/usuarios.csv");
         // Mostrar los usuarios cargados en la lista
-        mostrar(listaDeUsuarios);
+        mostrarUsuarios(listaDeUsuarios);
         getch();
         break;
       case 5:
@@ -442,16 +442,14 @@ void menu_opcionesGestionPedidos()
   }
 }
 
-
 // Menu de opciones de recepcionista
 vector<string> opcionesMenuRecepcionista = {"Gestionar pedido de libro",
                                             "Gestionar pedido de laptop",
+                                            "Registrar cliente",
                                             "Activar membresia",
                                             "Ver historial de cliente",
                                             "Salir"};
 int numRecepcionista = opcionesMenuRecepcionista.size();
-
-
 
 void menu_opcionesRecepcionista()
 {
@@ -507,14 +505,19 @@ void menu_opcionesRecepcionista()
         // 2. Gestionar pedido de laptop
         break;
       case 3:
-        // 3. Activar membresia
-        activarMembresi();
+        // 3. Registrar cliente
+        estructura_menu();
+        menuInicio_registrarUsuario();
         break;
       case 4:
-        // 4. Ver historial de cliente
+        // 4. Activar membresia
+        activarMembresi();
         break;
       case 5:
-        // 5. Salir
+        // 5. Ver historial de cliente
+        break;
+      case 6:
+        // 6. Salir
         repeat = false;
         system("CLS");
         break;
@@ -532,7 +535,8 @@ vector<string> opcionesMenuCliente = {"Ver catalogo",
                                       "Salir"};
 int numCliente = opcionesMenuCliente.size();
 
-void menu_opcionesCliente(){
+void menu_opcionesCliente()
+{
   bool repeat = true;
   int opt = 1;
   estructura_menu();

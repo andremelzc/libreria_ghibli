@@ -3,28 +3,8 @@
 #include <sstream>
 #include <string.h>
 #include <filesystem>
-#include "persistenciaUsuario.h"
 
 using namespace std;
-
-struct Libro
-{
-    string nombre_Libro, Autor, Genero, estado;
-    int id, Ano, Stock_Inventario, StockActual;
-    float precio;
-};
-struct nodoLibros
-{
-    Libro libro;
-    nodoLibros *siguiente;
-    nodoLibros(Libro libro1) : libro(libro1), siguiente(nullptr) {}
-};
-struct ListaLibros
-{
-    nodoLibros *cabeza;
-    int longitud;
-    ListaLibros() : cabeza(nullptr) {} // Inicializar cabeza a nullptr
-};
 
 void insertarFinalListaLibro(ListaLibros *lista, Libro *libro)
 {

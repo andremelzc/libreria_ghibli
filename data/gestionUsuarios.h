@@ -11,9 +11,14 @@
 
 using namespace std;
 
-void gestionUsuarios_registrarUsuario();
+// Declaraciones previas
+//void gestionUsuarios_registrarUsuario();
 void insertarFinal(Lista *lista, Usuario *usuario);
+Lista leerUsuariosCSV(string nombreArchivo); 
+void guardar_CSV(Lista *lista, string nombreArchivo);
+//void insertar(Lista &lista, Usuario usuario);
 
+// Registrar usuario (vista administrador)
 void gestionUsuarios_registrarUsuario()
 {
     Lista *lista = new Lista();
@@ -88,6 +93,7 @@ void gestionUsuarios_registrarUsuario()
     guardar_CSV(lista, "output/usuarios.csv");
 }
 
+// Registrar usuario (vista recepcionista y cliente)
 void menuInicio_registrarUsuario()
 {
     Lista *lista = new Lista();
@@ -151,6 +157,7 @@ void menuInicio_registrarUsuario()
     guardar_CSV(lista, "output/usuarios.csv");
 }
 
+// Insertar un usuario al final de la lista enlazada
 void insertarFinal(Lista *lista, Usuario *usuario)
 {
     Nodo *nodo = new Nodo(*usuario);
@@ -171,205 +178,87 @@ void insertarFinal(Lista *lista, Usuario *usuario)
     lista->longitud++;
 }
 
-// Leo y Muestro Todos los Registros del CSV
-void sleerUsuariosCSV()
+// Guardar una lista en el csv
+void guardar_CSV(Lista *lista, string nombreArchivo)
 {
-    ifstream archivo("usuarios.csv");
+    fstream archivo(nombreArchivo, ios::out | ios::app);
+
     if (!archivo.is_open())
     {
-        cerr << "No se pudo abrir el archivo de Usuarios " << endl;
+        cout << "No se pudo abrir el archivo. " << nombreArchivo << endl;
+        perror("Error al abrir el archivo");
         system("PAUSE");
-        cout << "\nTamos Cagaos, no podemos ni leer" << endl;
         return;
     }
-    int posicionFila;
-    int filaInicial = 4;
 
-    int gotoX;
-    string linea;
-    while (getline(archivo, linea))
+    if (!archivo.is_open())
     {
-
-        posicionFila = 0; // Usado para determinar el Tipo de dato que estoy Tratando
-        gotoX = 4;
-        stringstream ss(linea);
-        string valor;
-        while (getline(ss, valor, ','))
-        {
-
-            switch (posicionFila)
-            {
-            case 0:                         // X mismo para la categoria - Y cambia pues son las Filas
-                gotoxy(gotoX, filaInicial); // estado
-                gotoX = gotoX + 4;
-                cout << valor;
-                break;
-            case 1:
-                gotoxy(gotoX, filaInicial); // tipo empleado
-                gotoX = gotoX + 4;
-                cout << valor;
-                break;
-            case 2:
-                gotoxy(gotoX, filaInicial); // dni
-                gotoX = gotoX + 11;
-                cout << valor;
-                break;
-            case 3:
-                gotoxy(gotoX, filaInicial); // usuario
-                gotoX = gotoX + 14;
-                cout << valor;
-                break;
-            case 4:
-                gotoxy(gotoX, filaInicial); // contraseña
-                gotoX = gotoX + 12;
-                cout << valor;
-                break;
-            case 5:
-                gotoxy(gotoX, filaInicial); // nombre
-                gotoX = gotoX + 15;
-                cout << valor;
-                break;
-            case 6:
-                gotoxy(gotoX, filaInicial); // apellido
-                gotoX = gotoX + 15;
-                cout << valor;
-                break;
-            case 7:
-                gotoxy(gotoX, filaInicial); // genero
-                gotoX = gotoX + 4;
-                cout << valor;
-                break;
-            case 8:
-                gotoxy(gotoX, filaInicial); // gmail
-                gotoX = gotoX + 20;
-                cout << valor;
-                break;
-            case 9:
-                gotoxy(gotoX, filaInicial); // telefono
-                gotoX = gotoX + 15;
-                cout << valor;
-                break;
-            }
-
-            posicionFila++;
-        }
-        filaInicial++; // Cambia para la siguiente fila
-        // cout << endl;  // Imprimir salto de línea al final de cada registro
+        cout << "No se pudo abrir el archivo." << endl;
+        return;
     }
-    cout << endl;
+
+    // Recorre la lista enlazada y escribe cada nodo en el archivo
+    Nodo *actual = lista->cabeza;
+    while (actual != nullptr)
+    {
+        // cout << "estoy datos en el archivo .csv";
+        // system("PAUSE");
+        Usuario usuario = actual->usuario;
+        if(usuario.tipo == 0){
+            usuario.membresia = "INACTIVA";
+        }else{
+            usuario.membresia = "ACTIVA";
+        }
+        
+        usuario.fechaInicio = "00/00/0000";
+        usuario.fechaFinal = "00/00/0000";
+        usuario.librosPrestados = 0;
+        archivo << usuario.estadoUsuario << "," << usuario.tipo << "," << usuario.ID_Usuario << "," << usuario.usuario << "," << usuario.contrasena << "," << usuario.nombre << "," << usuario.apellidos << "," << usuario.genero << ","
+                << usuario.correoElectronico << "," << usuario.telefono << "," << usuario.membresia << "," << usuario.librosPrestados << "," << usuario.fechaFinal << "," << usuario.fechaInicio << "\n";
+
+        actual = actual->siguiente;
+    }
+
     archivo.close();
+    cout << "Datos guardados en " << nombreArchivo << endl;
 }
 
-// Función para dividir una cadena en base a un delimitador
-vector<string> dividir(const string &cadena, char delimitador)
+// Mostrar usuarios
+void mostrarUsuarios(Lista &lista)
 {
-    vector<string> resultado;
-    stringstream ss(cadena);
-    string valor;
-
-    while (getline(ss, valor, delimitador))
+    Nodo *actual = lista.cabeza;
+    int contador = 0;
+    gotoxy(50, 12);
+    color(2);
+    cout << "Lista de usuarios";
+    gotoxy(20, 14);
+    cout << "ID";
+    gotoxy(33, 14);
+    cout << "Nombre";
+    gotoxy(54, 14);
+    cout << "Apellidos";
+    gotoxy(74, 14);
+    cout << "Usuario";
+    color(7);
+    while (actual != nullptr)
     {
-        resultado.push_back(valor);
+
+        gotoxy(20, 16 + contador);
+        cout << actual->usuario.ID_Usuario;
+        gotoxy(33, 16 + contador);
+        cout << actual->usuario.nombre;
+        gotoxy(54, 16 + contador);
+        cout << actual->usuario.apellidos;
+        gotoxy(74, 16 + contador);
+        cout << actual->usuario.usuario;
+
+        actual = actual->siguiente;
+        contador++;
     }
-    return resultado;
+    system("PAUSE>0");
 }
 
-// Función para modificar un registro en el archivo CSV sin archivo temporal
-void modificarRegistroCSV(const string &nombreArchivo, int idModificar)
-{
-    ifstream archivoEntrada(nombreArchivo); // Abrimos el archivo original en modo lectura
-
-    // Verificación de la apertura del archivo
-    if (!archivoEntrada.is_open())
-    {
-        cerr << "No se pudo abrir el archivo CSV al inicio de la modificación" << endl;
-        return;
-    }
-
-    vector<string> contenidoArchivo; // Vector para almacenar el contenido completo del archivo
-    string linea;
-    bool encontrado = false;
-
-    // Lectura del archivo CSV original
-    while (getline(archivoEntrada, linea))
-    {
-        contenidoArchivo.push_back(linea); // Guardamos cada línea en el vector
-    }
-    archivoEntrada.close(); // Cerramos el archivo tras la lectura
-
-    // Búsqueda y modificación del registro
-    for (auto &registro : contenidoArchivo)
-    {
-        vector<string> campos = dividir(registro, ',');
-
-        // Si el ID del registro coincide con el ID a modificar
-        if (convertirCadenaAEntero(campos[2]) == idModificar)
-        { // Ajusta según la posición del ID en tu CSV
-            encontrado = true;
-            int opcion;
-            string nuevoValor;
-
-            cout << "Registro encontrado: " << registro << endl;
-            cout << "¿Qué campo deseas modificar?" << endl;
-            cout << "1. Estado \n2. Tipo\n3. DNI\n4. Usuario\n5. Contraseña\n6. Nombre\n7. Apellido\n8. Género\n9. Correo\n10. Teléfono\n";
-            cin >> opcion;
-            cin.ignore(); // Limpieza del buffer de entrada
-            cout << endl;
-
-            cout << "Introduce el nuevo valor: " << endl;
-            getline(cin, nuevoValor);
-
-            // Validación de la opción seleccionada
-            if (opcion >= 1 && opcion <= 10)
-            {
-                campos[opcion - 1] = nuevoValor; // Modificación del campo seleccionado
-            }
-            else
-            {
-                cout << "Opción no válida." << endl;
-                return;
-            }
-
-            // Reensamblamos la línea modificada
-            stringstream ss;
-            for (size_t i = 0; i < campos.size(); ++i)
-            {
-                ss << campos[i];
-                if (i != campos.size() - 1)
-                    ss << ",";
-            }
-            registro = ss.str(); // Actualizamos el registro en el vector
-            break;
-        }
-    }
-
-    // Reescribimos todo el contenido del archivo
-    ofstream archivoSalida(nombreArchivo); // Abrimos el archivo en modo escritura para sobrescribirlo
-
-    if (!archivoSalida.is_open())
-    {
-        cerr << "No se pudo abrir el archivo CSV para escritura." << endl;
-        return;
-    }
-
-    // Escribimos todo el contenido (modificado o no) de vuelta en el archivo
-    for (const auto &linea : contenidoArchivo)
-    {
-        archivoSalida << linea << endl;
-    }
-
-    archivoSalida.close(); // Cerramos el archivo de salida
-
-    if (encontrado)
-    {
-        cout << "Registro modificado correctamente." << endl;
-    }
-    else
-    {
-        cout << "No se encontró el registro con el ID: " << idModificar << endl;
-    }
-}
-
+// Modificar datos de usuario
 void gestionUsuario_modificarUsuario()
 {
     string dni;
@@ -633,4 +522,76 @@ void activarMembresi()
     guardar_CSV(&listaUsuarios, "output/usuarios.csv");
 
     system("pause>0");
+}
+
+// Insertar para crear la lista enlazada
+void insertar(Lista &lista, Usuario nuevoUsuario)
+{
+    Nodo *nuevoNodo = new Nodo(nuevoUsuario);
+    nuevoNodo->siguiente = lista.cabeza;
+    lista.cabeza = nuevoNodo;
+    lista.longitud++;
+}
+
+// Función para crear una lista enlazada en base a los datos del csv
+Lista leerUsuariosCSV(string nombreArchivo)
+{
+    Lista listaDeUsuarios;
+
+    ifstream archivo(nombreArchivo);
+    string linea;
+
+    if (!archivo.is_open())
+    {
+        cout << "No se pudo abrir el archivo. " << nombreArchivo << endl;
+        perror("Error al abrir el archivo");
+        system("PAUSE");
+        return listaDeUsuarios;
+    }
+
+    if (archivo.is_open())
+    {
+        // Leer el archivo línea por línea
+        while (getline(archivo, linea))
+        {
+            stringstream ss(linea);
+            string dato;
+
+            Usuario usuario;
+
+            // Suponiendo que el CSV tiene los campos en el siguiente orden:
+            // estado, tipo, id_usuario (dni), usuario, contrasena, nombre, apellidos, genero, correo electronico, telefono, membresia, fecha inicio, fecha fin, libros prestados
+            getline(ss, dato, ',');
+            usuario.estadoUsuario = stoi(dato); // Convertir a entero
+
+            getline(ss, dato, ',');
+            usuario.tipo = stoi(dato); // Convertir a entero
+            getline(ss, usuario.ID_Usuario, ',');
+            getline(ss, usuario.usuario, ',');
+            getline(ss, usuario.contrasena, ',');
+            getline(ss, usuario.nombre, ',');
+            getline(ss, usuario.apellidos, ',');
+
+            getline(ss, dato, ',');
+            usuario.genero = dato[0]; // Solo tomar el primer carácter
+
+            getline(ss, usuario.correoElectronico, ',');
+            getline(ss, usuario.telefono, ',');
+
+            getline(ss, usuario.membresia, ',');
+            getline(ss, usuario.fechaInicio, ',');
+            getline(ss, usuario.fechaFinal, ',');
+            getline(ss, dato, ',');
+            usuario.librosPrestados = stoi(dato); // Convertir a entero
+
+            // Insertar el usuario en la lista enlazada
+            insertar(listaDeUsuarios, usuario);
+        }
+        archivo.close();
+    }
+    else
+    {
+        cout << "No se pudo abrir el archivo " << nombreArchivo << endl;
+    }
+    return listaDeUsuarios;
 }
