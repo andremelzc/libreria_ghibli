@@ -1,4 +1,3 @@
-id, nombre_Libro,Autor,Ano,Genero,Stock_Inventario,StockActual,Precio,Estado 
 1,Circe,Madeline Miller,2018,Fantasía,15,10,25.90,Disponible
 2,El infinito en un junco,María Dueñas,2019,Narrativa contemporánea,12,8,19.90,Disponible
 3,La chica del tren,Paula Hawkins,2015,Thriller psicológico,20,15,22.90,Disponible

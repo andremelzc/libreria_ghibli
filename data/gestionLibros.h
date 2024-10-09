@@ -6,6 +6,13 @@
 
 using namespace std;
 // Declaraciones previas
+void insertarFinalListaLibro(ListaLibros *lista, Libro *libro);
+void guardar_CSV_Libros(ListaLibros *lista, string nombreArchivo);
+void adicionarCampo();
+void modificarLibro();
+void insertarLibro(ListaLibros &lista, Libro nuevoLibro);
+ListaLibros leerLibrosCSV(string nombreArchivo);
+bool mostrarLibroXid(ListaLibros &Libros, int id);
 
 
 // Inserta libros al final de una lista enlazada
@@ -143,7 +150,7 @@ void adicionarCampo()
 
     guardar_CSV_Libros(listaLibros, "libros.csv");
 }
-/*void modificarLibro()
+void modificarLibro()
 {
     int id;
     string dato;
@@ -284,12 +291,13 @@ void adicionarCampo()
                 actual = actual->siguiente; // Mover al siguiente nodo
             }
         }
-    }
-    else
-    {
+        else
+        {
         gotoxy(36,15);
         cout << "Modifiación cancelada";
-    } 
+        } 
+    }
+    
 
     limpiarCSV("Libros.csv");
     guardar_CSV_Libros( &listalibros, "Libros.csv");
@@ -393,4 +401,4 @@ bool mostrarLibroXid(ListaLibros &Libros, int id)
     // Si el libro no fue encontrado
     cout << "No se encontro ningun libro con el ID: " << id << endl;
     return false; // Retorna false si no encontró el libro
-}*/
+}

@@ -257,7 +257,7 @@ void menu_opcionesGestionLibros()
       }
       case 2:
         // 2. Modificar libro
-       // modificarLibro();
+      modificarLibro();
         break;
       case 3:
         // 3. Aumentar stock
