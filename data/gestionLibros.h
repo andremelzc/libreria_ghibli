@@ -5,6 +5,8 @@
 #include <filesystem>
 
 using namespace std;
+// Declaraciones previas
+
 
 // Inserta libros al final de una lista enlazada
 void insertarFinalListaLibro(ListaLibros *lista, Libro *libro)
@@ -32,7 +34,7 @@ void guardar_CSV_Libros(ListaLibros *lista, string nombreArchivo)
 {
     fstream archivo(nombreArchivo, fstream::out | fstream::app);
 
-    if (!filesystem::exists("output/libros.csv"))
+    if (!filesystem::exists("libros.csv"))
     {
         std::cerr << "Error: El directorio 'output' no existe." << std::endl;
         system("PAUSE");
@@ -86,7 +88,7 @@ void adicionarCampo()
         system("CLS");
         estructura_menu();
         Libro *libro = new Libro();
-        libro->id = contarFilasCSV("output/libros.csv");
+        libro->id = contarFilasCSV("libros.csv");
         libro->estado = "Disponible";
         gotoxy(52, 12);
         color(2);
@@ -139,11 +141,12 @@ void adicionarCampo()
         cin >> respuesta;
     } while (respuesta[0] == 's' || respuesta[0] == 'S');
 
-    guardar_CSV_Libros(listaLibros, "output/libros.csv");
+    guardar_CSV_Libros(listaLibros, "libros.csv");
 }
 /*void modificarLibro()
 {
-    string id;
+    int id;
+    string dato;
     string respuesta;
     int opcion;
     system("CLS");
@@ -155,13 +158,159 @@ void adicionarCampo()
     cout<<"ID del libro: ";
     color(7);
     fflush(stdin);
-    getline(cin, id);
+    getline(cin, dato);
+    id=stoi(dato);
 
     ListaLibros listalibros;
-    listalibros = leerLibr
-}*/
+    listalibros = leerLibrosCSV("Libros.csv");
+    gotoxy(36,15);
+    bool encontrado = mostrarLibroXid(listalibros,id);
+    if(encontrado){
+        gotoxy(36,24);
+        color(2);
+        cout << "Desea modificar datos de este usuario? (s/n): ";
+        color(7);
+        fflush(stdin);
+        getline(cin, respuesta);
+        cout << respuesta;
+        if (respuesta == "s" || respuesta == "S")
+        {
+            gotoxy(36,25);
+            cout << "Que campo desea modificar? , ingrese el número : ";
+            cin >> opcion;
+            cin.ignore();
+            
+            system("CLS");
+            estructura_menu();
 
-/*ListaLibros leerLibrosCSV(string nombreArchivo)
+            // Datos para ingresar
+            int datoInt;
+            string datoString;
+
+            // Buscar el nodo del libro con el ID
+            nodoLibros *actual = listalibros.cabeza;
+            while (actual != nullptr)
+            {
+                if (actual->libro.id == id) // Si el ID del libro coincide
+                {
+                    switch (opcion)
+                    {
+                    case 1:
+                        // Modificar nombre
+                        gotoxy(36, 20);
+                        color(2);
+                        cout << "Nuevo nombre: ";
+                        color(7);
+                        fflush(stdin);
+                        getline(cin, datoString);
+                        actual->libro.nombre_Libro = datoString;
+                        break;
+                    case 2:
+                        // Modificar autor
+                        gotoxy(36, 20);
+                        color(2);
+                        cout << "Nuevo autor: ";
+                        color(7);
+                        fflush(stdin);
+                        getline(cin, datoString);
+                        actual->libro.Autor = datoString;
+                        break;
+                    case 3:
+                        // Modificar género
+                        gotoxy(36, 20);
+                        color(2);
+                        cout << "Nuevo género: ";
+                        color(7);
+                        fflush(stdin);
+                        getline(cin, datoString);
+                        actual->libro.Genero = datoString;
+                        break;
+                    case 4:
+                        // Modificar año
+                        gotoxy(36, 20);
+                        color(2);
+                        cout << "Nuevo año: ";
+                        color(7);
+                        cin >> datoInt;
+                        actual->libro.Ano = datoInt;
+                        break;
+                    case 5:
+                        // Modificar stock de inventario
+                        gotoxy(36, 20);
+                        color(2);
+                        cout << "Nuevo stock de inventario: ";
+                        color(7);
+                        cin >> datoInt;
+                        actual->libro.Stock_Inventario = datoInt;
+                        break;
+                    case 6:
+                        // Modificar stock actual
+                        gotoxy(36, 20);
+                        color(2);
+                        cout << "Nuevo stock actual: ";
+                        color(7);
+                        cin >> datoInt;
+                        actual->libro.StockActual = datoInt;
+                        break;
+                    case 7:
+                        // Modificar precio
+                        gotoxy(36, 20);
+                        color(2);
+                        cout << "Nuevo precio: ";
+                        color(7);
+                        cin >> actual->libro.precio;
+                        break;
+                    case 8:
+                        // Modificar estado
+                        gotoxy(36, 20);
+                        color(2);
+                        cout << "Nuevo estado: ";
+                        color(7);
+                        fflush(stdin);
+                        getline(cin, datoString);
+                        actual->libro.estado = datoString;
+                        break;
+                    default:
+                        cout << "Opción no válida." << endl;
+                        break;
+                    }
+
+                    // Mensaje de éxito
+                    gotoxy(36, 26);
+                    color(2);
+                    cout << "Libro modificado exitosamente." << endl;
+                    return; // Salir de la función después de modificar
+                }
+                actual = actual->siguiente; // Mover al siguiente nodo
+            }
+        }
+    }
+    else
+    {
+        gotoxy(36,15);
+        cout << "Modifiación cancelada";
+    } 
+
+    limpiarCSV("Libros.csv");
+    guardar_CSV_Libros( &listalibros, "Libros.csv");
+
+    gotoxy(36, 22);
+    color(2);
+    cout << "Modificación realizada con éxito";
+    system("pause>0");
+
+}
+
+// Insertar para crear la lista enlazada
+void insertarLibro(ListaLibros &lista, Libro nuevoLibro)
+{
+    nodoLibros *nuevoNodo = new nodoLibros(nuevoLibro);
+    nuevoNodo->siguiente = lista.cabeza;
+    lista.cabeza = nuevoNodo;
+    lista.longitud++;
+}
+
+ListaLibros leerLibrosCSV(string nombreArchivo)
 {
     ListaLibros listaDeLibros;
 
@@ -173,7 +322,7 @@ void adicionarCampo()
         cout << "No se pudo abrir el archivo. " << nombreArchivo << endl;
         perror("Error al abrir el archivo");
         system("PAUSE");
-        return listaDeUsuarios;
+        return listaDeLibros;
     }
 
     if (archivo.is_open())
@@ -184,35 +333,30 @@ void adicionarCampo()
             stringstream ss(linea);
             string dato;
 
-            Usuario usuario;
+            Libro libro;
 
             // Suponiendo que el CSV tiene los campos en el siguiente orden:
-            // estado, tipo, id_usuario (dni), usuario, contrasena, nombre, apellidos, genero, correo electronico, telefono, membresia, fecha inicio, fecha fin, libros prestados
+            // id, nombre_Libro,Autor,Ano,Genero,Stock_Inventario,StockActual,Precio,Estado 
             getline(ss, dato, ',');
-            usuario.estadoUsuario = stoi(dato); // Convertir a entero
+            libro.id = stoi(dato); // Convertir a entero
+
+            getline(ss, libro.nombre_Libro, ',');
+            getline(ss, libro.Autor, ',');
+            getline(ss, dato, ',');
+            libro.Ano=stoi(dato);
+            getline(ss, libro.Genero, ',');
+            getline(ss, dato, ',');
+            libro.Stock_Inventario=stoi(dato);
+            getline(ss,dato, ',');
+            libro.StockActual=stoi(dato);
+
 
             getline(ss, dato, ',');
-            usuario.tipo = stoi(dato); // Convertir a entero
-            getline(ss, usuario.ID_Usuario, ',');
-            getline(ss, usuario.usuario, ',');
-            getline(ss, usuario.contrasena, ',');
-            getline(ss, usuario.nombre, ',');
-            getline(ss, usuario.apellidos, ',');
+            libro.precio = stoi(dato); 
+            getline(ss, libro.estado, ',');
 
-            getline(ss, dato, ',');
-            usuario.genero = dato[0]; // Solo tomar el primer carácter
-
-            getline(ss, usuario.correoElectronico, ',');
-            getline(ss, usuario.telefono, ',');
-
-            getline(ss, usuario.membresia, ',');
-            getline(ss, usuario.fechaInicio, ',');
-            getline(ss, usuario.fechaFinal, ',');
-            getline(ss, dato, ',');
-            usuario.librosPrestados = stoi(dato); // Convertir a entero
-
-            // Insertar el usuario en la lista enlazada
-            insertar(listaDeUsuarios, usuario);
+            // Insertar el libro en la lista enlazada
+            insertarLibro(listaDeLibros, libro);
         }
         archivo.close();
     }
@@ -220,5 +364,33 @@ void adicionarCampo()
     {
         cout << "No se pudo abrir el archivo " << nombreArchivo << endl;
     }
-    return listaDeUsuarios;
+    return listaDeLibros;
+}
+bool mostrarLibroXid(ListaLibros &Libros, int id)
+{
+    nodoLibros *actual = Libros.cabeza; // Apuntar al primer nodo de la lista
+
+    // Recorrer la lista buscando el libro con el ID indicado
+    while (actual != nullptr)
+    {
+        if (actual->libro.id == id) // Si el ID del libro coincide
+        {
+            // Mostrar los datos del libro
+            cout << "ID: " << actual->libro.id << endl;
+            cout << "1. Nombre del Libro: " << actual->libro.nombre_Libro << endl;
+            cout << "2. Autor: " << actual->libro.Autor << endl;
+            cout << "3. Genero: " << actual->libro.Genero << endl;
+            cout << "4. Ano: " << actual->libro.Ano << endl;
+            cout << "5. Stock Inventario: " << actual->libro.Stock_Inventario << endl;
+            cout << "6. Stock Actual: " << actual->libro.StockActual << endl;
+            cout << "7. Precio: " << actual->libro.precio << endl;
+            cout << "8. Estado: " << actual->libro.estado << endl;
+            return true; // Retorna true si el libro fue encontrado
+        }
+        actual = actual->siguiente; // Mover al siguiente nodo
+    }
+
+    // Si el libro no fue encontrado
+    cout << "No se encontro ningun libro con el ID: " << id << endl;
+    return false; // Retorna false si no encontró el libro
 }*/

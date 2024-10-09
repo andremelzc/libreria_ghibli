@@ -88,7 +88,7 @@ void gestionUsuarios_registrarUsuario()
 
     } while (respuesta[0] == 's' || respuesta[0] == 'S');
 
-    guardar_CSV(lista, "output/usuarios.csv");
+    guardar_CSV(lista, "usuarios.csv");
 }
 
 // Registrar usuario (vista recepcionista y cliente)
@@ -152,7 +152,7 @@ void menuInicio_registrarUsuario()
 
     insertarFinal(lista, usuario);
 
-    guardar_CSV(lista, "output/usuarios.csv");
+    guardar_CSV(lista, "usuarios.csv");
 }
 
 // Insertar un usuario al final de la lista enlazada
@@ -275,7 +275,7 @@ void gestionUsuario_modificarUsuario()
     getline(cin, dni);
 
     Lista listaUsuarios;
-    listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
+    listaUsuarios = leerUsuariosCSV("usuarios.csv");
 
     Nodo *actual = listaUsuarios.cabeza;
 
@@ -456,8 +456,8 @@ void gestionUsuario_modificarUsuario()
         actual = actual->siguiente;
     }
 
-    limpiarCSV("output/usuarios.csv");
-    guardar_CSV(&listaUsuarios, "output/usuarios.csv");
+    limpiarCSV("usuarios.csv");
+    guardar_CSV(&listaUsuarios, "usuarios.csv");
 
     gotoxy(36, 22);
     color(2);
@@ -481,7 +481,7 @@ void activarMembresi()
     getline(cin, dni);
 
     Lista listaUsuarios;
-    listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
+    listaUsuarios = leerUsuariosCSV("usuarios.csv");
 
     Nodo *actual = listaUsuarios.cabeza;
 
@@ -516,8 +516,8 @@ void activarMembresi()
         }
         actual = actual->siguiente;
     }
-    limpiarCSV("output/usuarios.csv");
-    guardar_CSV(&listaUsuarios, "output/usuarios.csv");
+    limpiarCSV("usuarios.csv");
+    guardar_CSV(&listaUsuarios, "usuarios.csv");
 
     system("pause>0");
 }

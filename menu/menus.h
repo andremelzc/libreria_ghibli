@@ -257,6 +257,7 @@ void menu_opcionesGestionLibros()
       }
       case 2:
         // 2. Modificar libro
+       // modificarLibro();
         break;
       case 3:
         // 3. Aumentar stock
@@ -346,7 +347,7 @@ void menu_opcionesGestionUsuarios()
         break;
       case 4:
         // 4. Mostrar usuarios
-        listaDeUsuarios = leerUsuariosCSV("output/usuarios.csv");
+        listaDeUsuarios = leerUsuariosCSV("usuarios.csv");
         // Mostrar los usuarios cargados en la lista
         mostrarUsuarios(listaDeUsuarios);
         getch();
