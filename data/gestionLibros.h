@@ -141,3 +141,84 @@ void adicionarCampo()
 
     guardar_CSV_Libros(listaLibros, "output/libros.csv");
 }
+/*void modificarLibro()
+{
+    string id;
+    string respuesta;
+    int opcion;
+    system("CLS");
+    estructura_menu();
+    color(2);
+    gotoxy(52,12);
+    cout<<"Modificando Libro";
+    gotoxy(36,14);
+    cout<<"ID del libro: ";
+    color(7);
+    fflush(stdin);
+    getline(cin, id);
+
+    ListaLibros listalibros;
+    listalibros = leerLibr
+}*/
+
+/*ListaLibros leerLibrosCSV(string nombreArchivo)
+{
+    ListaLibros listaDeLibros;
+
+    ifstream archivo(nombreArchivo);
+    string linea;
+
+    if (!archivo.is_open())
+    {
+        cout << "No se pudo abrir el archivo. " << nombreArchivo << endl;
+        perror("Error al abrir el archivo");
+        system("PAUSE");
+        return listaDeUsuarios;
+    }
+
+    if (archivo.is_open())
+    {
+        // Leer el archivo línea por línea
+        while (getline(archivo, linea))
+        {
+            stringstream ss(linea);
+            string dato;
+
+            Usuario usuario;
+
+            // Suponiendo que el CSV tiene los campos en el siguiente orden:
+            // estado, tipo, id_usuario (dni), usuario, contrasena, nombre, apellidos, genero, correo electronico, telefono, membresia, fecha inicio, fecha fin, libros prestados
+            getline(ss, dato, ',');
+            usuario.estadoUsuario = stoi(dato); // Convertir a entero
+
+            getline(ss, dato, ',');
+            usuario.tipo = stoi(dato); // Convertir a entero
+            getline(ss, usuario.ID_Usuario, ',');
+            getline(ss, usuario.usuario, ',');
+            getline(ss, usuario.contrasena, ',');
+            getline(ss, usuario.nombre, ',');
+            getline(ss, usuario.apellidos, ',');
+
+            getline(ss, dato, ',');
+            usuario.genero = dato[0]; // Solo tomar el primer carácter
+
+            getline(ss, usuario.correoElectronico, ',');
+            getline(ss, usuario.telefono, ',');
+
+            getline(ss, usuario.membresia, ',');
+            getline(ss, usuario.fechaInicio, ',');
+            getline(ss, usuario.fechaFinal, ',');
+            getline(ss, dato, ',');
+            usuario.librosPrestados = stoi(dato); // Convertir a entero
+
+            // Insertar el usuario en la lista enlazada
+            insertar(listaDeUsuarios, usuario);
+        }
+        archivo.close();
+    }
+    else
+    {
+        cout << "No se pudo abrir el archivo " << nombreArchivo << endl;
+    }
+    return listaDeUsuarios;
+}*/
