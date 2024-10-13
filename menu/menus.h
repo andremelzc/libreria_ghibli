@@ -5,6 +5,7 @@
 #include "gotoxy.h"
 #include "../data/gestionLibros.h"
 #include "../servicio/iniciarSesion.h"
+#include "../data/gestionLaptops.h"
 
 // Menu de opciones inicial
 vector<string> opcionesMenuPrincipal = {"Ver catalogo",
@@ -506,6 +507,9 @@ void menu_opcionesRecepcionista()
       }
       case 2:
         // 2. Gestionar pedido de laptop
+        estructura_menu();
+        
+        gestionLaptops_registrarLaptop();
         break;
       case 3:
         // 3. Registrar cliente
@@ -609,3 +613,4 @@ void menu_opcionesCliente()
     }
   }
 }
+

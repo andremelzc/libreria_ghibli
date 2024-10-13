@@ -64,6 +64,28 @@ struct ListaLibros
 
 // Laptops
 
+struct Laptop {
+    int id_laptop;        // Identificador único de la laptop
+    int id_cliente;       // Identificador del cliente que alquiló la laptop
+    string marca;          // Marca de la laptop (ej: "Dell", "HP", etc.)
+    string modelo; 
+    int estado;          // Estado: true para "Prestado", false para "No prestado"
+};
+
+struct NodoLaptops
+{
+    Laptop laptop;
+    NodoLaptops *siguiente;
+    NodoLaptops(Laptop laptop1) : laptop(laptop1), siguiente(nullptr) {}
+};
+
+struct PilaLaptops
+{
+    NodoLaptops *cima;
+    int longitud;
+    PilaLaptops() : cima(nullptr), longitud(0) {} // Inicializar cima a nullptr
+};
+
 // Compras (libros)
 
 // Cambios (en libros)
@@ -72,6 +94,7 @@ struct nodoDobleLibros
     Libro libro;
     nodoDobleLibros *siguiente;
     nodoDobleLibros *anterior;
+    // Falta Inicializar anterior a nullptr
     nodoDobleLibros(Libro libro1) : libro(libro1), siguiente(nullptr) {}
 };  
 
