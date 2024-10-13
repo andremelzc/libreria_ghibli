@@ -4,6 +4,7 @@
 #include <sstream>
 #include <string.h>
 #include <locale>
+#include <ctime>
 #include <filesystem>
 #include"..\menu\gotoxy.h"
 
@@ -29,7 +30,6 @@ struct fecha
 
 struct Pedidos{
     int ID_pedido,librosYaPrestados;
-    string Usuario, contraseña, estadoUsuario;
     fecha inicio, final;
 };
 
@@ -84,9 +84,6 @@ void guardar_CSV_Pedido(ListaPedidos *Lista, string nombreArchivo){
     while(nodo != nullptr){
         Pedidos pedido = nodo->pedido;
         archivo << pedido.ID_pedido << ","
-                << pedido.Usuario << "," 
-                << pedido.contraseña << ","
-                << pedido.estadoUsuario << "," 
                 << pedido.inicio.dia<<"/"<< pedido.inicio.mes<<"/" << pedido.inicio.año << ","
                 << pedido.final.dia<<"/"<< pedido.final.mes<<"/" << pedido.final.año << ","
                 << pedido.librosYaPrestados << "\n";
@@ -109,6 +106,9 @@ void adicionarCampoPedido(){
     ListaPedidos *listaPedido = new ListaPedidos();
     char respuesta[10];
     int i=0;
+    time_t now = time(0);
+
+    tm* localTime = localtime(&now)
     do{
         i++;
         system("CLS");
@@ -118,36 +118,24 @@ void adicionarCampoPedido(){
         gotoxy(36, 14);
         color(2);
         cout << "a continuación agrese los siguientes campos para realizar su pedido" << endl;
-        gotoxy(36, 15);
-        cout << "Usuario: ";
-        color(4);
-        getline(cin, pedido ->Usuario);
-        gotoxy(36, 16);
-        color(2);
-        cout << "Contraseña: ";
-        color(4);
-        getline(cin, pedido->contraseña);
         gotoxy(36, 17);
-        color(2);
-        cout << "Estado: ";
-        color(4);
-        getline(cin, pedido->estadoUsuario);
-        gotoxy(36, 18);
         color(2);
         cout << "Fecha de pedido (dia fecha año): ";
         cin.ignore();
         color(4);
-        cin >> pedido->inicio.dia >>pedido->inicio.mes >> pedido->inicio.año ;
+        pedido->inicio.dia
+        pedido->inicio.mes
+        cin >> pedido->inicio.dia >>pedido->inicio.mes >> pedido.inicio.año ;
         cin.ignore();
-        gotoxy(36, 19);
+        gotoxy(36, 18);
         color(2);
         cout << "Fecha de devolución (dia fecha año): ";
         color(4);
-        cin >> pedido->final.dia >>pedido->final.mes >> pedido->final.año ;
+        cin >> pedido->final.dia >>pedido->final.mes >> pedido.final.año ;
 
         insertarFinalListaPedido(listaPedido,pedido);
 
-        gotoxy(36, 20);
+        gotoxy(36, 19);
         color(2);
         cout << "Desea registrar otro usuario? (s/n): ";
         color(7);
