@@ -124,6 +124,7 @@ int numAdmin = opcionesMenuAdministrador.size();
 void menu_opcionesGestionLibros();   // Declaración previa
 void menu_opcionesGestionUsuarios(); // Declaración previa
 void menu_opcionesGestionPedidos();  // Declaración previa
+void menu_opcionesLaptop();         // Declaración previa
 
 void menu_opcionesAdministrador()
 {
@@ -508,8 +509,7 @@ void menu_opcionesRecepcionista()
       case 2:
         // 2. Gestionar pedido de laptop
         estructura_menu();
-        
-        gestionLaptops_registrarLaptop();
+        menu_opcionesLaptop();
         break;
       case 3:
         // 3. Registrar cliente
@@ -524,6 +524,89 @@ void menu_opcionesRecepcionista()
         // 5. Ver historial de cliente
         break;
       case 6:
+        // 6. Salir
+        repeat = false;
+        system("CLS");
+        break;
+      default:
+        cout << "Estas fuera del rango\n";
+      }
+    }
+  }
+}
+
+// Menu de opciones de gestionar pedidos de laptop (Recepcionista)
+
+vector<string> opcionesMenuLaptop = {"Visualizar Pila de Laptops",
+                                            "Prestar Laptop",
+                                            "Devolver Laptop",
+                                            "Salir"};
+int numLaptop = opcionesMenuLaptop.size();
+
+void menu_opcionesLaptop()
+{
+  bool repeat = true;
+  int opt = 1;
+  estructura_menu();
+  while (repeat)
+  {
+    system("CLS");
+    estructura_menu();
+    // Imprimir las opciones
+    for (int i = 0; i < numLaptop; i++)
+    {
+      if (i == opt - 1)
+      {
+        color(2);
+        gotoxy(46, 15 + i);
+        cout << "=>   ";
+        color(7);
+        gotoxy(48, 15 + i);
+        color(2);
+        cout << opcionesMenuLaptop[i] << endl;
+        color(7);
+      }
+      else
+      {
+        gotoxy(53, 15 + i);
+        cout << "   " << opcionesMenuLaptop[i] << endl;
+      }
+    }
+    // Capturamos la entrada de usuario
+    int input = _getch();
+    PilaLaptops *pila = new PilaLaptops();
+    leerLaptopsCSV(pila, "laptops.csv");
+    switch (input)
+    {
+    // Aumentar o disminuir la opcion en la que estamos
+    case 72: // Flecha arriba
+      opt = (opt == 1) ? numLaptop : --opt;
+      break;
+    case 80: // Flecha abajo
+      opt = (opt == numLaptop) ? 1 : ++opt;
+      break;
+    // Ejecutar una de las opciones del menu
+    case 13:
+      switch (opt)
+      {
+      case 1:
+      {
+        // 1. Visualizar Pila de Laptops
+        mostrarPilaLaptops(pila);
+        getch();
+        break;
+      }
+      case 2:
+        // 2. Prestar Laptop
+        prestarLaptop(pila);
+        getch();
+        break;
+      case 3:
+        // 3. Devolver Laptop
+        devolverLaptop(pila);
+        getch();
+        break;
+      case 4:
         // 6. Salir
         repeat = false;
         system("CLS");

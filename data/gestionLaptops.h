@@ -21,7 +21,7 @@ void mostrarPilaLaptops(PilaLaptops *pila);
 void guardar_CSV(PilaLaptops *pila, string nombreArchivo);
 void leerLaptopsCSV(PilaLaptops *pila, string nombreArchivo);
 
-//Completo
+// Completo
 void pushPilaLaptops(PilaLaptops *pila, Laptop *laptop)
 {
     NodoLaptops *nodo = new NodoLaptops(*laptop);
@@ -30,7 +30,7 @@ void pushPilaLaptops(PilaLaptops *pila, Laptop *laptop)
     pila->longitud++;
 }
 
-//Completo
+// Completo
 Laptop *topPilaLaptops(PilaLaptops *pila)
 {
     if (pila->cima == nullptr)
@@ -43,13 +43,13 @@ Laptop *topPilaLaptops(PilaLaptops *pila)
     }
 }
 
-//Completo
+// Completo
 int sizePilaLaptops(PilaLaptops *pila)
 {
     return pila->longitud;
 }
 
-//Completo
+// Completo
 void popPilaLaptops(PilaLaptops *pila)
 {
     if (pila->cima != NULL)
@@ -61,23 +61,85 @@ void popPilaLaptops(PilaLaptops *pila)
     }
 }
 
-//Completo
+// Completo
 void mostrarPilaLaptops(PilaLaptops *pila)
 {
-    NodoLaptops *aux = pila->cima;
-    while (aux != nullptr)
+    system("CLS");
+    estructura_menu();
+    NodoLaptops *actual = pila->cima;
+    gotoxy(50, 12);
+    color(2);
+    cout << "Listado de laptops";
+    gotoxy(20, 14);
+    cout << "ID";
+    gotoxy(26, 14);
+    cout << "Cliente Asignado";
+    gotoxy(48, 14);
+    cout << "Marca";
+    gotoxy(62, 14);
+    cout << "Modelo";
+    gotoxy(84, 14);
+    cout << "Estado";
+    color(7);
+
+    int contador = 0;
+
+    while (actual != nullptr)
     {
-        cout << "ID: " << aux->laptop.id_laptop << endl;
-        cout << "Marca: " << aux->laptop.marca << endl;
-        cout << "Modelo: " << aux->laptop.modelo << endl;
-        cout << "Estado: " << aux->laptop.estado << endl;
-        cout << "ID Cliente: " << aux->laptop.id_cliente << endl;
-        cout << "-------------------" << endl;
-        aux = aux->siguiente;
+        gotoxy(20, 16 + contador);
+        cout << actual->laptop.id_laptop;
+        gotoxy(26, 16 + contador);
+        if (actual->laptop.id_cliente != 0)
+        {
+            // Debe buscar el nombre del cliente en el cvs de clientes
+            // Un cliente solo puede tener una laptop
+            cout << "Andre Cuenca";
+        }
+        else
+        {
+            cout << "Sin cliente";
+        }
+
+        gotoxy(48, 16 + contador);
+        if (actual->laptop.marca.length() > 20)
+        {
+            cout << actual->laptop.marca.substr(0, 15) << "...";
+        }
+        else
+        {
+            cout << actual->laptop.marca;
+        }
+        gotoxy(62, 16 + contador);
+        if (actual->laptop.modelo.length() > 20)
+        {
+            cout << actual->laptop.modelo.substr(0, 13) << "...";
+        }
+        else
+        {
+            cout << actual->laptop.modelo;
+        }
+        gotoxy(84, 16 + contador);
+        if (actual->laptop.estado == 1)
+        {
+            cout << "No Prestado";
+        }
+        else if (actual->laptop.estado == 2)
+        {
+            cout << "Prestado";
+        }
+        else
+        {
+            cout << "Fuera de servicio";
+        }
+
+        actual = actual->siguiente;
+
+        contador++;
     }
+
 }
 
-//Completo
+// Completo
 void gestionLaptops_registrarLaptop()
 {
     PilaLaptops *pila = new PilaLaptops();
@@ -123,7 +185,7 @@ void gestionLaptops_registrarLaptop()
     guardar_CSV(pila, "laptops.csv");
 }
 
-//Completo
+// Completo
 void guardar_CSV(PilaLaptops *pila, string nombreArchivo)
 {
     fstream archivo(nombreArchivo, ios::out | ios::app);
@@ -159,15 +221,14 @@ void guardar_CSV(PilaLaptops *pila, string nombreArchivo)
     }
 
     archivo.close();
-    cout << "Datos guardados en " << nombreArchivo << endl;
 }
 
-//Completo
+// Completo
 void leerLaptopsCSV(PilaLaptops *pila, string nombreArchivo)
 {
     ifstream archivo(nombreArchivo);
     string linea;
-    vector<string> lineas;  // Almacenar las líneas del archivo
+    vector<string> lineas; // Almacenar las líneas del archivo
 
     if (!archivo.is_open())
     {
@@ -180,10 +241,10 @@ void leerLaptopsCSV(PilaLaptops *pila, string nombreArchivo)
     // Leer el archivo y almacenar cada línea en el vector "lineas"
     while (getline(archivo, linea))
     {
-        lineas.push_back(linea);  // Agregar cada línea al vector
+        lineas.push_back(linea); // Agregar cada línea al vector
     }
 
-    archivo.close();  // Cerrar el archivo una vez que todas las líneas se han leído
+    archivo.close(); // Cerrar el archivo una vez que todas las líneas se han leído
 
     // Recorrer las líneas en orden inverso (de abajo hacia arriba)
     for (int i = lineas.size() - 1; i >= 0; i--)
@@ -211,4 +272,118 @@ void leerLaptopsCSV(PilaLaptops *pila, string nombreArchivo)
     }
 }
 
+void prestarLaptop(PilaLaptops *pila)
+{
+    system("CLS");
+    mostrarPilaLaptops(pila);
+
+    int idCliente;
+    int tamanoDespues;
+    int tamanoAntes = sizePilaLaptops(pila);
+    Laptop laptopsPrestadas[tamanoAntes] = {};
+    gotoxy(35, 27);
+    color(2);
+    cout << "ID del cliente que solicita una Laptop: ";
+    color(7);
+    cin >> idCliente;
+
+    NodoLaptops *actual = pila->cima;
+    int contador = 0;
+    while (actual != nullptr && actual->laptop.estado != 0)
+    {
+        if (actual->laptop.estado == 1)
+        {
+            actual->laptop.id_cliente = idCliente;
+            actual->laptop.estado = 2;
+            laptopsPrestadas[contador] = actual->laptop;
+            popPilaLaptops(pila);
+            tamanoDespues = sizePilaLaptops(pila);
+            break;
+        }
+        laptopsPrestadas[contador] = actual->laptop;
+        contador++;
+        popPilaLaptops(pila);
+        actual = pila->cima;
+        tamanoDespues = sizePilaLaptops(pila);
+    }
+    if (tamanoDespues == 0)
+    {
+        gotoxy(30, 27);
+        color(4);
+        cout << "              No hay laptops disponibles...            ";
+        color(7);
+        getch();
+    }
+    else
+    {
+        for (int i = tamanoAntes - tamanoDespues - 1; i >= 0; i--)
+        {
+            pushPilaLaptops(pila, &laptopsPrestadas[i]);
+        }
+
+        mostrarPilaLaptops(pila);
+        limpiarCSV("laptops.csv");
+        guardar_CSV(pila, "laptops.csv");
+    } 
+}
+
+void devolverLaptop(PilaLaptops *pila)
+{
+    system("CLS");
+    mostrarPilaLaptops(pila);
+
+    int idCliente;
+    int tamanoDespues;
+    int tamanoAntes = sizePilaLaptops(pila);
+    Laptop laptopsPrestadas[tamanoAntes] = {};  // Arreglo temporal para almacenar laptops
+    gotoxy(35, 27);
+    color(2);
+    cout << "ID del cliente que devuelve una Laptop: ";
+    color(7);
+    cin >> idCliente;
+
+    NodoLaptops *actual = pila->cima;
+    int contador = 0;
+    bool encontrado = false;  // Bandera para verificar si se encontró el cliente
+
+    // Recorremos la pila buscando la laptop prestada por el cliente
+    while (actual != nullptr)
+    {
+        if (actual->laptop.id_cliente == idCliente && actual->laptop.estado == 2) // Cliente correcto y laptop prestada
+        {
+            // Cambiar el estado de la laptop a disponible (estado = 1) y eliminar el ID del cliente
+            actual->laptop.estado = 1;
+            actual->laptop.id_cliente = 0;
+            encontrado = true;  // Se encontró el cliente
+            break;  // Salimos del ciclo, ya que no necesitamos seguir buscando
+        }
+
+        // Si no es la laptop del cliente, la guardamos temporalmente
+        laptopsPrestadas[contador] = actual->laptop;
+        contador++;
+        popPilaLaptops(pila);  // Sacar laptop de la pila
+        actual = pila->cima;   // Actualizar puntero a la nueva cima
+    }
+
+    tamanoDespues = sizePilaLaptops(pila);  // Tamaño después de las operaciones
+
+    // Si no se encontró la laptop prestada por el cliente
+    if (!encontrado)
+    {
+        gotoxy(30, 27);
+        color(4);
+        cout << "No coincide con ningun ID de cliente...";
+        color(7);
+    }
+
+    // Devolver las laptops no relacionadas a la pila
+    for (int i = contador - 1; i >= 0; i--)
+    {
+        pushPilaLaptops(pila, &laptopsPrestadas[i]);
+    }
+
+    mostrarPilaLaptops(pila);  // Mostrar el estado actualizado de la pila
+    limpiarCSV("laptops.csv");  // Limpiar el archivo CSV
+    guardar_CSV(pila, "laptops.csv");  // Guardar el nuevo estado de la pila en el CSV
+}
 
