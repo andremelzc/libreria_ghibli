@@ -1,4 +1,6 @@
 #pragma once
+#include "../servicio/funcionalidades.h"
+#include "../data/persistenciaDatos.h"
 #include "../data/gestionUsuarios.h"
 #include "gotoxy.h"
 #include "../data/gestionLibros.h"
@@ -47,7 +49,7 @@ void menu_opcionesPrincipal()
     }
     // Capturamos la entrada de usuario
     int input = _getch();
-
+    ListaDobleLibros listaDeLibros;
     switch (input)
     {
     // Aumentar o disminuir la opcion en la que estamos
@@ -64,10 +66,14 @@ void menu_opcionesPrincipal()
       case 1:
       {
         // 1. Ver catalogo
+        listaDeLibros = leerLibrosDoblesCSV("libros.csv");
+        mostrarLibros(listaDeLibros);
         break;
       }
       case 2:
         // 2. Registrar cuenta
+        estructura_menu();
+        menuInicio_registrarUsuario();
         break;
       case 3:
         // 3. Iniciar sesión
@@ -253,6 +259,7 @@ void menu_opcionesGestionLibros()
       }
       case 2:
         // 2. Modificar libro
+      modificarLibro();
         break;
       case 3:
         // 3. Aumentar stock
@@ -335,15 +342,16 @@ void menu_opcionesGestionUsuarios()
       }
       case 2:
         // 2. Modificar usuario
+        gestionUsuario_modificarUsuario();
         break;
       case 3:
         // 3. Eliminar usuario
         break;
       case 4:
         // 4. Mostrar usuarios
-        leerCSV("output/usuarios.csv", listaDeUsuarios);
+        listaDeUsuarios = leerUsuariosCSV("usuarios.csv");
         // Mostrar los usuarios cargados en la lista
-        mostrar(listaDeUsuarios);
+        mostrarUsuarios(listaDeUsuarios);
         getch();
         break;
       case 5:
@@ -437,10 +445,10 @@ void menu_opcionesGestionPedidos()
   }
 }
 
-
 // Menu de opciones de recepcionista
 vector<string> opcionesMenuRecepcionista = {"Gestionar pedido de libro",
                                             "Gestionar pedido de laptop",
+                                            "Registrar cliente",
                                             "Activar membresia",
                                             "Ver historial de cliente",
                                             "Salir"};
@@ -500,13 +508,19 @@ void menu_opcionesRecepcionista()
         // 2. Gestionar pedido de laptop
         break;
       case 3:
-        // 3. Activar membresia
+        // 3. Registrar cliente
+        estructura_menu();
+        menuInicio_registrarUsuario();
         break;
       case 4:
-        // 4. Ver historial de cliente
+        // 4. Activar membresia
+        activarMembresi();
         break;
       case 5:
-        // 5. Salir
+        // 5. Ver historial de cliente
+        break;
+      case 6:
+        // 6. Salir
         repeat = false;
         system("CLS");
         break;
@@ -524,7 +538,8 @@ vector<string> opcionesMenuCliente = {"Ver catalogo",
                                       "Salir"};
 int numCliente = opcionesMenuCliente.size();
 
-void menu_opcionesCliente(){
+void menu_opcionesCliente()
+{
   bool repeat = true;
   int opt = 1;
   estructura_menu();
@@ -555,6 +570,8 @@ void menu_opcionesCliente(){
     // Capturamos la entrada de usuario
     int input = _getch();
 
+    ListaDobleLibros listaDeLibros;
+
     switch (input)
     {
     // Aumentar o disminuir la opcion en la que estamos
@@ -571,6 +588,8 @@ void menu_opcionesCliente(){
       case 1:
       {
         // 1. Ver catalogo
+        listaDeLibros = leerLibrosDoblesCSV("libros.csv");
+        mostrarLibros(listaDeLibros);
         break;
       }
       case 2:
