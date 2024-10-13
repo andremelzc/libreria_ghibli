@@ -132,6 +132,13 @@ bool verificarUsuarioEnCSV(const string &nombre_usuario)
 bool verificarContrasena(const string &usua, const string &contrasena, int &tipos, bool &estados)
 {
     ifstream archivo("output/usuarios.csv");
+
+    if (!filesystem::exists("output/usuarios.csv"))
+    {
+        std::cerr << "Error: El directorio 'output' no existe." << std::endl;
+        system("PAUSE");
+    }
+
     if (!archivo.is_open())
     {
         cerr << "No se pudo abrir el archivo." << endl;
