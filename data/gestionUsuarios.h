@@ -593,3 +593,5 @@ Lista leerUsuariosCSV(string nombreArchivo)
     }
     return listaDeUsuarios;
 }
+
+// Función para crear una lista enlazada doble en base a los datos del csv

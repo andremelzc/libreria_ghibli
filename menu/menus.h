@@ -49,7 +49,7 @@ void menu_opcionesPrincipal()
     }
     // Capturamos la entrada de usuario
     int input = _getch();
-
+    ListaDobleLibros listaDeLibros;
     switch (input)
     {
     // Aumentar o disminuir la opcion en la que estamos
@@ -66,6 +66,8 @@ void menu_opcionesPrincipal()
       case 1:
       {
         // 1. Ver catalogo
+        listaDeLibros = leerLibrosDoblesCSV("libros.csv");
+        mostrarLibros(listaDeLibros);
         break;
       }
       case 2:
@@ -568,6 +570,8 @@ void menu_opcionesCliente()
     // Capturamos la entrada de usuario
     int input = _getch();
 
+    ListaDobleLibros listaDeLibros;
+
     switch (input)
     {
     // Aumentar o disminuir la opcion en la que estamos
@@ -584,6 +588,8 @@ void menu_opcionesCliente()
       case 1:
       {
         // 1. Ver catalogo
+        listaDeLibros = leerLibrosDoblesCSV("libros.csv");
+        mostrarLibros(listaDeLibros);
         break;
       }
       case 2:

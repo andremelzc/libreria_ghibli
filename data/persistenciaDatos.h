@@ -52,7 +52,7 @@ struct nodoLibros
     Libro libro;
     nodoLibros *siguiente;
     nodoLibros(Libro libro1) : libro(libro1), siguiente(nullptr) {}
-};
+};  
 struct ListaLibros
 {
     nodoLibros *cabeza;
@@ -65,3 +65,20 @@ struct ListaLibros
 // Laptops
 
 // Compras (libros)
+
+// Cambios (en libros)
+struct nodoDobleLibros
+{
+    Libro libro;
+    nodoDobleLibros *siguiente;
+    nodoDobleLibros *anterior;
+    nodoDobleLibros(Libro libro1) : libro(libro1), siguiente(nullptr) {}
+};  
+
+struct ListaDobleLibros
+{
+    nodoDobleLibros *cabeza;
+    nodoDobleLibros *final;
+    int longitud;
+    ListaDobleLibros() : cabeza(nullptr), final(nullptr) {} // Inicializar cabeza a nullptr
+};
