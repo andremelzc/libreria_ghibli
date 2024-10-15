@@ -569,108 +569,100 @@ ListaDobleLibros leerLibrosDoblesCSV(string nombreArchivo)
 // Funcion para leer una lista enlazada doble
 void mostrarLibros(ListaDobleLibros &lista)
 {
-    system("CLS");
-    estructura_menu();
-    nodoDobleLibros *actual = lista.cabeza;
-    int contador = 0;
-    int seguir = 1;
-    gotoxy(50, 12);
-    color(2);
-    cout << "Catálogo de libros";
-    gotoxy(20, 14);
-    cout << "ID";
-    gotoxy(33, 14);
-    cout << "Nombre";
-    gotoxy(54, 14);
-    cout << "Autor";
-    gotoxy(74, 14);
-    cout << "Genero";
-    color(7);
-    while (actual != nullptr)
+    // Verificamos si la lista está vacía
+    if (lista.cabeza == nullptr)
     {
+        cout << "La lista de libros está vacía." << endl;
+        return;
+    }
 
-        gotoxy(20, 16 + contador);
-        cout << actual->libro.id;
-        gotoxy(33, 16 + contador);
-        if (actual->libro.nombre_Libro.length() > 20)
-        {
-            cout << actual->libro.nombre_Libro.substr(0, 15) << "...";
-        }
-        else
-        {
-            cout << actual->libro.nombre_Libro;
-        }
-        gotoxy(54, 16 + contador);
-        if (actual->libro.Autor.length() > 20)
-        {
-            cout << actual->libro.Autor.substr(0, 13) << "...";
-        }
-        else
-        {
-            cout << actual->libro.Autor;
-        }
-        gotoxy(74, 16 + contador);
-        cout << actual->libro.Genero;
-        actual = actual->siguiente;
+    // Creamos un nodo de los libros para tener referencia de la posición en la lista (como puntero)
+    nodoDobleLibros* actual = lista.cabeza;
+    int opcion = -1;  // Variable para las opciones del menú (Salir, página anterior, página siguiente)
 
-        contador++;
+    while (opcion != 0)  // 0 significa salir
+    {
+        system("CLS");
+        estructura_menu();
 
-        if (contador == 10)
+        int contador = 0;  // Contador para mostrar los libros de 10 en 10
+
+        gotoxy(50, 12);
+        color(2);
+        cout << "Catálogo de libros";
+        gotoxy(20, 14);
+        cout << "ID";
+        gotoxy(33, 14);
+        cout << "Nombre";
+        gotoxy(54, 14);
+        cout << "Autor";
+        gotoxy(74, 14);
+        cout << "Género";
+        color(7);
+
+        // Mostrar los libros a partir de la posición actual
+        nodoDobleLibros* temporal = actual;  // Se usa un puntero temporal para mostrar los libros
+        while (temporal != nullptr && contador < 10)
         {
-            gotoxy(20, 27);
-            color(2);
-            cout << "Ingrese? (0 = salir, 1 = anterior, 2 = siguiente): ";
-            color(7);
-            cin >> seguir;
-            fflush(stdin);
-            if (seguir == 0)
+            gotoxy(20, 16 + contador);
+            cout << temporal->libro.id;
+
+            gotoxy(33, 16 + contador);
+            if(temporal->libro.nombre_Libro.length() > 20)
             {
-                break;
+                cout << temporal->libro.nombre_Libro.substr(0, 17) + "...";
             }
-            else if (seguir == 1)
+            else
             {
-                contador = 0;
-                for (int i = 0; i < 10; i++)
-                {
-                    if (actual->anterior != nullptr)
-                    {
-                        actual = actual->anterior;
-                    }
-                }
-                system("CLS");
-                estructura_menu();
-                gotoxy(50, 12);
-                color(2);
-                cout << "Catálogo de libros";
-                gotoxy(20, 14);
-                cout << "ID";
-                gotoxy(33, 14);
-                cout << "Nombre";
-                gotoxy(54, 14);
-                cout << "Autor";
-                gotoxy(74, 14);
-                cout << "Genero";
-                color(7);
+                cout << temporal->libro.nombre_Libro;
             }
-            else if (seguir == 2)
+
+            gotoxy(54, 16 + contador);
+            if(temporal->libro.Autor.length() > 20)
             {
-                system("CLS");
-                estructura_menu();
-                gotoxy(50, 12);
-                color(2);
-                cout << "Catálogo de libros";
-                gotoxy(20, 14);
-                cout << "ID";
-                gotoxy(33, 14);
-                cout << "Nombre";
-                gotoxy(54, 14);
-                cout << "Autor";
-                gotoxy(74, 14);
-                cout << "Genero";
-                color(7);
+                cout << temporal->libro.Autor.substr(0, 17) + "...";
             }
-            contador = 0;
+            else
+            {
+                cout << temporal->libro.Autor;
+            }
+
+            gotoxy(74, 16 + contador);
+            cout << temporal->libro.Genero;
+
+            temporal = temporal->siguiente;
+            contador++;
+        }
+
+        // Mostrar el menú de navegación al final de la lista
+        gotoxy(20, 27);
+        color(2);
+        cout << "Ingrese opción: (0 = salir, 1 = anterior, 2 = siguiente): ";
+        color(7);
+        cin >> opcion;
+
+        // Manejo de la navegación
+        if (opcion == 1)  // Retroceder
+        {
+            // Retroceder 10 libros si es posible
+            for (int i = 0; i < 10 && actual->anterior != nullptr; i++)
+            {
+                actual = actual->anterior;
+            }
+        }
+        else if (opcion == 2)  // Avanzar
+        {
+            // Avanzar 10 libros si es posible
+            for (int i = 0; i < 10 && actual->siguiente != nullptr; i++)
+            {
+                actual = actual->siguiente;
+            }
+        }
+        else if (opcion != 0)
+        {
+            cout << "Opción no válida. Inténtelo de nuevo." << endl;
         }
     }
+
     system("PAUSE>0");
 }
