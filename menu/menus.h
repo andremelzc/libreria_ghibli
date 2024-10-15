@@ -6,6 +6,7 @@
 #include "../data/gestionLibros.h"
 #include "../servicio/iniciarSesion.h"
 #include "../data/gestionLaptops.h"
+#include "../data/prestamoLibro.h"
 
 // Menu de opciones inicial
 vector<string> opcionesMenuPrincipal = {"Ver catalogo",
@@ -598,6 +599,7 @@ void menu_opcionesCliente()
       }
       case 2:
         // 2. Realizar pedido
+        adicionarCampoPedido();
         break;
       case 3:
         // 3. Ver historial de pedidos
