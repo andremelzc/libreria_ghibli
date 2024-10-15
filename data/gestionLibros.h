@@ -88,13 +88,14 @@ void guardar_CSV_Libros(ListaLibros *lista, string nombreArchivo)
 void adicionarCampo()
 {
     ListaLibros *listaLibros = new ListaLibros();
+    int contador=1;
     char respuesta[10];
     do
     {
         system("CLS");
         estructura_menu();
         Libro *libro = new Libro();
-        libro->id = contarFilasCSV("libros.csv");
+        libro->id = contarFilasCSV("libros.csv")+contador;
         libro->estado = "Disponible";
         gotoxy(52, 12);
         color(2);
@@ -145,6 +146,8 @@ void adicionarCampo()
         cout << "Desea registrar otro usuario? (s/n): ";
         color(7);
         cin >> respuesta;
+        cin.ignore();
+        contador++;
     } while (respuesta[0] == 's' || respuesta[0] == 'S');
 
     guardar_CSV_Libros(listaLibros, "libros.csv");
@@ -175,7 +178,7 @@ void modificarLibro()
     bool encontrado = mostrarLibroXid(listalibros, id);
     if (encontrado)
     {
-        gotoxy(36, 24);
+        gotoxy(36, 25);
         color(2);
         cout << "Desea modificar datos de este usuario? (s/n): ";
         color(7);
@@ -184,14 +187,22 @@ void modificarLibro()
         cout << respuesta;
         if (respuesta == "s" || respuesta == "S")
         {
-            gotoxy(36, 25);
-            cout << "Que campo desea modificar? , ingrese el número : ";
+            gotoxy(36, 26);
+            color(2);
+            cout << "Que campo desea modificar?: ";
+            color(7);
             cin >> opcion;
             cin.ignore();
 
             system("CLS");
             estructura_menu();
-
+            color(2);
+            gotoxy(52, 12);
+            cout << "Modificando Libro";
+            gotoxy(36, 14);
+            cout<<"ID del libro: ";
+            color(7);
+            cout<<id;
             // Datos para ingresar
             int datoInt;
             string datoString;
@@ -206,7 +217,12 @@ void modificarLibro()
                     {
                     case 1:
                         // Modificar nombre
-                        gotoxy(36, 20);
+                        gotoxy(36, 16);
+                        color(2);
+                        cout << "Antiguo nombre: ";
+                        color(7);
+                        cout << actual->libro.nombre_Libro;
+                        gotoxy(36, 17);
                         color(2);
                         cout << "Nuevo nombre: ";
                         color(7);
@@ -216,7 +232,12 @@ void modificarLibro()
                         break;
                     case 2:
                         // Modificar autor
-                        gotoxy(36, 20);
+                        gotoxy(36, 16);
+                        color(2);
+                        cout << "Antiguo autor: ";
+                        color(7);
+                        cout << actual->libro.Autor;
+                        gotoxy(36, 17);
                         color(2);
                         cout << "Nuevo autor: ";
                         color(7);
@@ -226,7 +247,12 @@ void modificarLibro()
                         break;
                     case 3:
                         // Modificar género
-                        gotoxy(36, 20);
+                        gotoxy(36, 16);
+                        color(2);
+                        cout << "Antiguo género: ";
+                        color(7);
+                        cout << actual->libro.Genero;
+                        gotoxy(36, 17); 
                         color(2);
                         cout << "Nuevo género: ";
                         color(7);
@@ -236,46 +262,74 @@ void modificarLibro()
                         break;
                     case 4:
                         // Modificar año
-                        gotoxy(36, 20);
+                        gotoxy(36, 16);
+                        color(2);
+                        cout << "Antiguo año: ";
+                        color(7);
+                        cout << actual->libro.Ano;
+                        gotoxy(36, 17);
                         color(2);
                         cout << "Nuevo año: ";
                         color(7);
                         cin >> datoInt;
+                        cin.ignore();
                         actual->libro.Ano = datoInt;
                         break;
                     case 5:
                         // Modificar stock de inventario
-                        gotoxy(36, 20);
+                        gotoxy(36, 16);
+                        color(2);
+                        cout << "Antiguo stock de inventario: ";
+                        color(7);
+                        cout << actual->libro.Stock_Inventario;
+                        gotoxy(36, 17);
                         color(2);
                         cout << "Nuevo stock de inventario: ";
                         color(7);
                         cin >> datoInt;
+                        cin.ignore();
                         actual->libro.Stock_Inventario = datoInt;
                         break;
                     case 6:
                         // Modificar stock actual
-                        gotoxy(36, 20);
+                        gotoxy(36, 16);
+                        color(2);
+                        cout << "Antiguo stock actual: ";
+                        color(7);
+                        cout << actual->libro.StockActual;
+                        gotoxy(36, 17);
                         color(2);
                         cout << "Nuevo stock actual: ";
                         color(7);
                         cin >> datoInt;
+                        cin.ignore();
                         actual->libro.StockActual = datoInt;
                         break;
                     case 7:
                         // Modificar precio
-                        gotoxy(36, 20);
+                        gotoxy(36, 16);
+                        color(2);
+                        cout << "Antiguo precio: ";
+                        color(7);
+                        cout << actual->libro.precio;
+                        gotoxy(36, 17);
                         color(2);
                         cout << "Nuevo precio: ";
                         color(7);
                         cin >> actual->libro.precio;
+                        cin.ignore();
                         break;
                     case 8:
                         // Modificar estado
-                        gotoxy(36, 20);
+                        gotoxy(36, 16);
+                        color(2);
+                        cout << "Antiguo estado: ";
+                        color(7);
+                        cout << actual->libro.estado;
+                        gotoxy(36, 17);
                         color(2);
                         cout << "Nuevo estado: ";
                         color(7);
-                        fflush(stdin);
                         getline(cin, datoString);
                         actual->libro.estado = datoString;
                         break;
@@ -285,9 +339,11 @@ void modificarLibro()
                     }
 
                     // Mensaje de éxito
-                    gotoxy(36, 26);
+                    gotoxy(36, 19);
                     color(2);
                     cout << "Libro modificado exitosamente." << endl;
+                    color(7);
+                    system("pause>0");
                     return; // Salir de la función después de modificar
                 }
                 actual = actual->siguiente; // Mover al siguiente nodo
@@ -297,6 +353,7 @@ void modificarLibro()
         {
             gotoxy(36, 15);
             cout << "Modifiación cancelada";
+            system("pause>0");
         }
     }
 
@@ -374,7 +431,7 @@ ListaLibros leerLibrosCSV(string nombreArchivo)
     return listaDeLibros;
 }
 
-//
+// Muestra un libro al ingresar su ID
 bool mostrarLibroXid(ListaLibros &Libros, int id)
 {
     nodoLibros *actual = Libros.cabeza; // Apuntar al primer nodo de la lista
@@ -384,17 +441,49 @@ bool mostrarLibroXid(ListaLibros &Libros, int id)
     {
         if (actual->libro.id == id) // Si el ID del libro coincide
         {
-            // Mostrar los datos del libro
-            cout << "ID: " << actual->libro.id << endl;
-            cout << "1. Nombre del Libro: " << actual->libro.nombre_Libro << endl;
-            cout << "2. Autor: " << actual->libro.Autor << endl;
-            cout << "3. Genero: " << actual->libro.Genero << endl;
-            cout << "4. Ano: " << actual->libro.Ano << endl;
-            cout << "5. Stock Inventario: " << actual->libro.Stock_Inventario << endl;
-            cout << "6. Stock Actual: " << actual->libro.StockActual << endl;
-            cout << "7. Precio: " << actual->libro.precio << endl;
-            cout << "8. Estado: " << actual->libro.estado << endl;
+            // Mostrar los datos del libros
+            gotoxy(36, 16);
+            color(2);
+            cout << "1. Nombre del Libro: ";
+            color(7);
+            cout << actual->libro.nombre_Libro;
+            gotoxy(36, 17);
+            color(2);
+            cout << "2. Autor: ";
+            color(7);
+            cout << actual->libro.Autor;
+            gotoxy(36, 18);
+            color(2);
+            cout << "3. Genero: ";
+            color(7);
+            cout << actual->libro.Genero;
+            gotoxy(36, 19);
+            color(2);
+            cout << "4. Ano: ";
+            color(7);
+            cout << actual->libro.Ano;
+            gotoxy(36, 20);
+            color(2);
+            cout << "5. Stock Inventario: ";
+            color(7);
+            cout << actual->libro.Stock_Inventario;
+            gotoxy(36, 21);
+            color(2);
+            cout << "6. Stock Actual: ";
+            color(7);
+            cout << actual->libro.StockActual;
+            gotoxy(36, 22);
+            color(2);
+            cout << "7. Precio: ";
+            color(7);
+            cout << actual->libro.precio;
+            gotoxy(36, 23);
+            color(2);
+            cout << "8. Estado: ";
+            color(7);
+            cout << actual->libro.estado;
             return true; // Retorna true si el libro fue encontrado
+            break;
         }
         actual = actual->siguiente; // Mover al siguiente nodo
     }
@@ -480,108 +569,100 @@ ListaDobleLibros leerLibrosDoblesCSV(string nombreArchivo)
 // Funcion para leer una lista enlazada doble
 void mostrarLibros(ListaDobleLibros &lista)
 {
-    system("CLS");
-    estructura_menu();
-    nodoDobleLibros *actual = lista.cabeza;
-    int contador = 0;
-    int seguir = 1;
-    gotoxy(50, 12);
-    color(2);
-    cout << "Catálogo de libros";
-    gotoxy(20, 14);
-    cout << "ID";
-    gotoxy(33, 14);
-    cout << "Nombre";
-    gotoxy(54, 14);
-    cout << "Autor";
-    gotoxy(74, 14);
-    cout << "Genero";
-    color(7);
-    while (actual != nullptr)
+    // Verificamos si la lista está vacía
+    if (lista.cabeza == nullptr)
     {
+        cout << "La lista de libros está vacía." << endl;
+        return;
+    }
 
-        gotoxy(20, 16 + contador);
-        cout << actual->libro.id;
-        gotoxy(33, 16 + contador);
-        if (actual->libro.nombre_Libro.length() > 20)
-        {
-            cout << actual->libro.nombre_Libro.substr(0, 15) << "...";
-        }
-        else
-        {
-            cout << actual->libro.nombre_Libro;
-        }
-        gotoxy(54, 16 + contador);
-        if (actual->libro.Autor.length() > 20)
-        {
-            cout << actual->libro.Autor.substr(0, 13) << "...";
-        }
-        else
-        {
-            cout << actual->libro.Autor;
-        }
-        gotoxy(74, 16 + contador);
-        cout << actual->libro.Genero;
-        actual = actual->siguiente;
+    // Creamos un nodo de los libros para tener referencia de la posición en la lista (como puntero)
+    nodoDobleLibros* actual = lista.cabeza;
+    int opcion = -1;  // Variable para las opciones del menú (Salir, página anterior, página siguiente)
 
-        contador++;
+    while (opcion != 0)  // 0 significa salir
+    {
+        system("CLS");
+        estructura_menu();
 
-        if (contador == 10)
+        int contador = 0;  // Contador para mostrar los libros de 10 en 10
+
+        gotoxy(50, 12);
+        color(2);
+        cout << "Catálogo de libros";
+        gotoxy(20, 14);
+        cout << "ID";
+        gotoxy(33, 14);
+        cout << "Nombre";
+        gotoxy(54, 14);
+        cout << "Autor";
+        gotoxy(74, 14);
+        cout << "Género";
+        color(7);
+
+        // Mostrar los libros a partir de la posición actual
+        nodoDobleLibros* temporal = actual;  // Se usa un puntero temporal para mostrar los libros
+        while (temporal != nullptr && contador < 10)
         {
-            gotoxy(20, 27);
-            color(2);
-            cout << "Ingrese? (0 = salir, 1 = anterior, 2 = siguiente): ";
-            color(7);
-            cin >> seguir;
-            fflush(stdin);
-            if (seguir == 0)
+            gotoxy(20, 16 + contador);
+            cout << temporal->libro.id;
+
+            gotoxy(33, 16 + contador);
+            if(temporal->libro.nombre_Libro.length() > 20)
             {
-                break;
+                cout << temporal->libro.nombre_Libro.substr(0, 17) + "...";
             }
-            else if (seguir == 1)
+            else
             {
-                contador = 0;
-                for (int i = 0; i < 10; i++)
-                {
-                    if (actual->anterior != nullptr)
-                    {
-                        actual = actual->anterior;
-                    }
-                }
-                system("CLS");
-                estructura_menu();
-                gotoxy(50, 12);
-                color(2);
-                cout << "Catálogo de libros";
-                gotoxy(20, 14);
-                cout << "ID";
-                gotoxy(33, 14);
-                cout << "Nombre";
-                gotoxy(54, 14);
-                cout << "Autor";
-                gotoxy(74, 14);
-                cout << "Genero";
-                color(7);
+                cout << temporal->libro.nombre_Libro;
             }
-            else if (seguir == 2)
+
+            gotoxy(54, 16 + contador);
+            if(temporal->libro.Autor.length() > 20)
             {
-                system("CLS");
-                estructura_menu();
-                gotoxy(50, 12);
-                color(2);
-                cout << "Catálogo de libros";
-                gotoxy(20, 14);
-                cout << "ID";
-                gotoxy(33, 14);
-                cout << "Nombre";
-                gotoxy(54, 14);
-                cout << "Autor";
-                gotoxy(74, 14);
-                cout << "Genero";
-                color(7);
+                cout << temporal->libro.Autor.substr(0, 17) + "...";
             }
-            contador = 0;
+            else
+            {
+                cout << temporal->libro.Autor;
+            }
+
+            gotoxy(74, 16 + contador);
+            cout << temporal->libro.Genero;
+
+            temporal = temporal->siguiente;
+            contador++;
+        }
+
+        // Mostrar el menú de navegación al final de la lista
+        gotoxy(20, 27);
+        color(2);
+        cout << "Ingrese opción: (0 = salir, 1 = anterior, 2 = siguiente): ";
+        color(7);
+        cin >> opcion;
+
+        // Manejo de la navegación
+        if (opcion == 1)  // Retroceder
+        {
+            // Retroceder 10 libros si es posible
+            for (int i = 0; i < 10 && actual->anterior != nullptr; i++)
+            {
+                actual = actual->anterior;
+            }
+        }
+        else if (opcion == 2)  // Avanzar
+        {
+            // Avanzar 10 libros si es posible
+            for (int i = 0; i < 10 && actual->siguiente != nullptr; i++)
+            {
+                actual = actual->siguiente;
+            }
+        }
+        else if (opcion != 0)
+        {
+            cout << "Opción no válida. Inténtelo de nuevo." << endl;
         }
     }
+
     system("PAUSE>0");
 }
