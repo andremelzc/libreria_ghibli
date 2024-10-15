@@ -1,7 +1,14 @@
-1,1,72164858,recepcionista,recepcionista00,Fabrizio,Mantari,M,,987654321,ACTIVA,0,00/00/0000,00/00/0000
-1,0,74856547,cliente,cliente00,Pedro,Suyco,M,pedro@gmail.com,987654321,INACTIVA,0,00/00/0000,00/00/0000
-0,2,74935134,miguel,miguel00,Miguel,Giron,M,miguel@gmail.com,9878547891,ACTIVA,0,00/00/0000,00/00/0000
-1,2,74259545,andrecuenca,andrec,Andre Cuenca,Cuenca,M,cuenca@gmail.com,987548987,ACTIVA,0,00/00/0000,00/00/0000
-1,2,78457896,andremelc,andre00,Andre Ivan,Melendez Cava,M,andre@gmail.com,997629981,ACTIVA,0,00/00/0000,00/00/0000
-1,0,4589654,suycoo,suyco00,Pedro ,Suyco,M,suyco@gmail.com,984563214,INACTIVA,0,00/00/0000,00/00/00001,0,d,d,d,d,d,d,d,d,INACTIVA,0,00/00/0000,00/00/0000
-1,0,72227171,andrece,andrece,Andre Cuenca,Echevarria,M,andre.c@gmail.com,937383457,INACTIVA,0,00/00/0000,00/00/0000
+1,1,72164858,recepcionista,recepcionista00,Fabrizio,Mantari,M,fabrizio@gmail.com,987654321,ACTIVA,0,00/00/0000,00/00/0000
+1,0,74856547,cliente,cliente00,Pedro,Suyco,M,pedro@gmail.com,987654321,ACTIVA,0,00/00/0000,00/00/0000
+1,2,74935134,miguel,miguel00,Miguel,Giron,M,miguel@gmail.com,9878547891,ACTIVA,0,00/00/0000,00/00/0000
+1,2,79222121,admin,admin00,Fausto,Mercado,M,mercado@gmail.com,9878547891,ACTIVA,0,00/00/0000,00/00/0000
+1,2,78457896,andremelc,andre00,Andre,Melendez,M,melendez@gmail.com,997629981,ACTIVA,0,00/00/0000,00/00/0000
+1,0,72227171,andre,andre00,Andre,Cuenca,M,cuenca@gmail.com,937383457,ACTIVA,0,00/00/0000,00/00/0000
+1,0,12345678,messi,messi00,Lionel,Messi,M,messi@gmail.com,937383457,ACTIVA,0,00/00/0000,00/00/0000
+1,0,72164858,fabrizio,fabrizio00,Fabrizio,Mantari,M,fabrizio@gmail.com,987654321,ACTIVA,0,00/00/0000,00/00/0000
+1,0,74125896,maria,maria00,Maria,Flores,F,maria@gmail.com,934567890,ACTIVA,0,00/00/0000,00/00/0000
+1,0,76543210,carlos,carlos00,Carlos,Perez,M,carlos@gmail.com,912345678,ACTIVA,0,00/00/0000,00/00/0000
+1,0,78901234,laura,laura00,Laura,Garcia,F,laura@gmail.com,923456789,ACTIVA,0,00/00/0000,00/00/0000
+1,0,81234567,jose,jose00,Jose,Luna,M,jose@gmail.com,945678123,ACTIVA,0,00/00/0000,00/00/0000
+1,0,82345678,sofia,sofia00,Sofia,Gomez,F,sofia@gmail.com,956781234,ACTIVA,0,00/00/0000,00/00/0000
+1,0,83456789,pedro,pedro00,Pedro,Rojas,M,pedro@gmail.com,967812345,ACTIVA,0,00/00/0000,00/00/0000
