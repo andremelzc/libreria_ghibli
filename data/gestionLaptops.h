@@ -161,6 +161,7 @@ void mostrarPilaLaptops(PilaLaptops *pila)
 
         contador++;
     }
+    system("pause>0");
 }
 
 // Completo

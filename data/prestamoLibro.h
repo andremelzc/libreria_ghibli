@@ -69,7 +69,17 @@ void insertarFinalListaPedido(ListaPedidos *lista, Pedidos *pedido)
     }
     lista->longitud++;
 }
-
+void insertarFinal(ListaPedidos &lista, Pedidos nuevoPedido) {
+    // Crear un nuevo nodo con el pedido
+    NodoPedidos *nuevoNodo = new NodoPedidos(nuevoPedido);
+    
+    // Insertar el nuevo nodo al principio de la lista
+    nuevoNodo->sgte = lista.head;
+    lista.head = nuevoNodo;
+    
+    // Incrementar la longitud de la lista
+    lista.longitud++;
+}
 void guardar_CSV_Pedido(ListaPedidos *Lista, string nombreArchivo){
     fstream archivo(nombreArchivo, fstream::out | fstream ::app);
 
@@ -114,7 +124,6 @@ void guardar_CSV_Pedido(ListaPedidos *Lista, string nombreArchivo){
     cout << "Datos guardados en " << nombreArchivo << endl;
 }
 
-<<<<<<< HEAD
 bool mostrarLibroXidCopy(ListaLibros &Libros, int id)
 {
     nodoLibros *actual = Libros.cabeza; // Apuntar al primer nodo de la lista
@@ -176,10 +185,9 @@ bool mostrarLibroXidCopy(ListaLibros &Libros, int id)
     return false; // Retorna false si no encontró el libro
 }
 
-void adicionarCampoPedido(){ //osea que el cliente haga el pedido
-=======
+
 void adicionarCampoPedido(int id_usuariologeado){
->>>>>>> 2ea3d093239e6d835143dba978308c3c30df34a2
+
     ListaPedidos *listaPedido = new ListaPedidos();
     
     char respuesta[10];
@@ -299,7 +307,88 @@ ListaPedidos leerPedidosCSV(string nombreArchivo){
     }
     
 }
+fecha convertirStringAFecha(string  cadenaFecha) {
+    fecha fecha;
+    stringstream ss(cadenaFecha);
+    string campo;
 
-void modificarCampoPedido(){
+    // Separar el día
+    getline(ss, campo, '/');
+    fecha.dia = stoi(campo);
 
+    // Separar el mes
+    getline(ss, campo, '/');
+    fecha.mes = stoi(campo);
+
+    // Separar el año
+    getline(ss, campo);
+    fecha.año = stoi(campo);
+
+    return fecha;
 }
+ListaPedidos leerPedidosDesdeCSV( string nombreArchivo) {
+    ListaPedidos lista; // Crear una lista vacía
+    ifstream archivo(nombreArchivo); // Abrir el archivo CSV
+    
+    if (!archivo.is_open()) { // Verificar si el archivo se abrió correctamente
+        cout << "Error al abrir el archivo: " << nombreArchivo << endl;
+        system("PAUSE");
+
+        return lista; // Regresar la lista vacía si el archivo no se pudo abrir
+    }
+    
+    string linea;
+    while (getline(archivo, linea)) { // Leer línea por línea del archivo CSV
+        stringstream ss(linea);
+        string campo;
+        Pedidos pedido;
+
+        // Leer el ID del pedido
+        getline(ss, campo, ',');
+        pedido.ID_pedido = stoi(campo);
+
+        // Leer el ID del usuario
+        getline(ss, campo, ',');
+        pedido.ID_usuario = stoi(campo);
+
+        // Leer el ID del libro
+        getline(ss, campo, ',');
+        pedido.ID_libro = stoi(campo);
+
+        // Leer el estado del pedido
+        getline(ss, campo, ',');
+        pedido.estadoPedido = campo;
+
+        // Leer el fecha del pedido
+        getline(ss, campo, ',');
+        pedido.fechaPedido = convertirStringAFecha(campo);
+
+         getline(ss, campo, ',');
+        pedido.fechaAdquisicion = convertirStringAFecha(campo);
+
+         getline(ss, campo, ',');
+        pedido.devolucion = convertirStringAFecha(campo);
+
+         getline(ss, campo, ',');
+        pedido.entregado = convertirStringAFecha(campo);
+
+        insertarFinal(lista,pedido);
+    }
+
+    archivo.close(); // Cerrar el archivo CSV
+    return lista; // Regresar la lista de pedidos
+}
+void gestionarpedido(){
+    cout<<"gaaa";
+    Lista lista;
+    lista = leerUsuariosCSV("usuarios.csv");
+    ListaLibros listaLibros;
+    listaLibros = leerLibrosCSV("libros.csv");
+    ListaPedidos listaPedidos;
+    //listaPedidos  = leerPedidosDesdeCSV("pedidos.csv");
+    cout<<"kaka";
+    cout<<"beee";
+    system("PAUSE");
+    
+}
+

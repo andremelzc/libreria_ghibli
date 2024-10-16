@@ -8,6 +8,8 @@
 #include <iostream>
 #include <stdexcept>
 #include <conio.h>
+#include <locale>
+#include <ctime>
 
 using namespace std;
 
@@ -78,6 +80,19 @@ void gestionUsuarios_registrarUsuario()
         cout << "Número celular (9 digitos): ";
         color(7);
         getline(cin, usuario->telefono);
+
+        if (usuario->tipo == 0)
+        {
+            usuario->membresia = "INACTIVA";
+        }
+        else
+        {
+            usuario->membresia = "ACTIVA";
+        }
+
+        usuario->fechaInicio = "00/00/0000";
+        usuario->fechaFinal = "00/00/0000";
+        usuario->librosPrestados = 0;
 
         insertarFinal(lista, usuario);
         gotoxy(36, 24);
@@ -202,17 +217,8 @@ void guardar_CSV(Lista *lista, string nombreArchivo)
         // cout << "estoy datos en el archivo .csv";
         // system("PAUSE");
         Usuario usuario = actual->usuario;
-        if(usuario.tipo == 0){
-            usuario.membresia = "INACTIVA";
-        }else{
-            usuario.membresia = "ACTIVA";
-        }
-        
-        usuario.fechaInicio = "00/00/0000";
-        usuario.fechaFinal = "00/00/0000";
-        usuario.librosPrestados = 0;
         archivo << usuario.estadoUsuario << "," << usuario.tipo << "," << usuario.ID_Usuario << "," << usuario.usuario << "," << usuario.contrasena << "," << usuario.nombre << "," << usuario.apellidos << "," << usuario.genero << ","
-                << usuario.correoElectronico << "," << usuario.telefono << "," << usuario.membresia << "," << usuario.librosPrestados << "," << usuario.fechaFinal << "," << usuario.fechaInicio << "\n";
+                << usuario.correoElectronico << "," << usuario.telefono << "," << usuario.membresia << "," << usuario.librosPrestados << "," << usuario.fechaInicio << "," << usuario.fechaFinal << "\n";
 
         actual = actual->siguiente;
     }
@@ -504,8 +510,24 @@ void activarMembresi()
             cout << respuesta;
             if (respuesta == "s" || respuesta == "S")
             {
+                string fecha;
                 actual->usuario.membresia = "ACTIVA";
+                time_t t = time(0);
+                tm *localTime = localtime(&t);
+                // Fecha de inicio
+                string diaStr = to_string(localTime->tm_mday);
+                string mesStr = to_string(localTime->tm_mon + 1);     
+                string añoStr = to_string(localTime->tm_year + 1900); 
+                fecha = diaStr + "/" + mesStr + "/" + añoStr;
+                actual->usuario.fechaInicio = fecha;
+                // Fecha de fin
+                añoStr = to_string(localTime->tm_year + 1901);
+                fecha = diaStr + "/" + mesStr + "/" + añoStr;
+                actual->usuario.fechaFinal = fecha;
                 gotoxy(36, 19);
+                
+                limpiarCSV("usuarios.csv");
+                guardar_CSV(&listaUsuarios, "usuarios.csv");
                 cout << "Membresia activada correctamente!";
             }
             else
@@ -516,8 +538,7 @@ void activarMembresi()
         }
         actual = actual->siguiente;
     }
-    limpiarCSV("usuarios.csv");
-    guardar_CSV(&listaUsuarios, "usuarios.csv");
+    
 
     system("pause>0");
 }
@@ -594,4 +615,33 @@ Lista leerUsuariosCSV(string nombreArchivo)
     return listaDeUsuarios;
 }
 
-// Función para crear una lista enlazada doble en base a los datos del csv
+// Función para actualizar estado de membresia
+void actualizarMembresiaUsuarios(){
+    Lista listaUsuarios;
+    listaUsuarios = leerUsuariosCSV("usuarios.csv");
+
+    Nodo *actual = listaUsuarios.cabeza;
+    time_t t = time(0);
+    tm *localTime = localtime(&t);
+    string fecha;
+    string diaStr = to_string(localTime->tm_mday);
+    string mesStr = to_string(localTime->tm_mon + 1);     
+    string añoStr = to_string(localTime->tm_year + 1900); 
+    fecha = diaStr + "/" + mesStr + "/" + añoStr;
+
+    while (actual != nullptr)
+    {
+        if (actual->usuario.membresia == "ACTIVA")
+        {
+            if (actual->usuario.fechaFinal == fecha)
+            {
+                actual->usuario.membresia = "INACTIVA";
+                actual->usuario.fechaInicio = "00/00/0000";
+                actual->usuario.fechaFinal = "00/00/0000";
+            }
+        }
+        actual = actual->siguiente;
+    }
+    limpiarCSV("usuarios.csv");
+    guardar_CSV(&listaUsuarios, "usuarios.csv");
+}

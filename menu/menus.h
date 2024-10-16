@@ -514,6 +514,9 @@ void menu_opcionesRecepcionista()
       case 1:
       {
         // 1. Gestionar pedido de libro
+        system("CLS");
+        estructura_menu();
+        gestionarpedido();
         break;
       }
       case 2:
