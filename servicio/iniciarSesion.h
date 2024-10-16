@@ -8,11 +8,11 @@
 using namespace std;
 
 bool verificarUsuarioEnCSV(const string &nombre_usuario);
-bool verificarContrasena(const string &usua, const string &contrasena, int &tipo, bool &estados);
-bool verificacionInicioSesion(string nombre_usuario, string contraseña_usuario, int &tipo);
+bool verificarContrasena(const string &usua, const string &contrasena, int &tipo, bool &estados, int &dni);
+bool verificacionInicioSesion(string nombre_usuario, string contraseña_usuario, int &tipo, int &dni);
 int stringAInt(const string &texto);
 
-void inicioSesion(int &tipo, bool &sesion)
+void inicioSesion(int &tipo, bool &sesion, int &id)
 {
 
     string nombre, contra, respuesta;
@@ -32,7 +32,7 @@ void inicioSesion(int &tipo, bool &sesion)
     color(7);
     getline(cin, contra);
 
-    sesion = verificacionInicioSesion(nombre, contra, tipo);
+    sesion = verificacionInicioSesion(nombre, contra, tipo, id);
    
     if (sesion)
     {
@@ -43,7 +43,7 @@ void inicioSesion(int &tipo, bool &sesion)
     }
 }
 
-bool verificacionInicioSesion(string nombre_usuario, string contraseña_usuario, int &tipo)
+bool verificacionInicioSesion(string nombre_usuario, string contraseña_usuario, int &tipo, int &dni)
 {
     bool taActivo = false;
     // Debo determinar si Existe
@@ -51,7 +51,7 @@ bool verificacionInicioSesion(string nombre_usuario, string contraseña_usuario,
     {
         gotoxy(36, 17);
         // cout << "Buscando..." << endl;
-        if (verificarContrasena(nombre_usuario, contraseña_usuario, tipo, taActivo))
+        if (verificarContrasena(nombre_usuario, contraseña_usuario, tipo, taActivo, dni))
         {
 
             if (taActivo)
@@ -129,7 +129,7 @@ bool verificarUsuarioEnCSV(const string &nombre_usuario)
     return false;
 }
 
-bool verificarContrasena(const string &usua, const string &contrasena, int &tipos, bool &estados)
+bool verificarContrasena(const string &usua, const string &contrasena, int &tipos, bool &estados, int &dni)
 {
     ifstream archivo("usuarios.csv");
     if (!archivo.is_open())
@@ -142,12 +142,12 @@ bool verificarContrasena(const string &usua, const string &contrasena, int &tipo
     while (getline(archivo, linea))
     {
         stringstream ss(linea);
-        string id, estado, tipo, dni, usuario, clave, nombreArchivo, apellido, genero, correo, telefono;
+        string id, estado, tipo, dnis, usuario, clave, nombreArchivo, apellido, genero, correo, telefono;
 
         // Leer los campos separados por comas
         getline(ss, estado, ',');
         getline(ss, tipo, ',');
-        getline(ss, dni, ',');
+        getline(ss, dnis, ',');
         getline(ss, usuario, ',');
         getline(ss, clave, ',');
         getline(ss, nombreArchivo, ',');
@@ -164,6 +164,7 @@ bool verificarContrasena(const string &usua, const string &contrasena, int &tipo
             {
                 estados = true;
                 tipos = stringAInt(tipo);
+                dni = stringAInt(dnis);
             }
             archivo.close();
             return true;

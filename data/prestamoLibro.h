@@ -114,6 +114,7 @@ void guardar_CSV_Pedido(ListaPedidos *Lista, string nombreArchivo){
     cout << "Datos guardados en " << nombreArchivo << endl;
 }
 
+<<<<<<< HEAD
 bool mostrarLibroXidCopy(ListaLibros &Libros, int id)
 {
     nodoLibros *actual = Libros.cabeza; // Apuntar al primer nodo de la lista
@@ -176,7 +177,11 @@ bool mostrarLibroXidCopy(ListaLibros &Libros, int id)
 }
 
 void adicionarCampoPedido(){ //osea que el cliente haga el pedido
+=======
+void adicionarCampoPedido(int id_usuariologeado){
+>>>>>>> 2ea3d093239e6d835143dba978308c3c30df34a2
     ListaPedidos *listaPedido = new ListaPedidos();
+    
     char respuesta[10];
     int i=0;
     time_t now = time(0);
@@ -186,7 +191,7 @@ void adicionarCampoPedido(){ //osea que el cliente haga el pedido
         system("CLS");
         estructura_menu();
         Pedidos *pedido = new Pedidos();
-        pedido->ID_pedido = countLinesFile("Pedidos.csv"); // falta hacer que cuente las lineas para que ponga el id --------------------------------
+        pedido->ID_pedido = countLinesFile("Pedidos.csv");
         gotoxy(36, 11);
         color(2);
         cout << "a continuación confirme que desea realizar un pedido (s/n)" << endl;
@@ -243,7 +248,7 @@ void adicionarCampoPedido(){ //osea que el cliente haga el pedido
 
         gotoxy(36, 27);
         color(2);
-        cout << "Desea registrar otro pedido? (s/n): ";
+        cout << "Desea solicitar otro prestamo? (s/n): ";
         color(7);
         cin >> respuesta;
     }while(respuesta[0] =='s'||respuesta[0] =='S');
