@@ -114,12 +114,72 @@ void guardar_CSV_Pedido(ListaPedidos *Lista, string nombreArchivo){
     cout << "Datos guardados en " << nombreArchivo << endl;
 }
 
-void adicionarCampoPedido(){
+bool mostrarLibroXidCopy(ListaLibros &Libros, int id)
+{
+    nodoLibros *actual = Libros.cabeza; // Apuntar al primer nodo de la lista
+
+    // Recorrer la lista buscando el libro con el ID indicado
+    while (actual != nullptr)
+    {
+        if (actual->libro.id == id) // Si el ID del libro coincide
+        {
+            // Mostrar los datos del libros
+            gotoxy(36, 17);
+            color(2);
+            cout << "1. Nombre del Libro: ";
+            color(7);
+            cout << actual->libro.nombre_Libro;
+            gotoxy(36, 18);
+            color(2);
+            cout << "2. Autor: ";
+            color(7);
+            cout << actual->libro.Autor;
+            gotoxy(36, 19);
+            color(2);
+            cout << "3. Genero: ";
+            color(7);
+            cout << actual->libro.Genero;
+            gotoxy(36, 20);
+            color(2);
+            cout << "4. Ano: ";
+            color(7);
+            cout << actual->libro.Ano;
+            gotoxy(36, 21);
+            color(2);
+            cout << "5. Stock Inventario: ";
+            color(7);
+            cout << actual->libro.Stock_Inventario;
+            gotoxy(36, 22);
+            color(2);
+            cout << "6. Stock Actual: ";
+            color(7);
+            cout << actual->libro.StockActual;
+            gotoxy(36, 23);
+            color(2);
+            cout << "7. Precio: ";
+            color(7);
+            cout << actual->libro.precio;
+            gotoxy(36, 24);
+            color(2);
+            cout << "8. Estado: ";
+            color(7);
+            cout << actual->libro.estado;
+            return true; // Retorna true si el libro fue encontrado
+            break;
+        }
+        actual = actual->siguiente; // Mover al siguiente nodo
+    }
+
+    // Si el libro no fue encontrado
+    cout << "No se encontro ningun libro con el ID: " << id << endl;
+    return false; // Retorna false si no encontró el libro
+}
+
+void adicionarCampoPedido(){ //osea que el cliente haga el pedido
     ListaPedidos *listaPedido = new ListaPedidos();
     char respuesta[10];
     int i=0;
     time_t now = time(0);
-
     tm* localTime = localtime(&now);
     do{
         i++;
@@ -127,29 +187,44 @@ void adicionarCampoPedido(){
         estructura_menu();
         Pedidos *pedido = new Pedidos();
         pedido->ID_pedido = countLinesFile("Pedidos.csv"); // falta hacer que cuente las lineas para que ponga el id --------------------------------
-        gotoxy(36, 14);
+        gotoxy(36, 11);
         color(2);
         cout << "a continuación confirme que desea realizar un pedido (s/n)" << endl;
-        gotoxy(36, 15);
-        color(4);
+        gotoxy(36, 12);
+        color(7);
         cin >> respuesta;
         if(respuesta[0] == 'n' or respuesta[0] == 'N'){
             break;
         }
-        gotoxy(36, 16);
+        gotoxy(36, 13);
         color(2);
         cout << "Ingrese su codigo de usuario: "; // falta automatizar --------------------------------
-        gotoxy(36, 17);
-        color(4);
+        gotoxy(36, 14);
+        color(7);
         cin >> pedido->ID_usuario;
         cin.ignore();
-        color(4);
-        gotoxy(36, 18);
+        color(7);
+        gotoxy(36, 15);
         color(2);
         cout << "Ahora ingrese el codigo identificador del libro: ";
-        gotoxy(36, 19);
-        color(4);
+        gotoxy(36, 16);
+        color(7);
         cin >> pedido->ID_libro;
+        ListaLibros libros = leerLibrosCSV("Libros.csv");
+        bool find = mostrarLibroXidCopy(libros, pedido->ID_libro);
+        if(find){
+            char check;
+            gotoxy(36,25);
+            color(2);
+            cout <<"Este es el libro que deseas solcitar?(s/n): ";
+            color(7);
+            cin >> check;
+            if(!(check == 's' or check == 'S')){
+                respuesta[0] = 's';
+                continue;
+            }
+
+        }
 
         //Estableciendo estadoPedido
         pedido->estadoPedido = "SOLICITADO";
@@ -166,7 +241,7 @@ void adicionarCampoPedido(){
 
         insertarFinalListaPedido(listaPedido,pedido);
 
-        gotoxy(36, 19);
+        gotoxy(36, 27);
         color(2);
         cout << "Desea registrar otro pedido? (s/n): ";
         color(7);
@@ -176,36 +251,43 @@ void adicionarCampoPedido(){
     guardar_CSV_Pedido(listaPedido, "Pedidos.csv");
 }
 
-void leerPedidos(string nombreArchivo){
+ListaPedidos leerPedidosCSV(string nombreArchivo){
     ifstream archivo(nombreArchivo);
+    ListaPedidos listaDePedidos; //reutilizo el codigo de gestion libros porque solo necesito 
     string line;
-    gotoxy(36, 12);
-    color(4);
 
     if(filesystem::exists(nombreArchivo) && filesystem::file_size(nombreArchivo) > 0){
         if(archivo.is_open()){
-            cout << "Id Pedido\tId Usuario \tId Libro \tEstado \tF. solicitud \tF. adquisicion \tF. devolucion \tF. entrega";
             while (getline(archivo, line)) {
+                string dato;
+                Libro libro;
                 stringstream ss(line);
-                string idPedido, idUsuario, idLibro, estado, fechaSolicitud, fechaAdquisicion, fechaDevolucion, fechaEntrega;
-
+                
                 // Dividir la línea usando la coma como delimitador
-                getline(ss, idPedido, ',');
-                getline(ss, idUsuario, ',');
-                getline(ss, idLibro, ',');
-                getline(ss, estado, ',');
-                getline(ss, fechaSolicitud, ',');
-                getline(ss, fechaAdquisicion, ',');
-                getline(ss, fechaDevolucion, ',');
-                getline(ss, fechaEntrega, ',');
+                getline(ss, dato, ',');
+                libro.id = stoi(dato); // Convertir a entero
+                getline(ss, libro.nombre_Libro, ',');
+                getline(ss, libro.Autor, ',');
+                getline(ss, dato, ',');
+                libro.Ano = stoi(dato);
+                getline(ss, libro.Genero, ',');
+                getline(ss, dato, ',');
+                libro.Stock_Inventario = stoi(dato);
+                getline(ss, dato, ',');
+                libro.StockActual = stoi(dato);
+                getline(ss, dato, ',');
+                libro.precio = stoi(dato);
+                getline(ss, libro.estado, ',');
 
-                // Imprimir los datos de la línea actual en formato tabulado
-                cout << idPedido << "\t" << idUsuario << "\t" << idLibro << "\t" << estado << "\t" 
-                    << fechaSolicitud << "\t" << fechaAdquisicion << "\t" << fechaDevolucion << "\t" << fechaEntrega << endl;
-            }
+                //insertarLibro(listaDePedidos, libro);
+
+               }
             archivo.close();  // Cerrar el archivo
         }else{
             cout << "No se pudo abrir el archivo " << nombreArchivo << endl;
+            perror("Error al abrir el archivo");
+            system("PAUSE");
+            return listaDePedidos;
         }
     }else {
         cout << "El archivo está vacío o no existe." << endl;
