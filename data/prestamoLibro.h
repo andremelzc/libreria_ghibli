@@ -105,8 +105,9 @@ void guardar_CSV_Pedido(ListaPedidos *Lista, string nombreArchivo){
     cout << "Datos guardados en " << nombreArchivo << endl;
 }
 
-void adicionarCampoPedido(){
+void adicionarCampoPedido(int id_usuariologeado){
     ListaPedidos *listaPedido = new ListaPedidos();
+    
     char respuesta[10];
     int i=0;
     do{
@@ -115,31 +116,31 @@ void adicionarCampoPedido(){
         estructura_menu();
         Pedidos *pedido = new Pedidos();
         pedido->ID_pedido = i;
-        gotoxy(36, 14);
+        gotoxy(45, 12);
         color(2);
-        cout << "a continuación agrese los siguientes campos para realizar su pedido" << endl;
-        gotoxy(36, 15);
+        cout << "Solicitando prestamo de libro" << endl<<id_usuariologeado;
+        gotoxy(36, 14);
         cout << "Usuario: ";
         color(4);
         getline(cin, pedido ->Usuario);
-        gotoxy(36, 16);
+        gotoxy(36, 15);
         color(2);
         cout << "Contraseña: ";
         color(4);
         getline(cin, pedido->contraseña);
-        gotoxy(36, 17);
+        gotoxy(36, 16);
         color(2);
         cout << "Estado: ";
         color(4);
         getline(cin, pedido->estadoUsuario);
-        gotoxy(36, 18);
+        gotoxy(36, 17);
         color(2);
         cout << "Fecha de pedido (dia fecha año): ";
         cin.ignore();
         color(4);
         cin >> pedido->inicio.dia >>pedido->inicio.mes >> pedido->inicio.año ;
         cin.ignore();
-        gotoxy(36, 19);
+        gotoxy(36, 18);
         color(2);
         cout << "Fecha de devolución (dia fecha año): ";
         color(4);
@@ -149,10 +150,10 @@ void adicionarCampoPedido(){
 
         gotoxy(36, 20);
         color(2);
-        cout << "Desea registrar otro usuario? (s/n): ";
+        cout << "Desea solicitar otro prestamo? (s/n): ";
         color(7);
         cin >> respuesta;
     }while(respuesta[0] =='s'||respuesta[0] =='S');
 
-    guardar_CSV_Pedido(listaPedido, "Pedidos.csv");
+    guardar_CSV_Pedido(listaPedido, "pedidos.csv");
 }

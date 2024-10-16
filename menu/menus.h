@@ -6,6 +6,7 @@
 #include "../data/gestionLibros.h"
 #include "../servicio/iniciarSesion.h"
 #include "../data/gestionLaptops.h"
+#include "../data/prestamoLibro.h"
 
 // Menu de opciones inicial
 vector<string> opcionesMenuPrincipal = {"Ver catalogo",
@@ -19,6 +20,9 @@ void menu_opcionesAdministrador(); // Declaración Previa  -> Para el Switch cas
 void menu_opcionesRecepcionista();
 void menu_opcionesCliente();
 void menu_opcionesLaptop(); // Declaración previa
+
+// Para cuando se inicie sesión
+int id_usuariolog=0;
 
 void menu_opcionesPrincipal()
 {
@@ -81,7 +85,7 @@ void menu_opcionesPrincipal()
         // 3. Iniciar sesión
         int tipo;
         bool sesion;
-        inicioSesion(tipo, sesion);
+        inicioSesion(tipo, sesion, id_usuariolog);
         if (sesion)
         {
           if (tipo == 2)
@@ -687,6 +691,7 @@ void menu_opcionesCliente()
       }
       case 2:
         // 2. Realizar pedido
+        adicionarCampoPedido(id_usuariolog);
         break;
       case 3:
         // 3. Ver historial de pedidos
