@@ -19,31 +19,6 @@ fechaaAdquisicion:
 fechaDevolucion:
 fechaEntregado: */
 
-struct fecha
-{
-  int dia, mes, año;  
-};
-
-
-struct Pedidos{
-    int ID_pedido,ID_libro,ID_usuario;
-    string estadoPedido; //SOLICITADO, PRESTADO, NO_DEVUELTO, DEVUELTO, DEVUELTO_TARDE
-    fecha fechaPedido, fechaAdquisicion, devolucion, entregado;
-};
-
-struct NodoPedidos{
-    Pedidos pedido;
-    NodoPedidos *sgte;
-    NodoPedidos(Pedidos pedido1): pedido(pedido1), sgte(nullptr) {}; 
-    NodoPedidos(): sgte(nullptr) {}; 
-};
-
-struct ListaPedidos{
-    int longitud;
-    NodoPedidos *head;
-    ListaPedidos(): head(nullptr), longitud(0) {}; 
-};
-
 int countLinesFile(string nombreArchivo){
     ifstream archivo(nombreArchivo);
     string linea;

@@ -15,7 +15,7 @@ using namespace std;
 
 // Declaraciones previas
 void insertarFinal(Lista *lista, Usuario *usuario);
-Lista leerUsuariosCSV(string nombreArchivo); 
+Lista leerUsuariosCSV(string nombreArchivo);
 void guardar_CSV(Lista *lista, string nombreArchivo);
 
 // Registrar usuario (vista administrador)
@@ -217,6 +217,7 @@ void guardar_CSV(Lista *lista, string nombreArchivo)
         // cout << "estoy datos en el archivo .csv";
         // system("PAUSE");
         Usuario usuario = actual->usuario;
+        
         archivo << usuario.estadoUsuario << "," << usuario.tipo << "," << usuario.ID_Usuario << "," << usuario.usuario << "," << usuario.contrasena << "," << usuario.nombre << "," << usuario.apellidos << "," << usuario.genero << ","
                 << usuario.correoElectronico << "," << usuario.telefono << "," << usuario.membresia << "," << usuario.librosPrestados << "," << usuario.fechaInicio << "," << usuario.fechaFinal << "\n";
 
@@ -525,9 +526,6 @@ void activarMembresi()
                 fecha = diaStr + "/" + mesStr + "/" + añoStr;
                 actual->usuario.fechaFinal = fecha;
                 gotoxy(36, 19);
-                
-                limpiarCSV("usuarios.csv");
-                guardar_CSV(&listaUsuarios, "usuarios.csv");
                 cout << "Membresia activada correctamente!";
             }
             else
@@ -538,7 +536,8 @@ void activarMembresi()
         }
         actual = actual->siguiente;
     }
-    
+    limpiarCSV("usuarios.csv");
+    guardar_CSV(&listaUsuarios, "usuarios.csv");
 
     system("pause>0");
 }
@@ -579,12 +578,13 @@ Lista leerUsuariosCSV(string nombreArchivo)
             Usuario usuario;
 
             // Suponiendo que el CSV tiene los campos en el siguiente orden:
-            // estado, tipo, id_usuario (dni), usuario, contrasena, nombre, apellidos, genero, correo electronico, telefono, membresia, fecha inicio, fecha fin, libros prestados
+            // estado, tipo, id_usuario (dni), usuario, contrasena, nombre, apellidos, genero, correo electronico, telefono, membresia, libros prestados, fecha inicio, fecha fin, 
             getline(ss, dato, ',');
             usuario.estadoUsuario = stoi(dato); // Convertir a entero
-
+            
             getline(ss, dato, ',');
             usuario.tipo = stoi(dato); // Convertir a entero
+
             getline(ss, usuario.ID_Usuario, ',');
             getline(ss, usuario.usuario, ',');
             getline(ss, usuario.contrasena, ',');
@@ -598,11 +598,14 @@ Lista leerUsuariosCSV(string nombreArchivo)
             getline(ss, usuario.telefono, ',');
 
             getline(ss, usuario.membresia, ',');
-            getline(ss, usuario.fechaInicio, ',');
-            getline(ss, usuario.fechaFinal, ',');
+
             getline(ss, dato, ',');
             usuario.librosPrestados = stoi(dato); // Convertir a entero
-
+            
+            getline(ss, usuario.fechaInicio, ',');
+            getline(ss, usuario.fechaFinal, ',');
+            
+            
             // Insertar el usuario en la lista enlazada
             insertar(listaDeUsuarios, usuario);
         }
