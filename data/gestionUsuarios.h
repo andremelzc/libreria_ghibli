@@ -648,3 +648,78 @@ void actualizarMembresiaUsuarios(){
     limpiarCSV("usuarios.csv");
     guardar_CSV(&listaUsuarios, "usuarios.csv");
 }
+
+// Muestra un usuario al ingresar su DNI
+bool mostrarUsuarioXDNI(Lista &listaUsuarios, const string &dni) {
+    Nodo *actual = listaUsuarios.cabeza; // Apuntar al primer nodo de la lista
+
+    // Recorrer la lista buscando el usuario con el DNI indicado
+    while (actual != nullptr) {
+        if (actual->usuario.ID_Usuario == dni) { // Si el DNI del usuario coincide
+            // Mostrar los datos del usuario
+            gotoxy(36, 16);
+            color(2);
+            cout << "1. Nombre: ";
+            color(7);
+            cout << actual->usuario.nombre;
+            gotoxy(36, 17);
+            color(2);
+            cout << "2. Apellidos: ";
+            color(7);
+            cout << actual->usuario.apellidos;
+            gotoxy(36, 18);
+            color(2);
+            cout << "3. Genero: ";
+            color(7);
+            cout << actual->usuario.genero;
+            gotoxy(36, 19);
+            color(2);
+            cout << "4. Correo Electronico: ";
+            color(7);
+            cout << actual->usuario.correoElectronico;
+            gotoxy(36, 20);
+            color(2);
+            cout << "5. Telefono: ";
+            color(7);
+            cout << actual->usuario.telefono;
+            gotoxy(36, 21);
+            color(2);
+            cout << "6. Usuario: ";
+            color(7);
+            cout << actual->usuario.usuario;
+            gotoxy(36, 22);
+            color(2);
+            cout << "7. Estado: ";
+            color(7);
+            cout << (actual->usuario.estadoUsuario == 1 ? "Activo" : "Inactivo");
+            gotoxy(36, 23);
+            color(2);
+            cout << "8. Membresia: ";
+            color(7);
+            cout << (actual->usuario.membresia == "1" ? "Activa" : "Inactiva");
+            gotoxy(36, 24);
+            color(2);
+            cout << "9. Libros Prestados: ";
+            color(7);
+            cout << actual->usuario.librosPrestados;
+            return true; // Retorna true si el usuario fue encontrado
+            break;
+        }
+        actual = actual->siguiente; // Mover al siguiente nodo
+    }
+
+    // Si el usuario no fue encontrado
+    cout << "No se encontro ningun usuario con el DNI: " << dni << endl;
+    return false; // Retorna false si no encontró el usuario
+}
+// Función para buscar un usuario por DNI
+Nodo* buscarUsuarioPorDNI(Lista& listaUsuarios, const string& dni) {
+    Nodo* actual = listaUsuarios.cabeza;
+    while (actual != nullptr) {
+        if (actual->usuario.ID_Usuario == dni) {
+            return actual;  // Usuario encontrado
+        }
+        actual = actual->siguiente;
+    }
+    return nullptr;  // Usuario no encontrado
+}

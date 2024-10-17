@@ -83,6 +83,40 @@ void guardar_CSV_Libros(ListaLibros *lista, string nombreArchivo)
     cout << "Datos guardados en " << nombreArchivo << endl;
     system("PAUSE");
 }
+void guardar_CSV_LibrosReferencia(ListaLibros &lista, string nombreArchivo)
+{
+    fstream archivo(nombreArchivo, fstream::out );
+
+
+    if (!archivo.is_open())
+    {
+        cout << "No se pudo abrir el archivo. " << nombreArchivo << endl;
+        system("PAUSE");
+        return;
+    }
+
+    // Recorre la lista enlazada y escribe cada nodo en el archivo
+    nodoLibros *actual = lista.cabeza;
+    while (actual != nullptr)
+    {
+        Libro libro = actual->libro;
+        archivo << libro.id << ","
+                << libro.nombre_Libro << ","
+                << libro.Autor << ","
+                << libro.Ano << ","
+                << libro.Genero << ","
+                << libro.Stock_Inventario << ","
+                << libro.StockActual << ","
+                << libro.precio << ","
+                << libro.estado << "\n";
+
+        actual = actual->siguiente;
+    }
+
+    archivo.close();
+    cout << "Datos guardados en " << nombreArchivo << endl;
+    system("PAUSE");
+}
 
 // Interacción con el usuario para ingresar datos
 void adicionarCampo()
@@ -344,6 +378,7 @@ void modificarLibro()
                     cout << "Libro modificado exitosamente." << endl;
                     color(7);
                     system("pause>0");
+                    guardar_CSV_LibrosReferencia(listalibros, "Libros.csv");
                     return; // Salir de la función después de modificar
                 }
                 actual = actual->siguiente; // Mover al siguiente nodo
@@ -357,8 +392,8 @@ void modificarLibro()
         }
     }
 
-    limpiarCSV("Libros.csv");
-    guardar_CSV_Libros(&listalibros, "Libros.csv");
+    
+    
 
     gotoxy(36, 22);
     color(2);
@@ -665,4 +700,14 @@ void mostrarLibros(ListaDobleLibros &lista)
     }
 
     system("PAUSE>0");
+}
+nodoLibros* buscarLibroPorID(ListaLibros& listaLibros, int idLibro) {
+    nodoLibros* actual = listaLibros.cabeza;
+    while (actual != nullptr) {
+        if (actual->libro.id == idLibro) {
+            return actual;  // Libro encontrado
+        }
+        actual = actual->siguiente;
+    }
+    return nullptr;  // Libro no encontrado
 }
