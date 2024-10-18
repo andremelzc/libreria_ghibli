@@ -691,7 +691,8 @@ void menu_opcionesCliente()
       }
       case 2:
         // 2. Realizar pedido
-        adicionarCampoPedido(id_usuariolog);
+        //adicionarCampoPedido(id_usuariolog);
+        adicionarCampoPedido();
         break;
       case 3:
         // 3. Ver historial de pedidos

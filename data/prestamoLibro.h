@@ -114,7 +114,6 @@ void guardar_CSV_Pedido(ListaPedidos *Lista, string nombreArchivo){
     cout << "Datos guardados en " << nombreArchivo << endl;
 }
 
-<<<<<<< HEAD
 bool mostrarLibroXidCopy(ListaLibros &Libros, int id)
 {
     nodoLibros *actual = Libros.cabeza; // Apuntar al primer nodo de la lista
@@ -177,9 +176,6 @@ bool mostrarLibroXidCopy(ListaLibros &Libros, int id)
 }
 
 void adicionarCampoPedido(){ //osea que el cliente haga el pedido
-=======
-void adicionarCampoPedido(int id_usuariologeado){
->>>>>>> 2ea3d093239e6d835143dba978308c3c30df34a2
     ListaPedidos *listaPedido = new ListaPedidos();
     
     char respuesta[10];
