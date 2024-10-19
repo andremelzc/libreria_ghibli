@@ -10,14 +10,15 @@
 
 using namespace std;
 
-int countLinesFile(string nombreArchivo){
+//contar lineas -- falta agregar algo para que si agregas más de un pedido te lo cuente
+int countLinesFile(string nombreArchivo, int i){
     ifstream archivo(nombreArchivo);
     string linea;
     int cont = 0;
     while(getline(archivo, linea)){
         cont++;
     }
-    return cont;
+    return cont + i;
 }
 
 void insertarFinalListaPedido(ListaPedidos *lista, Pedidos *pedido)
@@ -47,6 +48,7 @@ void insertarListaPedidos(ListaPedidos &lista, Pedidos nuevoPedido) {
     // Incrementar la longitud de la lista
     lista.longitud++;
 }
+
 void guardar_CSV_Pedido(ListaPedidos *Lista, string nombreArchivo){
     fstream archivo(nombreArchivo, fstream::out | fstream ::app);
 
@@ -90,6 +92,7 @@ void guardar_CSV_Pedido(ListaPedidos *Lista, string nombreArchivo){
     archivo.close();
     cout << "Datos guardados en " << nombreArchivo << endl;
 }
+
 void guardar_CSV_PedidoReferencia(ListaPedidos &Lista, const string &nombreArchivo) {
     fstream archivo(nombreArchivo, fstream::out); // Abrir en modo de escritura (sobrescribirá si el archivo existe)
 
@@ -190,6 +193,36 @@ bool mostrarLibroXidCopy(ListaLibros &Libros, int id)
     return false; // Retorna false si no encontró el libro
 }
 
+bool verificarMembresiaYMax(Lista &Usuarios, int id){ //verifica que tengas membresia activa y menos de 4 libros sin devolver
+    Nodo *actual = Usuarios.cabeza;
+    while(actual != nullptr){
+        //cout << endl << "ciclo infinito?";
+        if(stoi(actual->usuario.ID_Usuario) == id){
+            if(actual->usuario.membresia == "ACTIVA" && actual->usuario.librosPrestados <= 2){
+                return true;
+            }
+        }
+        actual = actual->siguiente;
+    }
+
+    return false;
+}
+
+void modificarCantPrestada(int idUsuario){
+    Lista listaUsuarios;
+    listaUsuarios = leerUsuariosCSV("usuarios.csv");
+
+    Nodo *actual = listaUsuarios.cabeza;
+    
+    while(actual != nullptr){
+        if(stoi(actual->usuario.ID_Usuario) == idUsuario){
+            actual->usuario.librosPrestados++;
+        }
+        actual = actual->siguiente;
+    }
+    limpiarCSV("usuarios.csv");
+    guardar_CSV(&listaUsuarios, "usuarios.csv");
+}
 
 void adicionarCampoPedido(int id_usuariologeado){
 
@@ -200,11 +233,10 @@ void adicionarCampoPedido(int id_usuariologeado){
     time_t now = time(0);
     tm* localTime = localtime(&now);
     do{
-        i++;
         system("CLS");
         estructura_menu();
         Pedidos *pedido = new Pedidos();
-        pedido->ID_pedido = countLinesFile("Pedidos.csv");
+        pedido->ID_pedido = countLinesFile("Pedidos.csv",i);
         gotoxy(36, 11);
         color(2);
         cout << "a continuación confirme que desea realizar un pedido (s/n)" << endl;
@@ -216,23 +248,36 @@ void adicionarCampoPedido(int id_usuariologeado){
         }
         gotoxy(36, 13);
         color(2);
-        cout << "Su codigo de usuario es: " << endl; // falta automatizar --------------------------------
-        gotoxy(36, 14);
+        cout << "Su codigo de usuario es: "; 
         color(7);
+        gotoxy(36,14);
         cout << id_usuariologeado;
         pedido->ID_usuario = id_usuariologeado; 
-        cin.ignore();
-        color(7);
+        Lista listaUsuarios = leerUsuariosCSV("usuarios.csv");
+        //cout << endl<< "comprobando q todo esta bien"; 
+        if(!(verificarMembresiaYMax(listaUsuarios, id_usuariologeado))){ //si es falso volvera a preguntar si deseas hacer una peticion
+            //cout << endl<< "comprobando q todo esta bien 2"; 
+            gotoxy(27, 16);
+            color(3);
+            cout << "No tiene una membresia para el prestamo o supero el limite de libros prestados";
+            gotoxy(27, 17);
+            system("PAUSE");
+            respuesta[0] = 's';
+            continue;
+        }
+
         gotoxy(36, 15);
         color(2);
         cout << "Ahora ingrese el codigo identificador del libro: ";
         gotoxy(36, 16);
         color(7);
+        cin.ignore();
         cin >> pedido->ID_libro;
         ListaLibros libros = leerLibrosCSV("Libros.csv");
         bool find = mostrarLibroXidCopy(libros, pedido->ID_libro);
         if(find){
             char check;
+            i++;
             gotoxy(36,26);
             color(2);
             cout <<"Este es el libro que deseas solcitar?(s/n): ";
@@ -242,7 +287,12 @@ void adicionarCampoPedido(int id_usuariologeado){
                 respuesta[0] = 's';
                 continue;
             }
-
+        }else {
+            gotoxy(36,18);
+            color(3);
+            cout << "No se encontro un libro con el codigo que buscas";
+            respuesta[0] = 's';
+            continue;
         }
 
         //Estableciendo estadoPedido
@@ -259,6 +309,10 @@ void adicionarCampoPedido(int id_usuariologeado){
         pedido->devolucion.dia = 0; pedido->devolucion.mes = 0; pedido->devolucion.año = 0; 
 
         insertarFinalListaPedido(listaPedido,pedido);
+
+        //agregar aqui la actualizacion de la cantidad de libros prestado ojo me puedo guiar de la funcion actualizar membresia usuario que tiene un parecido
+        //usamos esta funcion para aumentar en 1 la cantidad prestada
+        modificarCantPrestada(pedido->ID_usuario); //------------- quitar de aqui y mandar a cuando se acepte el pedido
 
         gotoxy(36, 28);
         color(2);
@@ -290,6 +344,7 @@ fecha convertirFecha(const string& campo) {
     // Retornar un objeto de tipo 'fecha'
     return {dia, mes, año};
 }
+
 ListaPedidos leerPedidosDesdeCSV(string nombreArchivo) {
     ListaPedidos lista; // Crear una lista vacía
     ifstream archivo(nombreArchivo); // Abrir el archivo CSV

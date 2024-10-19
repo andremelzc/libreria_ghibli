@@ -712,6 +712,7 @@ bool mostrarUsuarioXDNI(Lista &listaUsuarios, const string &dni) {
     cout << "No se encontro ningun usuario con el DNI: " << dni << endl;
     return false; // Retorna false si no encontró el usuario
 }
+
 // Función para buscar un usuario por DNI
 Nodo* buscarUsuarioPorDNI(Lista& listaUsuarios, const string& dni) {
     Nodo* actual = listaUsuarios.cabeza;
