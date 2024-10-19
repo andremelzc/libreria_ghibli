@@ -1,6 +1,6 @@
 #pragma once
-#include "../servicio/funcionalidades.h"
 #include "../data/persistenciaDatos.h"
+#include "../servicio/funcionalidades.h"
 #include "../data/gestionUsuarios.h"
 #include "gotoxy.h"
 #include "../data/gestionLibros.h"
@@ -514,6 +514,9 @@ void menu_opcionesRecepcionista()
       case 1:
       {
         // 1. Gestionar pedido de libro
+        system("CLS");
+        estructura_menu();
+        gestionarpedido();
         break;
       }
       case 2:
@@ -691,8 +694,8 @@ void menu_opcionesCliente()
       }
       case 2:
         // 2. Realizar pedido
-        //adicionarCampoPedido(id_usuariolog);
-        adicionarCampoPedido();
+        adicionarCampoPedido(id_usuariolog);
+        //adicionarCampoPedido();
         break;
       case 3:
         // 3. Ver historial de pedidos

@@ -6,6 +6,11 @@
 #include <sstream>
 #include <string>
 
+struct fecha
+{
+  int dia, mes, año;  
+};
+
 // Usuarios
 struct Usuario
 {
@@ -60,10 +65,44 @@ struct ListaLibros
     ListaLibros() : cabeza(nullptr) {} // Inicializar cabeza a nullptr
 };
 
+struct nodoDobleLibros
+{
+    Libro libro;
+    nodoDobleLibros *siguiente;
+    nodoDobleLibros *anterior;
+    // Falta Inicializar anterior a nullptr
+    nodoDobleLibros(Libro libro1) : libro(libro1), siguiente(nullptr) {}
+};  
+
+struct ListaDobleLibros
+{
+    nodoDobleLibros *cabeza;
+    nodoDobleLibros *final;
+    int longitud;
+    ListaDobleLibros() : cabeza(nullptr), final(nullptr) {} // Inicializar cabeza a nullptr
+};
+
 // Pedidos (libros)
+struct Pedidos{
+    int ID_pedido,ID_libro,ID_usuario;
+    string estadoPedido; //SOLICITADO, PRESTADO, NO_DEVUELTO, DEVUELTO, DEVUELTO_TARDE
+    fecha fechaPedido, fechaAdquisicion, devolucion, entregado;
+};
+
+struct NodoPedidos{
+    Pedidos pedido;
+    NodoPedidos *sgte;
+    NodoPedidos(Pedidos pedido1): pedido(pedido1), sgte(nullptr) {}; 
+    NodoPedidos(): sgte(nullptr) {}; 
+};
+
+struct ListaPedidos{
+    int longitud;
+    NodoPedidos *head;
+    ListaPedidos(): head(nullptr), longitud(0) {}; 
+};
 
 // Laptops
-
 struct Laptop {
     int id_laptop;        // Identificador único de la laptop
     int id_cliente;       // Identificador del cliente que alquiló la laptop
@@ -86,22 +125,3 @@ struct PilaLaptops
     PilaLaptops() : cima(nullptr), longitud(0) {} // Inicializar cima a nullptr
 };
 
-// Compras (libros)
-
-// Cambios (en libros)
-struct nodoDobleLibros
-{
-    Libro libro;
-    nodoDobleLibros *siguiente;
-    nodoDobleLibros *anterior;
-    // Falta Inicializar anterior a nullptr
-    nodoDobleLibros(Libro libro1) : libro(libro1), siguiente(nullptr) {}
-};  
-
-struct ListaDobleLibros
-{
-    nodoDobleLibros *cabeza;
-    nodoDobleLibros *final;
-    int longitud;
-    ListaDobleLibros() : cabeza(nullptr), final(nullptr) {} // Inicializar cabeza a nullptr
-};

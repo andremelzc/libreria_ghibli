@@ -8,12 +8,14 @@
 #include <iostream>
 #include <stdexcept>
 #include <conio.h>
+#include <locale>
+#include <ctime>
 
 using namespace std;
 
 // Declaraciones previas
 void insertarFinal(Lista *lista, Usuario *usuario);
-Lista leerUsuariosCSV(string nombreArchivo); 
+Lista leerUsuariosCSV(string nombreArchivo);
 void guardar_CSV(Lista *lista, string nombreArchivo);
 
 // Registrar usuario (vista administrador)
@@ -78,6 +80,19 @@ void gestionUsuarios_registrarUsuario()
         cout << "Número celular (9 digitos): ";
         color(7);
         getline(cin, usuario->telefono);
+
+        if (usuario->tipo == 0)
+        {
+            usuario->membresia = "INACTIVA";
+        }
+        else
+        {
+            usuario->membresia = "ACTIVA";
+        }
+
+        usuario->fechaInicio = "00/00/0000";
+        usuario->fechaFinal = "00/00/0000";
+        usuario->librosPrestados = 0;
 
         insertarFinal(lista, usuario);
         gotoxy(36, 24);
@@ -202,17 +217,9 @@ void guardar_CSV(Lista *lista, string nombreArchivo)
         // cout << "estoy datos en el archivo .csv";
         // system("PAUSE");
         Usuario usuario = actual->usuario;
-        if(usuario.tipo == 0){
-            usuario.membresia = "INACTIVA";
-        }else{
-            usuario.membresia = "ACTIVA";
-        }
         
-        usuario.fechaInicio = "00/00/0000";
-        usuario.fechaFinal = "00/00/0000";
-        usuario.librosPrestados = 0;
         archivo << usuario.estadoUsuario << "," << usuario.tipo << "," << usuario.ID_Usuario << "," << usuario.usuario << "," << usuario.contrasena << "," << usuario.nombre << "," << usuario.apellidos << "," << usuario.genero << ","
-                << usuario.correoElectronico << "," << usuario.telefono << "," << usuario.membresia << "," << usuario.librosPrestados << "," << usuario.fechaFinal << "," << usuario.fechaInicio << "\n";
+                << usuario.correoElectronico << "," << usuario.telefono << "," << usuario.membresia << "," << usuario.librosPrestados << "," << usuario.fechaInicio << "," << usuario.fechaFinal << "\n";
 
         actual = actual->siguiente;
     }
@@ -504,7 +511,20 @@ void activarMembresi()
             cout << respuesta;
             if (respuesta == "s" || respuesta == "S")
             {
+                string fecha;
                 actual->usuario.membresia = "ACTIVA";
+                time_t t = time(0);
+                tm *localTime = localtime(&t);
+                // Fecha de inicio
+                string diaStr = to_string(localTime->tm_mday);
+                string mesStr = to_string(localTime->tm_mon + 1);     
+                string añoStr = to_string(localTime->tm_year + 1900); 
+                fecha = diaStr + "/" + mesStr + "/" + añoStr;
+                actual->usuario.fechaInicio = fecha;
+                // Fecha de fin
+                añoStr = to_string(localTime->tm_year + 1901);
+                fecha = diaStr + "/" + mesStr + "/" + añoStr;
+                actual->usuario.fechaFinal = fecha;
                 gotoxy(36, 19);
                 cout << "Membresia activada correctamente!";
             }
@@ -558,12 +578,13 @@ Lista leerUsuariosCSV(string nombreArchivo)
             Usuario usuario;
 
             // Suponiendo que el CSV tiene los campos en el siguiente orden:
-            // estado, tipo, id_usuario (dni), usuario, contrasena, nombre, apellidos, genero, correo electronico, telefono, membresia, fecha inicio, fecha fin, libros prestados
+            // estado, tipo, id_usuario (dni), usuario, contrasena, nombre, apellidos, genero, correo electronico, telefono, membresia, libros prestados, fecha inicio, fecha fin, 
             getline(ss, dato, ',');
             usuario.estadoUsuario = stoi(dato); // Convertir a entero
-
+            
             getline(ss, dato, ',');
             usuario.tipo = stoi(dato); // Convertir a entero
+
             getline(ss, usuario.ID_Usuario, ',');
             getline(ss, usuario.usuario, ',');
             getline(ss, usuario.contrasena, ',');
@@ -577,11 +598,14 @@ Lista leerUsuariosCSV(string nombreArchivo)
             getline(ss, usuario.telefono, ',');
 
             getline(ss, usuario.membresia, ',');
-            getline(ss, usuario.fechaInicio, ',');
-            getline(ss, usuario.fechaFinal, ',');
+
             getline(ss, dato, ',');
             usuario.librosPrestados = stoi(dato); // Convertir a entero
-
+            
+            getline(ss, usuario.fechaInicio, ',');
+            getline(ss, usuario.fechaFinal, ',');
+            
+            
             // Insertar el usuario en la lista enlazada
             insertar(listaDeUsuarios, usuario);
         }
@@ -594,4 +618,108 @@ Lista leerUsuariosCSV(string nombreArchivo)
     return listaDeUsuarios;
 }
 
-// Función para crear una lista enlazada doble en base a los datos del csv
+// Función para actualizar estado de membresia
+void actualizarMembresiaUsuarios(){
+    Lista listaUsuarios;
+    listaUsuarios = leerUsuariosCSV("usuarios.csv");
+
+    Nodo *actual = listaUsuarios.cabeza;
+    time_t t = time(0);
+    tm *localTime = localtime(&t);
+    string fecha;
+    string diaStr = to_string(localTime->tm_mday);
+    string mesStr = to_string(localTime->tm_mon + 1);     
+    string añoStr = to_string(localTime->tm_year + 1900); 
+    fecha = diaStr + "/" + mesStr + "/" + añoStr;
+
+    while (actual != nullptr)
+    {
+        if (actual->usuario.membresia == "ACTIVA")
+        {
+            if (actual->usuario.fechaFinal == fecha)
+            {
+                actual->usuario.membresia = "INACTIVA";
+                actual->usuario.fechaInicio = "00/00/0000";
+                actual->usuario.fechaFinal = "00/00/0000";
+            }
+        }
+        actual = actual->siguiente;
+    }
+    limpiarCSV("usuarios.csv");
+    guardar_CSV(&listaUsuarios, "usuarios.csv");
+}
+
+// Muestra un usuario al ingresar su DNI
+bool mostrarUsuarioXDNI(Lista &listaUsuarios, const string &dni) {
+    Nodo *actual = listaUsuarios.cabeza; // Apuntar al primer nodo de la lista
+
+    // Recorrer la lista buscando el usuario con el DNI indicado
+    while (actual != nullptr) {
+        if (actual->usuario.ID_Usuario == dni) { // Si el DNI del usuario coincide
+            // Mostrar los datos del usuario
+            gotoxy(36, 16);
+            color(2);
+            cout << "1. Nombre: ";
+            color(7);
+            cout << actual->usuario.nombre;
+            gotoxy(36, 17);
+            color(2);
+            cout << "2. Apellidos: ";
+            color(7);
+            cout << actual->usuario.apellidos;
+            gotoxy(36, 18);
+            color(2);
+            cout << "3. Genero: ";
+            color(7);
+            cout << actual->usuario.genero;
+            gotoxy(36, 19);
+            color(2);
+            cout << "4. Correo Electronico: ";
+            color(7);
+            cout << actual->usuario.correoElectronico;
+            gotoxy(36, 20);
+            color(2);
+            cout << "5. Telefono: ";
+            color(7);
+            cout << actual->usuario.telefono;
+            gotoxy(36, 21);
+            color(2);
+            cout << "6. Usuario: ";
+            color(7);
+            cout << actual->usuario.usuario;
+            gotoxy(36, 22);
+            color(2);
+            cout << "7. Estado: ";
+            color(7);
+            cout << (actual->usuario.estadoUsuario == 1 ? "Activo" : "Inactivo");
+            gotoxy(36, 23);
+            color(2);
+            cout << "8. Membresia: ";
+            color(7);
+            cout << (actual->usuario.membresia == "1" ? "Activa" : "Inactiva");
+            gotoxy(36, 24);
+            color(2);
+            cout << "9. Libros Prestados: ";
+            color(7);
+            cout << actual->usuario.librosPrestados;
+            return true; // Retorna true si el usuario fue encontrado
+            break;
+        }
+        actual = actual->siguiente; // Mover al siguiente nodo
+    }
+
+    // Si el usuario no fue encontrado
+    cout << "No se encontro ningun usuario con el DNI: " << dni << endl;
+    return false; // Retorna false si no encontró el usuario
+}
+// Función para buscar un usuario por DNI
+Nodo* buscarUsuarioPorDNI(Lista& listaUsuarios, const string& dni) {
+    Nodo* actual = listaUsuarios.cabeza;
+    while (actual != nullptr) {
+        if (actual->usuario.ID_Usuario == dni) {
+            return actual;  // Usuario encontrado
+        }
+        actual = actual->siguiente;
+    }
+    return nullptr;  // Usuario no encontrado
+}
