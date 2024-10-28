@@ -7,6 +7,7 @@
 #include "../servicio/iniciarSesion.h"
 #include "../data/gestionLaptops.h"
 #include "../data/prestamoLibro.h"
+#include "../data/historialYEstadisticaLibros.h"
 
 // Menu de opciones inicial
 vector<string> opcionesMenuPrincipal = {"Ver catalogo",
@@ -535,6 +536,9 @@ void menu_opcionesRecepcionista()
         break;
       case 5:
         // 5. Ver historial de cliente
+        system("CLS");
+        estructura_menu();
+        mostrarHistorial();
         break;
       case 6:
         // 6. Salir

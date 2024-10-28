@@ -246,6 +246,7 @@ void adicionarCampoPedido(int id_usuariologeado){
         if(respuesta[0] == 'n' or respuesta[0] == 'N'){
             break;
         }
+
         gotoxy(36, 13);
         color(2);
         cout << "Su codigo de usuario es: "; 
@@ -253,7 +254,8 @@ void adicionarCampoPedido(int id_usuariologeado){
         gotoxy(36,14);
         cout << id_usuariologeado;
         pedido->ID_usuario = id_usuariologeado; 
-        Lista listaUsuarios = leerUsuariosCSV("usuarios.csv");
+
+        Lista listaUsuarios = leerUsuariosCSV("usuarios.csv"); //cargando lista de usuarios
         //cout << endl<< "comprobando q todo esta bien"; 
         if(!(verificarMembresiaYMax(listaUsuarios, id_usuariologeado))){ //si es falso volvera a preguntar si deseas hacer una peticion
             //cout << endl<< "comprobando q todo esta bien 2"; 

@@ -125,3 +125,32 @@ struct PilaLaptops
     PilaLaptops() : cima(nullptr), longitud(0) {} // Inicializar cima a nullptr
 };
 
+struct estadisticaLibro{ // para la estadistica de los libros más populares
+    int id_libro, vecesSolicitado, vecesPrestado;
+    string nombreLibro;
+};
+
+struct NodoEstadisticas{
+    estadisticaLibro estadistica;
+    NodoEstadisticas *sgte;
+    int prio;
+
+    NodoEstadisticas(estadisticaLibro stat): prio(estadistica.vecesSolicitado), estadistica(stat), sgte(nullptr){};  
+};
+
+struct colaPrioEstadisticas{
+    NodoEstadisticas *delante;
+    NodoEstadisticas *atras;
+    
+    colaPrioEstadisticas(): delante(nullptr), atras(nullptr){};
+
+    colaPrioEstadisticas(NodoEstadisticas *primero): delante(primero), atras(primero){};
+};
+
+
+struct colaHistorial{
+    NodoPedidos *adelante;
+    NodoPedidos *atras;
+ 
+    colaHistorial(): adelante(nullptr), atras(nullptr){};
+};
