@@ -607,7 +607,7 @@ Lista leerUsuariosCSV(string nombreArchivo)
             
             
             // Insertar el usuario en la lista enlazada
-            insertar(listaDeUsuarios, usuario);
+            insertarFinal(&listaDeUsuarios, &usuario);
         }
         archivo.close();
     }

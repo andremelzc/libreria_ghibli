@@ -275,7 +275,7 @@ void adicionarCampoPedido(int id_usuariologeado){
         color(7);
         cin.ignore();
         cin >> pedido->ID_libro;
-        ListaLibros libros = leerLibrosCSV("Libros.csv");
+        ListaLibros libros = leerLibrosCSV("libros.csv");
         bool find = mostrarLibroXidCopy(libros, pedido->ID_libro);
         if(find){
             char check;

@@ -73,7 +73,7 @@ void menu_opcionesPrincipal()
       case 1:
       {
         // 1. Ver catalogo
-        listaDeLibros = leerLibrosDoblesCSV("libros.csv");
+        listaDeLibros = leerLibrosDoblesCSV("output/libros.csv");
         mostrarLibros(listaDeLibros);
         break;
       }
