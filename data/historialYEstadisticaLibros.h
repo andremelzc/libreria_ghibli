@@ -208,8 +208,6 @@ NodoEstadisticas* desencolar(colaPrioEstadisticas &q){
     return stat;
 }
 
-void subirCSV();
-
 colaPrioEstadisticas cargarEstadisticaCSV(string nombreArchivo){
     fstream archivo(nombreArchivo);
 
@@ -236,4 +234,6 @@ colaPrioEstadisticas cargarEstadisticaCSV(string nombreArchivo){
 
         //veces devuelto tarde
     }
+
+    return colaPrincipal;
 }
