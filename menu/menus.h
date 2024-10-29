@@ -362,7 +362,7 @@ void menu_opcionesGestionUsuarios()
         break;
       case 4:
         // 4. Mostrar usuarios
-        listaDeUsuarios = leerUsuariosCSV("usuarios.csv");
+        listaDeUsuarios = leerUsuariosCSV("output/usuarios.csv");
         // Mostrar los usuarios cargados en la lista
         mostrarUsuarios(listaDeUsuarios);
         getch();
@@ -592,7 +592,7 @@ void menu_opcionesLaptop()
     // Capturamos la entrada de usuario
     int input = _getch();
     PilaLaptops *pila = new PilaLaptops();
-    leerLaptopsCSV(pila, "laptops.csv");
+    leerLaptopsCSV(pila, "output/laptops.csv");
     switch (input)
     {
     // Aumentar o disminuir la opcion en la que estamos
@@ -692,7 +692,7 @@ void menu_opcionesCliente()
       case 1:
       {
         // 1. Ver catalogo
-        listaDeLibros = leerLibrosDoblesCSV("libros.csv");
+        listaDeLibros = leerLibrosDoblesCSV("output/libros.csv");
         mostrarLibros(listaDeLibros);
         break;
       }
@@ -755,7 +755,7 @@ void menu_opcionesGestionLaptops()
     // Capturamos la entrada de usuario
     int input = _getch();
     PilaLaptops *pila = new PilaLaptops();
-    leerLaptopsCSV(pila, "laptops.csv");
+    leerLaptopsCSV(pila, "output/laptops.csv");
     switch (input)
     {
     // Aumentar o disminuir la opcion en la que estamos
