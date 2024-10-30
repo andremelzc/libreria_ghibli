@@ -3,7 +3,7 @@
 #include <sstream>
 #include <string.h>
 #include <filesystem>
-
+#include <ctime> /*Para registrar la fecha */
 using namespace std;
 // Declaraciones previas
 void insertarFinalListaLibro(ListaLibros *lista, Libro *libro);
@@ -13,6 +13,7 @@ void modificarLibro();
 void insertarLibro(ListaLibros &lista, Libro nuevoLibro);
 ListaLibros leerLibrosCSV(string nombreArchivo);
 bool mostrarLibroXid(ListaLibros &Libros, int id);
+
 
 // Inserta libros al final de una lista enlazada
 void insertarFinalListaLibro(ListaLibros *lista, Libro *libro)
@@ -40,7 +41,7 @@ void guardar_CSV_Libros(ListaLibros *lista, string nombreArchivo)
 {
     fstream archivo(nombreArchivo, fstream::out | fstream::app);
 
-    if (!filesystem::exists("libros.csv"))
+    if (!filesystem::exists("output/libros.csv"))
     {
         std::cerr << "Error: El directorio 'output' no existe." << std::endl;
         system("PAUSE");
@@ -95,7 +96,7 @@ void adicionarCampo()
         system("CLS");
         estructura_menu();
         Libro *libro = new Libro();
-        libro->id = contarFilasCSV("libros.csv")+contador;
+        libro->id = contarFilasCSV("output/libros.csv")+contador;
         libro->estado = "Disponible";
         gotoxy(52, 12);
         color(2);
@@ -150,7 +151,7 @@ void adicionarCampo()
         contador++;
     } while (respuesta[0] == 's' || respuesta[0] == 'S');
 
-    guardar_CSV_Libros(listaLibros, "libros.csv");
+    guardar_CSV_Libros(listaLibros, "output/libros.csv");
 }
 
 // Funcion para modificar un libro
@@ -173,7 +174,7 @@ void modificarLibro()
     id = stoi(dato);
 
     ListaLibros listalibros;
-    listalibros = leerLibrosCSV("libros.csv");
+    listalibros = leerLibrosCSV("output/libros.csv");
     gotoxy(36, 15);
     bool encontrado = mostrarLibroXid(listalibros, id);
     if (encontrado)
@@ -344,8 +345,8 @@ void modificarLibro()
                     cout << "Libro modificado exitosamente." << endl;
                     color(7);
                     system("pause>0");
-                    limpiarCSV("libros.csv");
-                    guardar_CSV_Libros(&listalibros, "libros.csv");
+                    limpiarCSV("output/libros.csv");
+                    guardar_CSV_Libros(&listalibros, "output/libros.csv");
                     return; // Salir de la función después de modificar
                 }
                 actual = actual->siguiente; // Mover al siguiente nodo
@@ -700,3 +701,61 @@ nodoLibros* buscarLibroPorID(ListaLibros& listaLibros, int idLibro) {
     }
     return nullptr;  // Libro no encontrado
 }
+//Miguel:tmb presente en el codigo de Fabri
+int countLinesFiles(string nombreArchivo){
+    ifstream archivo(nombreArchivo);
+    string linea;
+    int cont = 0;
+    while(getline(archivo, linea)){
+        cont++;
+    }
+    return cont;
+}
+
+
+void agregarCarrito(int id_usuario){
+    system("CLS");
+    int id_carrito = countLinesFiles("output/carrito.csv") + 1;
+
+
+    int id_producto, cantidad;
+    ListaLibros listalibros;
+    listalibros = leerLibrosCSV("output/libros.csv");
+    nodoLibros* producto;
+
+    cout<<"Ingrese el ID del producto que quiere comprar: "<<endl;
+    cin>>id_producto;
+
+    bool confirmacion_agregar = false;
+    char desicion;
+    producto = buscarLibroPorID(listalibros, id_producto);
+    if(producto != nullptr){
+        cout<<"Libro a Adquirir:"<<endl;
+        cout<<producto->libro.nombre_Libro<<endl;
+        
+        cout<<"Ingresar la cantidad a comprar: "<<endl;
+        cin>>cantidad;
+
+        cout<<"Desea agregar: "<<cantidad<<" - "<<producto->libro.nombre_Libro<<endl;
+        cout<<"Marque 's' para confirmar:"<<endl;
+        cin>>desicion;
+        if(desicion == 's' || desicion == 'S'){
+            confirmacion_agregar = true;
+        }
+    }
+    if(confirmacion_agregar){
+        // Obtener la fecha y hora actual
+        time_t now = time(0);
+        // Convertir a una estructura tm
+        tm *ltm = localtime(&now);
+        // Obtener día, mes y año
+        int dia = ltm->tm_mday;
+        int mes = 1 + ltm->tm_mon; // tm_mon va de 0 a 11
+        int anio = 1900 + ltm->tm_year; // tm_year cuenta años desde 1900
+    }
+
+        
+
+}
+
+

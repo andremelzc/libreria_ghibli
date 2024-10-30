@@ -86,7 +86,7 @@ bool verificacionInicioSesion(string nombre_usuario, string contraseña_usuario,
 
 bool verificarUsuarioEnCSV(const string &nombre_usuario)
 {
-    ifstream archivoCSV("usuarios.csv");
+    ifstream archivoCSV("output/usuarios.csv");
 
     // Verificar si el archivo se abrió correctamente
     if (!archivoCSV)
@@ -131,7 +131,7 @@ bool verificarUsuarioEnCSV(const string &nombre_usuario)
 
 bool verificarContrasena(const string &usua, const string &contrasena, int &tipos, bool &estados, int &dni)
 {
-    ifstream archivo("usuarios.csv");
+    ifstream archivo("output/usuarios.csv");
     if (!archivo.is_open())
     {
         cerr << "No se pudo abrir el archivo." << endl;

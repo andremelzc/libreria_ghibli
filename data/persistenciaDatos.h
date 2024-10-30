@@ -102,6 +102,29 @@ struct ListaPedidos{
     ListaPedidos(): head(nullptr), longitud(0) {}; 
 };
 
+//Carrito de Compras
+struct Carritos{
+    int id_carrito;
+    int id_cliente;
+    int id_producto;
+    string fecha;
+    int cantidad;
+};
+
+struct NodoCarritos{
+    Carritos carrito;
+    NodoCarritos *sgte;
+    NodoCarritos(Carritos carrito1) : carrito(carrito1), sgte(nullptr) {};//Constructor para que sea por default
+    NodoCarritos():sgte(nullptr){};
+};
+
+struct ListaCarritos{
+    int longitud;
+    NodoCarritos *head;
+    ListaCarritos(): head(nullptr), longitud(0) {};
+};
+
+
 // Laptops
 struct Laptop {
     int id_laptop;        // Identificador único de la laptop

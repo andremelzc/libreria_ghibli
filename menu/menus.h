@@ -362,7 +362,7 @@ void menu_opcionesGestionUsuarios()
         break;
       case 4:
         // 4. Mostrar usuarios
-        listaDeUsuarios = leerUsuariosCSV("usuarios.csv");
+        listaDeUsuarios = leerUsuariosCSV("output/usuarios.csv");
         // Mostrar los usuarios cargados en la lista
         mostrarUsuarios(listaDeUsuarios);
         getch();
@@ -592,7 +592,7 @@ void menu_opcionesLaptop()
     // Capturamos la entrada de usuario
     int input = _getch();
     PilaLaptops *pila = new PilaLaptops();
-    leerLaptopsCSV(pila, "laptops.csv");
+    leerLaptopsCSV(pila, "output/laptops.csv");
     switch (input)
     {
     // Aumentar o disminuir la opcion en la que estamos
@@ -639,7 +639,10 @@ void menu_opcionesLaptop()
 vector<string> opcionesMenuCliente = {"Ver catalogo",
                                       "Realizar pedido",
                                       "Ver historial de pedidos",
-                                      "Salir"};
+                                      "Agregar al Carrito",
+                                      "Ver Carrito",
+                                      "Efectuar Compra",
+                                      "Salir",};
 int numCliente = opcionesMenuCliente.size();
 
 void menu_opcionesCliente()
@@ -692,7 +695,7 @@ void menu_opcionesCliente()
       case 1:
       {
         // 1. Ver catalogo
-        listaDeLibros = leerLibrosDoblesCSV("libros.csv");
+        listaDeLibros = leerLibrosDoblesCSV("output/libros.csv");
         mostrarLibros(listaDeLibros);
         break;
       }
@@ -705,7 +708,14 @@ void menu_opcionesCliente()
         // 3. Ver historial de pedidos
         break;
       case 4:
-        // 4. Salir
+        // 4."Agregar al Carrito", Miguel
+        agregarCarrito(id_usuariolog);                        
+                                      
+      case 5:
+         // 5."Ver Carrito",Miguel
+      case 6:
+         // 6."Efectuar Compra",Miguel
+      case 7:
         repeat = false;
         system("CLS");
         break;
@@ -755,7 +765,7 @@ void menu_opcionesGestionLaptops()
     // Capturamos la entrada de usuario
     int input = _getch();
     PilaLaptops *pila = new PilaLaptops();
-    leerLaptopsCSV(pila, "laptops.csv");
+    leerLaptopsCSV(pila, "output/laptops.csv");
     switch (input)
     {
     // Aumentar o disminuir la opcion en la que estamos
