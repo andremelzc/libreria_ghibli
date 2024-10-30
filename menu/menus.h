@@ -639,7 +639,10 @@ void menu_opcionesLaptop()
 vector<string> opcionesMenuCliente = {"Ver catalogo",
                                       "Realizar pedido",
                                       "Ver historial de pedidos",
-                                      "Salir"};
+                                      "Agregar al Carrito",
+                                      "Ver Carrito",
+                                      "Efectuar Compra",
+                                      "Salir",};
 int numCliente = opcionesMenuCliente.size();
 
 void menu_opcionesCliente()
@@ -705,7 +708,14 @@ void menu_opcionesCliente()
         // 3. Ver historial de pedidos
         break;
       case 4:
-        // 4. Salir
+        // 4."Agregar al Carrito", Miguel
+        agregarCarrito(id_usuariolog);                        
+                                      
+      case 5:
+         // 5."Ver Carrito",Miguel
+      case 6:
+         // 6."Efectuar Compra",Miguel
+      case 7:
         repeat = false;
         system("CLS");
         break;
