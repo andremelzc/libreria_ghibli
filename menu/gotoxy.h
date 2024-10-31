@@ -1,6 +1,18 @@
 #pragma once
+#include <windows.h>
+#include <thread>
+#include <chrono>
+#include <iostream>
+#include <sstream>
 
 using namespace std;
+
+// Función para configurar la consola en UTF-8
+void configurarConsolaUtf8()
+{
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
+}
 
 // Función para mover el cursor a una posición específica en la consola
 inline void gotoxy(int x, int y)
@@ -66,7 +78,115 @@ inline int whereY()
 */
 inline void color(int x)
 {
-    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), x);
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    // Obtener el atributo actual de la consola
+    CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+    GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+
+    // Extraer el color de fondo actual
+    int backgroundColor = consoleInfo.wAttributes & 0xF0;
+
+    // Combinar el color de texto deseado con el fondo actual
+    SetConsoleTextAttribute(hConsole, x | backgroundColor);
+}
+
+// Enum para la función de abajo
+enum ConsoleColor
+{
+    Black = 0,
+    DarkGray = BACKGROUND_INTENSITY,
+    Gray = BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE,
+    LightGray = BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE | BACKGROUND_INTENSITY,
+    Blue = BACKGROUND_BLUE,
+    Green = BACKGROUND_GREEN,
+    Red = BACKGROUND_RED,
+    Intensity = BACKGROUND_INTENSITY,
+    White = BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE | BACKGROUND_INTENSITY,
+};
+
+// Cambia el color del fondo
+void setConsoleBackground(ConsoleColor color)
+{
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    DWORD cells = 0;
+    DWORD written = 0;
+    COORD homeCoords = {0, 0};
+
+    if (!GetConsoleScreenBufferInfo(hConsole, &csbi))
+    {
+        return;
+    }
+
+    cells = csbi.dwSize.X * csbi.dwSize.Y;
+
+    // Establecer el color de fondo
+    FillConsoleOutputAttribute(hConsole, color, cells, homeCoords, &written);
+    // Limpiar la consola
+    FillConsoleOutputCharacter(hConsole, ' ', cells, homeCoords, &written);
+    SetConsoleCursorPosition(hConsole, homeCoords);
+}
+
+// Ejecuta la gradiante
+void ejecutarGradiente(int duracion)
+{
+    const int steps = 5;
+    ConsoleColor colors[steps] = {White, LightGray, Gray, DarkGray, Black};
+
+    /*
+    for (int i = 0; i < steps; ++i) {
+        setConsoleBackground(colors[i]);
+        std::this_thread::sleep_for(std::chrono::milliseconds(duracion / steps));
+    }*/
+
+    // Recorre el array de Black a White
+    for (int i = steps - 1; i >= 0; --i)
+    {
+        setConsoleBackground(colors[i]);
+        std::this_thread::sleep_for(std::chrono::milliseconds(duracion / steps));
+    }
+
+    setConsoleBackground(White); // Resetea al color blanco
+}
+
+// Ejecuta la gradiante
+void ejecutarGradienteDoble(int duracion)
+{
+    const int steps = 5;
+    ConsoleColor colors[steps] = {White, LightGray, Gray, DarkGray, Black};
+
+    // Recorre White a Black
+    for (int i = 0; i < steps; ++i)
+    {
+        setConsoleBackground(colors[i]);
+        std::this_thread::sleep_for(std::chrono::milliseconds(duracion / steps));
+    }
+
+    // Recorre el array de Black a White
+    for (int i = steps - 1; i >= 0; --i)
+    {
+        setConsoleBackground(colors[i]);
+        std::this_thread::sleep_for(std::chrono::milliseconds(duracion / steps));
+    }
+
+    setConsoleBackground(White); // Resetea al color blanco
+}
+
+// Cambia el color del texto, adaptándose al color del fondo
+void setTextColor(int textColor)
+{
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    // Obtener el atributo actual de la consola
+    CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+    GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+
+    // Extraer el color de fondo actual
+    int backgroundColor = consoleInfo.wAttributes & 0xF0;
+
+    // Combinar el color de texto deseado con el fondo actual
+    SetConsoleTextAttribute(hConsole, textColor | backgroundColor);
 }
 
 // FUNCION PARA LIMPIAR EL ÁREA EN REEMPLAZO AL CLS
@@ -82,35 +202,70 @@ void limpiarArea(int x, int y, int width, int height)
     }
 }
 
-// FUNCION PARA DIBUJAR LAS MATRICES
-void setConsoleColor(int color)
+// Funcion para dibujar un arte ASCII
+void dibujarTitulo(int x, int y, int color, const string &titulo)
 {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    switch (color)
+    if (hConsole == INVALID_HANDLE_VALUE)
     {
-    case 0:
-        SetConsoleTextAttribute(hConsole, BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED); // Color blanco
-        break;
-    case 1:
-        SetConsoleTextAttribute(hConsole, 0); // Color negro (Viene predeterminado)
-        break;
-    case 2:
-        SetConsoleTextAttribute(hConsole, BACKGROUND_RED | BACKGROUND_GREEN); // Color amarillo
-        break;
-    case 3:
-        SetConsoleTextAttribute(hConsole, BACKGROUND_GREEN); // Color verde
-        break;
-    case 4:
-        SetConsoleTextAttribute(hConsole, BACKGROUND_BLUE | BACKGROUND_RED);
-        ; // Color magenta
-        break;
-    case 5:
-        SetConsoleTextAttribute(hConsole, BACKGROUND_BLUE);
-        ; // Color azul
-        break;
-    default:
-        SetConsoleTextAttribute(hConsole, 7); // Color blanco (Viene predeterminado)
+        cerr << "Error: no se pudo obtener el controlador de la consola.\n";
+        return;
     }
+    setTextColor(White);
+    setTextColor(color);
+    istringstream stream(titulo);
+    string line;
+    int offsetY = 0;
+
+    while (getline(stream, line))
+    {
+        COORD pos = {static_cast<SHORT>(x), static_cast<SHORT>(y + offsetY)};
+        SetConsoleCursorPosition(hConsole, pos);
+        cout << line;
+        offsetY++; // Incrementa en cada línea para mantener el arte alineado
+    }
+}
+
+// Arte ASCII
+string libros = R"(       
+       .--.           .---.        .-.
+   .---|--|   .-.     |   |  .---. |~|    .--.
+.--|===|  |---|_|--.__|   |--|:::| |~|-==-|==|---.
+|  |   |  |===| |~~|  |   |--|   |_|~|    |  |___|-.
+|  |   |  |===| |==|  |   |  |:::|=| |    |  |---|=|
+|  |   |  |   |_|__|  |   |__|   | | |    |  |___| |
+|~~|===|--|===|~|~~|  |~~~|--|:::|=|~|----|==|---|=|
+____________________________________________________
+    )";
+
+string letras = R"(  
+  _      _ _                   _          _____ _     _ _     _ _ 
+ | |    (_) |                 (_)        / ____| |   (_) |   | (_)
+ | |     _| |__  _ __ ___ _ __ _  __ _  | |  __| |__  _| |__ | |_ 
+ | |    | | '_ \| '__/ _ \ '__| |/ _` | | | |_ | '_ \| | '_ \| | |
+ | |____| | |_) | | |  __/ |  | | (_| | | |__| | | | | | |_) | | |
+ |______|_|_.__/|_|  \___|_|  |_|\__,_|  \_____|_| |_|_|_.__/|_|_|
+ _________________________________________________________________                          
+    )";
+
+// Función para dibujar presionar la tecla
+void dibujarPresionaTecla(int x, int y)
+{
+    setTextColor(White);
+    gotoxy(x, y);
+    cout << "Presiona una tecla para continuar...";
+}
+
+// Función para pausar
+void pausa()
+{
+    system("pause>0");
+}
+
+// Función para limpiar la pantalla
+void limpiarPantalla()
+{
+    system("CLS");
 }
 
 // Marcos de los menus
@@ -277,4 +432,65 @@ void estructura_menu()
     gotoxy(16, 30);
     cout << (char)200;
     color(7);
+}
+
+// Marcos de los menus
+void estructura_menu2(int comX, int finX, int comY, int finY)
+{
+    // Menú
+    setTextColor(White);
+    setTextColor(2);
+    // Barras hoizontales
+    for (int i = comX; i < finX + 1; i++)
+    {
+        gotoxy(i, comY - 1);
+        cout << (char)205;
+        gotoxy(i, finY + 1);
+        cout << (char)205;
+    }
+    // Esquinas
+    gotoxy(comX - 1, comY - 1);
+    cout << (char)201;
+    gotoxy(comX - 1, finY + 1);
+    cout << (char)200;
+    gotoxy(finX + 1, comY - 1);
+    cout << (char)187;
+    gotoxy(finX + 1, finY + 1);
+    cout << (char)188;
+    // Barras verticales
+    for (int i = comY; i < finY + 1; i++)
+    {
+        gotoxy(comX - 1, i);
+        cout << (char)186;
+        gotoxy(finX + 1, i);
+        cout << (char)186;
+    }
+}
+
+void mostrarVerificando(int x, int y)
+{
+    const int maxPuntos = 3; // Número máximo de puntos a mostrar
+    const int delay = 500;   // Tiempo de espera en milisegundos
+
+    for (int i = 0; i < 6; ++i) // Hacerlo por 3 iteraciones
+    {
+        setTextColor(White);
+        setTextColor(2);
+        gotoxy(x,y);
+        cout << "Verificando";
+
+        // Agregar puntos según la iteración
+        for (int j = 0; j <= (i % (maxPuntos + 1)); ++j)
+        {
+            cout << ".";
+        }
+
+        cout.flush();                                        // Asegurarse de que se imprima inmediatamente
+        this_thread::sleep_for(chrono::milliseconds(delay)); // Esperar un momento
+
+        // Limpiar la línea después de cada iteración
+        cout << "\r";
+        cout << "            "; // Espacio en blanco para limpiar la línea
+        cout << "\r";           // Regresar al principio de la línea
+    }
 }

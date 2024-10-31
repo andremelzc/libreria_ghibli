@@ -29,24 +29,24 @@ void menu_opcionesPrincipal()
 {
   bool repeat = true;
   int opt = 1;
-  estructura_menu();
   while (repeat)
   {
-    system("CLS");
-    estructura_menu();
+    limpiarPantalla();
+    setConsoleBackground(White);
+    dibujarTitulo(27, 0, 2, letras);
+    estructura_menu2(16, 103, 11, 26);
     // Imprimir las opciones
     for (int i = 0; i < numInicio; i++)
     {
+      setTextColor(0);
       if (i == opt - 1)
       {
-        color(2);
+        setTextColor(White);
+        setTextColor(2);
         gotoxy(46, 16 + i);
         cout << "=>   ";
-        color(7);
         gotoxy(48, 16 + i);
-        color(2);
         cout << opcionesMenuPrincipal[i] << endl;
-        color(7);
       }
       else
       {
@@ -137,24 +137,23 @@ void menu_opcionesAdministrador()
 {
   bool repeat = true;
   int opt = 1;
-  estructura_menu();
   while (repeat)
   {
-    system("CLS");
+    limpiarPantalla();
+    setConsoleBackground(White);
     estructura_menu();
     // Imprimir las opciones
     for (int i = 0; i < numAdmin; i++)
     {
+      setTextColor(0);
       if (i == opt - 1)
       {
+        setTextColor(White);
         color(2);
         gotoxy(46, 15 + i);
         cout << "=>   ";
-        color(7);
         gotoxy(48, 15 + i);
-        color(2);
         cout << opcionesMenuAdministrador[i] << endl;
-        color(7);
       }
       else
       {
@@ -223,24 +222,23 @@ void menu_opcionesGestionLibros()
 {
   bool repeat = true;
   int opt = 1;
-  estructura_menu();
   while (repeat)
   {
-    system("CLS");
+    limpiarPantalla();
+    setConsoleBackground(White);
     estructura_menu();
     // Imprimir las opciones
     for (int i = 0; i < numGestionLibros; i++)
     {
+      color(0);
       if (i == opt - 1)
       {
+        setTextColor(White);
         color(2);
         gotoxy(46, 16 + i);
         cout << "=>   ";
-        color(7);
         gotoxy(48, 16 + i);
-        color(2);
         cout << opcionesMenuGestionLibros[i] << endl;
-        color(7);
       }
       else
       {
@@ -304,24 +302,23 @@ void menu_opcionesGestionUsuarios()
 {
   bool repeat = true;
   int opt = 1;
-  estructura_menu();
   while (repeat)
   {
-    system("CLS");
+    limpiarPantalla();
+    setConsoleBackground(White);
     estructura_menu();
     // Imprimir las opciones
     for (int i = 0; i < numGestionUsuarios; i++)
     {
+      color(0);
       if (i == opt - 1)
       {
+        setTextColor(White);
         color(2);
         gotoxy(46, 16 + i);
         cout << "=>   ";
-        color(7);
         gotoxy(48, 16 + i);
-        color(2);
         cout << opcionesMenuGestionUsuarios[i] << endl;
-        color(7);
       }
       else
       {
@@ -391,24 +388,22 @@ void menu_opcionesGestionPedidos()
 {
   bool repeat = true;
   int opt = 1;
-  estructura_menu();
   while (repeat)
   {
-    system("CLS");
+    limpiarPantalla();
+    setConsoleBackground(White);
     estructura_menu();
     // Imprimir las opciones
     for (int i = 0; i < numGestionPedidos; i++)
     {
+      color(0);
       if (i == opt - 1)
       {
         color(2);
         gotoxy(46, 16 + i);
         cout << "=>   ";
-        color(7);
         gotoxy(48, 16 + i);
-        color(2);
         cout << opcionesMenuGestionPedidos[i] << endl;
-        color(7);
       }
       else
       {
@@ -471,24 +466,22 @@ void menu_opcionesRecepcionista()
 {
   bool repeat = true;
   int opt = 1;
-  estructura_menu();
   while (repeat)
   {
-    system("CLS");
+    limpiarPantalla();
+    setConsoleBackground(White);
     estructura_menu();
     // Imprimir las opciones
     for (int i = 0; i < numRecepcionista; i++)
     {
+      color(0);
       if (i == opt - 1)
       {
         color(2);
         gotoxy(46, 15 + i);
         cout << "=>   ";
-        color(7);
         gotoxy(48, 15 + i);
-        color(2);
         cout << opcionesMenuRecepcionista[i] << endl;
-        color(7);
       }
       else
       {
@@ -564,24 +557,22 @@ void menu_opcionesLaptop()
 {
   bool repeat = true;
   int opt = 1;
-  estructura_menu();
   while (repeat)
   {
-    system("CLS");
+    limpiarPantalla();
+    setConsoleBackground(White);
     estructura_menu();
     // Imprimir las opciones
     for (int i = 0; i < numLaptop; i++)
     {
+      color(0);
       if (i == opt - 1)
       {
         color(2);
         gotoxy(46, 15 + i);
         cout << "=>   ";
-        color(7);
         gotoxy(48, 15 + i);
-        color(2);
         cout << opcionesMenuLaptop[i] << endl;
-        color(7);
       }
       else
       {
@@ -649,24 +640,22 @@ void menu_opcionesCliente()
 {
   bool repeat = true;
   int opt = 1;
-  estructura_menu();
   while (repeat)
   {
-    system("CLS");
+    limpiarPantalla();
+    setConsoleBackground(White);
     estructura_menu();
     // Imprimir las opciones
     for (int i = 0; i < numCliente; i++)
     {
+      color(0);
       if (i == opt - 1)
       {
         color(2);
         gotoxy(46, 15 + i);
         cout << "=>   ";
-        color(7);
         gotoxy(48, 15 + i);
-        color(2);
         cout << opcionesMenuCliente[i] << endl;
-        color(7);
       }
       else
       {
@@ -737,24 +726,22 @@ void menu_opcionesGestionLaptops()
 {
   bool repeat = true;
   int opt = 1;
-  estructura_menu();
   while (repeat)
   {
-    system("CLS");
+    limpiarPantalla();
+    setConsoleBackground(White);
     estructura_menu();
     // Imprimir las opciones
     for (int i = 0; i < numGestionLaptops; i++)
     {
+      color(0);
       if (i == opt - 1)
       {
         color(2);
         gotoxy(46, 16 + i);
         cout << "=>   ";
-        color(7);
         gotoxy(48, 16 + i);
-        color(2);
         cout << opcionesMenuGestionLaptops[i] << endl;
-        color(7);
       }
       else
       {

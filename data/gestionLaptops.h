@@ -49,7 +49,7 @@ Laptop *topPilaLaptops(PilaLaptops *pila)
 int sizePilaLaptops(PilaLaptops *pila)
 {
     return pila->longitud;
-}
+}   
 
 // Completo
 void popPilaLaptops(PilaLaptops *pila)
@@ -68,7 +68,7 @@ void mostrarPilaLaptops(PilaLaptops *pila)
 {
     system("CLS");
     estructura_menu();
-    Lista listaUsuarios = leerUsuariosCSV("usuarios.csv");
+    Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
     NodoLaptops *actual = pila->cima;
     gotoxy(50, 12);
     color(2);
@@ -168,7 +168,7 @@ void mostrarPilaLaptops(PilaLaptops *pila)
 void gestionLaptops_registrarLaptop()
 {
     PilaLaptops *pila = new PilaLaptops();
-    leerLaptopsCSV(pila, "laptops.csv");
+    leerLaptopsCSV(pila, "output/laptops.csv");
     char respuesta[10];
     int aux = 1;
     do
@@ -177,7 +177,7 @@ void gestionLaptops_registrarLaptop()
         estructura_menu();
         Laptop *laptop = new Laptop();
 
-        laptop->id_laptop = contarFilasCSV("laptops.csv") + aux;
+        laptop->id_laptop = contarFilasCSV("output/laptops.csv") + aux;
         aux++;
         laptop->id_cliente = 0;
         laptop->estado = 1;
@@ -206,8 +206,8 @@ void gestionLaptops_registrarLaptop()
 
     } while (respuesta[0] == 's' || respuesta[0] == 'S');
 
-    limpiarCSV("laptops.csv");
-    guardar_CSV(pila, "laptops.csv");
+    limpiarCSV("output/laptops.csv");
+    guardar_CSV(pila, "output/laptops.csv");
 }
 
 // Completo
@@ -305,7 +305,7 @@ void prestarLaptop(PilaLaptops *pila)
     int tamanoDespues;
     int tamanoAntes = sizePilaLaptops(pila);
     Laptop laptopsPrestadas[tamanoAntes] = {};
-    Lista listaUsuarios = leerUsuariosCSV("usuarios.csv");
+    Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
 
     gotoxy(35, 27);
     color(2);
@@ -370,8 +370,8 @@ void prestarLaptop(PilaLaptops *pila)
             }
 
             mostrarPilaLaptops(pila);
-            limpiarCSV("laptops.csv");
-            guardar_CSV(pila, "laptops.csv");
+            limpiarCSV("output/laptops.csv");
+            guardar_CSV(pila, "output/laptops.csv");
         }
     }
     else
@@ -444,8 +444,8 @@ void devolverLaptop(PilaLaptops *pila)
         cout << "     No coincide con ningun DNI de los clientes registrados...";
         color(7);
     }
-    limpiarCSV("laptops.csv");        // Limpiar el archivo CSV
-    guardar_CSV(pila, "laptops.csv"); // Guardar el nuevo estado de la pila en el CSV
+    limpiarCSV("output/laptops.csv");        // Limpiar el archivo CSV
+    guardar_CSV(pila, "output/laptops.csv"); // Guardar el nuevo estado de la pila en el CSV
 }
 
 void restaurarLaptop(PilaLaptops *pila) {
@@ -474,8 +474,8 @@ void restaurarLaptop(PilaLaptops *pila) {
     }
     
     // Actualizar el archivo CSV después de restaurar la laptop
-    limpiarCSV("laptops.csv");
-    guardar_CSV(pila, "laptops.csv");
+    limpiarCSV("output/laptops.csv");
+    guardar_CSV(pila, "output/laptops.csv");
 
     getch();
 }
@@ -506,8 +506,8 @@ void marcarLaptopFueraDeServicio(PilaLaptops *pila)
     {
         cout << "No hay laptops disponibles para cambiar el estado." << endl;
     }
-    limpiarCSV("laptops.csv");
-    guardar_CSV(pila, "laptops.csv");
+    limpiarCSV("output/laptops.csv");
+    guardar_CSV(pila, "output/laptops.csv");
 
     getch();
 }
