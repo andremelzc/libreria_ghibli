@@ -7,6 +7,7 @@
 #include "../servicio/iniciarSesion.h"
 #include "../data/gestionLaptops.h"
 #include "../data/prestamoLibro.h"
+#include "../data/carritoLibro.h"
 #include "../data/historialYEstadisticaLibros.h"
 
 // Menu de opciones inicial
