@@ -125,7 +125,7 @@ void mostrarHistorial(){
     color(7);
     cin >> id;
     cout << "el error esta ";
-    colaHistorial historial = cargarHistorialxID("pedidos.csv",id);
+    colaHistorial historial = cargarHistorialxID("output/pedidos.csv",id);
     cout << "aqui";
     NodoPedidos *actual = desencolarHistorial(historial);
     int contador = 0;
@@ -134,7 +134,7 @@ void mostrarHistorial(){
     
 
     cout << "el error esta ";
-    Lista listaUsuarios = leerUsuariosCSV("usuarios.csv");
+    Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
     cout << "aqui";
     gotoxy(40, 12);
     color(2);

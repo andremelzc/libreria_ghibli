@@ -17,34 +17,39 @@ void inicioSesion(int &tipo, bool &sesion, int &id)
 
     string nombre, contra, respuesta;
 
-    system("CLS");
-    estructura_menu();
+    limpiarPantalla();
+    setConsoleBackground(White);
+    dibujarTitulo(27, 0, 2, letras);
+    estructura_menu2(16, 103, 11, 26);
     gotoxy(52, 12);
-    color(2);
+    setTextColor(2);
     cout << "Inicio de sesion";
     gotoxy(36, 14);
     cout << "Usuario: ";
-    color(7);
+    setTextColor(0);
     getline(cin, nombre);
     gotoxy(36, 15);
-    color(2);
+    setTextColor(2);
     cout << "Contraseña: ";
-    color(7);
+    setTextColor(0);
     getline(cin, contra);
 
     sesion = verificacionInicioSesion(nombre, contra, tipo, id);
-   
+    
     if (sesion)
     {
         gotoxy(36, 17);
-        color(2);
+        setTextColor(2);
         cout << "Inicio de Sesion exitoso!" << endl;
-        system("pause>0");
+        pausa();
+        ejecutarGradienteDoble(150);
     }
 }
 
 bool verificacionInicioSesion(string nombre_usuario, string contraseña_usuario, int &tipo, int &dni)
 {
+    // Verificando con los puntitos
+    mostrarVerificando(36, 17);
     bool taActivo = false;
     // Debo determinar si Existe
     if (verificarUsuarioEnCSV(nombre_usuario))

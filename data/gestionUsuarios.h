@@ -103,7 +103,7 @@ void gestionUsuarios_registrarUsuario()
 
     } while (respuesta[0] == 's' || respuesta[0] == 'S');
 
-    guardar_CSV(lista, "usuarios.csv");
+    guardar_CSV(lista, "output/usuarios.csv");
 }
 
 // Registrar usuario (vista recepcionista y cliente)
@@ -167,7 +167,7 @@ void menuInicio_registrarUsuario()
 
     insertarFinal(lista, usuario);
 
-    guardar_CSV(lista, "usuarios.csv");
+    guardar_CSV(lista, "output/usuarios.csv");
 }
 
 // Insertar un usuario al final de la lista enlazada
@@ -282,7 +282,7 @@ void gestionUsuario_modificarUsuario()
     getline(cin, dni);
 
     Lista listaUsuarios;
-    listaUsuarios = leerUsuariosCSV("usuarios.csv");
+    listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
 
     Nodo *actual = listaUsuarios.cabeza;
 
@@ -463,8 +463,8 @@ void gestionUsuario_modificarUsuario()
         actual = actual->siguiente;
     }
 
-    limpiarCSV("usuarios.csv");
-    guardar_CSV(&listaUsuarios, "usuarios.csv");
+    limpiarCSV("output/usuarios.csv");
+    guardar_CSV(&listaUsuarios, "output/usuarios.csv");
 
     gotoxy(36, 22);
     color(2);
@@ -488,7 +488,7 @@ void activarMembresi()
     getline(cin, dni);
 
     Lista listaUsuarios;
-    listaUsuarios = leerUsuariosCSV("usuarios.csv");
+    listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
 
     Nodo *actual = listaUsuarios.cabeza;
 
@@ -536,8 +536,8 @@ void activarMembresi()
         }
         actual = actual->siguiente;
     }
-    limpiarCSV("usuarios.csv");
-    guardar_CSV(&listaUsuarios, "usuarios.csv");
+    limpiarCSV("output/usuarios.csv");
+    guardar_CSV(&listaUsuarios, "output/usuarios.csv");
 
     system("pause>0");
 }
@@ -621,7 +621,7 @@ Lista leerUsuariosCSV(string nombreArchivo)
 // Función para actualizar estado de membresia
 void actualizarMembresiaUsuarios(){
     Lista listaUsuarios;
-    listaUsuarios = leerUsuariosCSV("usuarios.csv");
+    listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
 
     Nodo *actual = listaUsuarios.cabeza;
     time_t t = time(0);
@@ -645,8 +645,8 @@ void actualizarMembresiaUsuarios(){
         }
         actual = actual->siguiente;
     }
-    limpiarCSV("usuarios.csv");
-    guardar_CSV(&listaUsuarios, "usuarios.csv");
+    limpiarCSV("output/usuarios.csv");
+    guardar_CSV(&listaUsuarios, "output/usuarios.csv");
 }
 
 // Muestra un usuario al ingresar su DNI

@@ -210,7 +210,7 @@ bool verificarMembresiaYMax(Lista &Usuarios, int id){ //verifica que tengas memb
 
 void modificarCantPrestada(int idUsuario){
     Lista listaUsuarios;
-    listaUsuarios = leerUsuariosCSV("usuarios.csv");
+    listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
 
     Nodo *actual = listaUsuarios.cabeza;
     
@@ -220,8 +220,8 @@ void modificarCantPrestada(int idUsuario){
         }
         actual = actual->siguiente;
     }
-    limpiarCSV("usuarios.csv");
-    guardar_CSV(&listaUsuarios, "usuarios.csv");
+    limpiarCSV("output/usuarios.csv");
+    guardar_CSV(&listaUsuarios, "output/usuarios.csv");
 }
 
 void adicionarCampoPedido(int id_usuariologeado){
@@ -236,7 +236,7 @@ void adicionarCampoPedido(int id_usuariologeado){
         system("CLS");
         estructura_menu();
         Pedidos *pedido = new Pedidos();
-        pedido->ID_pedido = countLinesFile("Pedidos.csv",i);
+        pedido->ID_pedido = countLinesFile("output/pedidos.csv",i);
         gotoxy(36, 11);
         color(2);
         cout << "a continuación confirme que desea realizar un pedido (s/n)" << endl;
@@ -255,7 +255,7 @@ void adicionarCampoPedido(int id_usuariologeado){
         cout << id_usuariologeado;
         pedido->ID_usuario = id_usuariologeado; 
 
-        Lista listaUsuarios = leerUsuariosCSV("usuarios.csv"); //cargando lista de usuarios
+        Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv"); //cargando lista de usuarios
         //cout << endl<< "comprobando q todo esta bien"; 
         if(!(verificarMembresiaYMax(listaUsuarios, id_usuariologeado))){ //si es falso volvera a preguntar si deseas hacer una peticion
             //cout << endl<< "comprobando q todo esta bien 2"; 
@@ -275,7 +275,7 @@ void adicionarCampoPedido(int id_usuariologeado){
         color(7);
         cin.ignore();
         cin >> pedido->ID_libro;
-        ListaLibros libros = leerLibrosCSV("libros.csv");
+        ListaLibros libros = leerLibrosCSV("output/libros.csv");
         bool find = mostrarLibroXidCopy(libros, pedido->ID_libro);
         if(find){
             char check;
@@ -323,7 +323,7 @@ void adicionarCampoPedido(int id_usuariologeado){
         cin >> respuesta;
     }while(respuesta[0] =='s'||respuesta[0] =='S');
 
-    guardar_CSV_Pedido(listaPedido, "Pedidos.csv");
+    guardar_CSV_Pedido(listaPedido, "output/pedidos.csv");
 }
 
 fecha convertirFecha(const string& campo) {
@@ -417,11 +417,11 @@ fecha obtenerFechaActual() {
 void gestionarpedido(){
     
     Lista lista;
-    lista = leerUsuariosCSV("usuarios.csv");
+    lista = leerUsuariosCSV("output/usuarios.csv");
     ListaLibros listaLibros;
-    listaLibros = leerLibrosCSV("libros.csv");
+    listaLibros = leerLibrosCSV("output/libros.csv");
     ListaPedidos listaPedidos;
-    listaPedidos  = leerPedidosDesdeCSV("pedidos.csv");
+    listaPedidos  = leerPedidosDesdeCSV("output/pedidos.csv");
     
     string dni;
     cout << "Ingrese el DNI del usuario: ";
@@ -487,7 +487,7 @@ void gestionarpedido(){
     if (!pedidoEncontrado) {
         cout << "No hay pedidos solicitados para este usuario." << endl;
     }
-    guardar_CSV_PedidoReferencia(listaPedidos,"pedidos.csv");
+    guardar_CSV_PedidoReferencia(listaPedidos,"output/pedidos.csv");
     system("PAUSE");
     
 }
