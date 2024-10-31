@@ -109,6 +109,7 @@ struct Carritos{
     int id_producto;
     string fecha;
     int cantidad;
+    int estado;
 };
 
 struct NodoCarritos{

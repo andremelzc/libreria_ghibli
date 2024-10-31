@@ -701,7 +701,7 @@ nodoLibros* buscarLibroPorID(ListaLibros& listaLibros, int idLibro) {
     }
     return nullptr;  // Libro no encontrado
 }
-//Miguel:tmb presente en el codigo de Fabri
+/*//Miguel:tmb presente en el codigo de Fabri
 int countLinesFiles(string nombreArchivo){
     ifstream archivo(nombreArchivo);
     string linea;
@@ -757,5 +757,5 @@ void agregarCarrito(int id_usuario){
         
 
 }
-
+*/
 
