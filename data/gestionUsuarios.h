@@ -25,60 +25,62 @@ void gestionUsuarios_registrarUsuario()
     char respuesta[10];
     do
     {
-        system("CLS");
-        estructura_menu();
+        limpiarPantalla();
+        setConsoleBackground(White);
+        dibujarTitulo(27, 0, 2, letras);
+        estructura_menu2(16, 103, 10, 27);
         Usuario *usuario = new Usuario();
         usuario->estadoUsuario = 1;
         gotoxy(51, 12);
         color(2);
         cout << "Registro de usuario";
-        color(7);
+        color(0);
         gotoxy(36, 14);
         color(2);
         cout << "Tipo del usuario (2, 1 o 0): ";
-        color(7);
+        color(0);
         cin >> usuario->tipo;
         gotoxy(36, 15);
         color(2);
         cout << "DNI: ";
-        color(7);
+        color(0);
         cin.ignore();
         getline(cin, usuario->ID_Usuario);
         gotoxy(36, 16);
         color(2);
         cout << "Nombre de usuario: ";
-        color(7);
+        color(0);
         getline(cin, usuario->usuario);
         gotoxy(36, 17);
         color(2);
         cout << "Contrasena: ";
-        color(7);
+        color(0);
         getline(cin, usuario->contrasena);
         gotoxy(36, 18);
         color(2);
         cout << "Nombres: ";
-        color(7);
+        color(0);
         getline(cin, usuario->nombre);
         gotoxy(36, 19);
         color(2);
         cout << "Apellidos: ";
-        color(7);
+        color(0);
         getline(cin, usuario->apellidos);
         gotoxy(36, 20);
         color(2);
         cout << "Sexo (F = femenino o M = masculino): ";
-        color(7);
+        color(0);
         cin >> usuario->genero;
         gotoxy(36, 21);
         color(2);
         cout << "Correo electronico: ";
-        color(7);
+        color(0);
         cin.ignore();
         getline(cin, usuario->correoElectronico);
         gotoxy(36, 22);
         color(2);
         cout << "Número celular (9 digitos): ";
-        color(7);
+        color(0);
         getline(cin, usuario->telefono);
 
         if (usuario->tipo == 0)
@@ -95,10 +97,13 @@ void gestionUsuarios_registrarUsuario()
         usuario->librosPrestados = 0;
 
         insertarFinal(lista, usuario);
-        gotoxy(36, 24);
         color(2);
+        dibujarTextoPuntos(36, 24, "Registrando usuario");
+        gotoxy(36, 24);
+        cout << "Usuario registrado con exito!";
+        gotoxy(36, 26);
         cout << "Desea registrar otro usuario? (s/n): ";
-        color(7);
+        color(0);
         cin >> respuesta;
 
     } while (respuesta[0] == 's' || respuesta[0] == 'S');
@@ -112,60 +117,67 @@ void menuInicio_registrarUsuario()
     Lista *lista = new Lista();
     char respuesta[10];
 
-    system("CLS");
-    estructura_menu();
+    limpiarPantalla();
+    setConsoleBackground(White);
+    dibujarTitulo(27, 0, 2, letras);
+    estructura_menu2(16, 103, 10, 27);
     Usuario *usuario = new Usuario();
     usuario->estadoUsuario = 1;
     gotoxy(51, 12);
     color(2);
     cout << "Registro de usuario";
-    color(7);
+    color(0);
     usuario->tipo = 0;
     fflush(stdin);
     gotoxy(36, 14);
     color(2);
     cout << "DNI: ";
-    color(7);
+    color(0);
     getline(cin, usuario->ID_Usuario);
     gotoxy(36, 15);
     fflush(stdin);
     color(2);
     cout << "Nombre de usuario: ";
-    color(7);
+    color(0);
     getline(cin, usuario->usuario);
     gotoxy(36, 16);
     color(2);
     cout << "Contrasena: ";
-    color(7);
+    color(0);
     getline(cin, usuario->contrasena);
     gotoxy(36, 17);
     color(2);
     cout << "Nombres: ";
-    color(7);
+    color(0);
     getline(cin, usuario->nombre);
     gotoxy(36, 18);
     color(2);
     cout << "Apellidos: ";
-    color(7);
+    color(0);
     getline(cin, usuario->apellidos);
     gotoxy(36, 19);
     color(2);
     cout << "Sexo (F = femenino o M = masculino): ";
-    color(7);
+    color(0);
     cin >> usuario->genero;
     gotoxy(36, 20);
     color(2);
     cout << "Correo electronico: ";
-    color(7);
+    color(0);
     cin.ignore();
     getline(cin, usuario->correoElectronico);
     gotoxy(36, 21);
     color(2);
     cout << "Número celular (9 digitos): ";
-    color(7);
+    color(0);
     getline(cin, usuario->telefono);
 
     insertarFinal(lista, usuario);
+
+    color(2);
+    dibujarTextoPuntos(36, 24, "Registrando usuario");
+    gotoxy(36, 24);
+    cout << "Usuario registrado con exito!";
 
     guardar_CSV(lista, "output/usuarios.csv");
 }
@@ -217,7 +229,7 @@ void guardar_CSV(Lista *lista, string nombreArchivo)
         // cout << "estoy datos en el archivo .csv";
         // system("PAUSE");
         Usuario usuario = actual->usuario;
-        
+
         archivo << usuario.estadoUsuario << "," << usuario.tipo << "," << usuario.ID_Usuario << "," << usuario.usuario << "," << usuario.contrasena << "," << usuario.nombre << "," << usuario.apellidos << "," << usuario.genero << ","
                 << usuario.correoElectronico << "," << usuario.telefono << "," << usuario.membresia << "," << usuario.librosPrestados << "," << usuario.fechaInicio << "," << usuario.fechaFinal << "\n";
 
@@ -244,7 +256,7 @@ void mostrarUsuarios(Lista &lista)
     cout << "Apellidos";
     gotoxy(74, 14);
     cout << "Usuario";
-    color(7);
+    color(0);
     while (actual != nullptr)
     {
 
@@ -270,14 +282,16 @@ void gestionUsuario_modificarUsuario()
     string respuesta;
     int opcion;
 
-    system("CLS");
-    estructura_menu();
+    limpiarPantalla();
+    setConsoleBackground(White);
+    dibujarTitulo(27, 0, 2, letras);
+    estructura_menu2(16, 103, 10, 27);
     color(2);
     gotoxy(52, 12);
     cout << "Modificando Usuario";
     gotoxy(36, 14);
     cout << "DNI del usuario: ";
-    color(7);
+    color(0);
     fflush(stdin);
     getline(cin, dni);
 
@@ -296,26 +310,28 @@ void gestionUsuario_modificarUsuario()
             gotoxy(36, 16);
             color(2);
             cout << "Usuario encontrado: ";
-            color(7);
+            color(0);
             cout << actual->usuario.nombre << " " << actual->usuario.apellidos << endl;
             gotoxy(36, 17);
             color(2);
             cout << "Desea modificar datos de este usuario? (s/n): ";
-            color(7);
+            color(0);
             fflush(stdin);
             getline(cin, respuesta);
             cout << respuesta;
             if (respuesta == "s" || respuesta == "S")
             {
-                system("CLS");
-                estructura_menu();
+                limpiarPantalla();
+                setConsoleBackground(White);
+                dibujarTitulo(27, 0, 2, letras);
+                estructura_menu2(16, 103, 10, 27);
                 color(2);
                 gotoxy(52, 12);
                 cout << "Modificando Usuario";
                 gotoxy(36, 14);
                 cout << "Que campo desea modificar?";
                 gotoxy(36, 15);
-                color(7);
+                color(0);
                 cout << "1. Estado";
                 gotoxy(50, 15);
                 cout << "2. Tipo";
@@ -338,7 +354,7 @@ void gestionUsuario_modificarUsuario()
                 gotoxy(36, 18);
                 color(2);
                 cout << "--> ";
-                color(7);
+                color(0);
                 cin >> opcion;
                 cin.ignore();
 
@@ -353,7 +369,7 @@ void gestionUsuario_modificarUsuario()
                     gotoxy(36, 20);
                     color(2);
                     cout << "Nuevo estado (0: desactivado, 1: activado): ";
-                    color(7);
+                    color(0);
                     fflush(stdin);
                     cin >> datoInt;
                     cin.ignore();
@@ -365,7 +381,7 @@ void gestionUsuario_modificarUsuario()
                     gotoxy(36, 20);
                     color(2);
                     cout << "Nuevo tipo (0, 1, 2): ";
-                    color(7);
+                    color(0);
                     fflush(stdin);
                     cin >> datoInt;
                     cin.ignore();
@@ -377,7 +393,7 @@ void gestionUsuario_modificarUsuario()
                     gotoxy(36, 20);
                     color(2);
                     cout << "Nuevo DNI: ";
-                    color(7);
+                    color(0);
                     fflush(stdin);
                     getline(cin, datoString);
                     actual->usuario.ID_Usuario = datoString;
@@ -387,7 +403,7 @@ void gestionUsuario_modificarUsuario()
                     gotoxy(36, 20);
                     color(2);
                     cout << "Nuevo usuario: ";
-                    color(7);
+                    color(0);
                     fflush(stdin);
                     getline(cin, datoString);
                     actual->usuario.usuario = datoString;
@@ -397,7 +413,7 @@ void gestionUsuario_modificarUsuario()
                     gotoxy(36, 20);
                     color(2);
                     cout << "Nueva contraseña: ";
-                    color(7);
+                    color(0);
                     fflush(stdin);
                     getline(cin, datoString);
                     actual->usuario.contrasena = datoString;
@@ -407,7 +423,7 @@ void gestionUsuario_modificarUsuario()
                     gotoxy(36, 20);
                     color(2);
                     cout << "Nuevo nombre: ";
-                    color(7);
+                    color(0);
                     fflush(stdin);
                     getline(cin, datoString);
                     actual->usuario.nombre = datoString;
@@ -417,7 +433,7 @@ void gestionUsuario_modificarUsuario()
                     gotoxy(36, 20);
                     color(2);
                     cout << "Nuevo apellido: ";
-                    color(7);
+                    color(0);
                     fflush(stdin);
                     getline(cin, datoString);
                     actual->usuario.apellidos = datoString;
@@ -427,7 +443,7 @@ void gestionUsuario_modificarUsuario()
                     gotoxy(36, 20);
                     color(2);
                     cout << "Nuevo género: ";
-                    color(7);
+                    color(0);
                     fflush(stdin);
                     getline(cin, datoString);
                     actual->usuario.genero = datoString[0];
@@ -437,7 +453,7 @@ void gestionUsuario_modificarUsuario()
                     gotoxy(36, 20);
                     color(2);
                     cout << "Nuevo correo: ";
-                    color(7);
+                    color(0);
                     fflush(stdin);
                     getline(cin, datoString);
                     actual->usuario.correoElectronico = datoString;
@@ -447,7 +463,7 @@ void gestionUsuario_modificarUsuario()
                     gotoxy(36, 20);
                     color(2);
                     cout << "Nuevo teléfono: ";
-                    color(7);
+                    color(0);
                     fflush(stdin);
                     getline(cin, datoString);
                     actual->usuario.telefono = datoString;
@@ -477,14 +493,16 @@ void activarMembresi()
 {
     string dni;
 
-    system("CLS");
-    estructura_menu();
+    limpiarPantalla();
+    setConsoleBackground(White);
+    dibujarTitulo(27, 0, 2, letras);
+    estructura_menu2(16, 103, 10, 27);
     gotoxy(52, 12);
     color(2);
     cout << "Activando membresia";
     gotoxy(36, 14);
     cout << "DNI del usuario: ";
-    color(7);
+    color(0);
     getline(cin, dni);
 
     Lista listaUsuarios;
@@ -500,12 +518,12 @@ void activarMembresi()
             gotoxy(36, 16);
             color(2);
             cout << "Usuario encontrado: ";
-            color(7);
+            color(0);
             cout << actual->usuario.nombre << " " << actual->usuario.apellidos << endl;
             gotoxy(36, 17);
             color(2);
             cout << "Desea activar la membresia? (s/n): ";
-            color(7);
+            color(0);
             fflush(stdin);
             getline(cin, respuesta);
             cout << respuesta;
@@ -517,8 +535,8 @@ void activarMembresi()
                 tm *localTime = localtime(&t);
                 // Fecha de inicio
                 string diaStr = to_string(localTime->tm_mday);
-                string mesStr = to_string(localTime->tm_mon + 1);     
-                string añoStr = to_string(localTime->tm_year + 1900); 
+                string mesStr = to_string(localTime->tm_mon + 1);
+                string añoStr = to_string(localTime->tm_year + 1900);
                 fecha = diaStr + "/" + mesStr + "/" + añoStr;
                 actual->usuario.fechaInicio = fecha;
                 // Fecha de fin
@@ -578,10 +596,10 @@ Lista leerUsuariosCSV(string nombreArchivo)
             Usuario usuario;
 
             // Suponiendo que el CSV tiene los campos en el siguiente orden:
-            // estado, tipo, id_usuario (dni), usuario, contrasena, nombre, apellidos, genero, correo electronico, telefono, membresia, libros prestados, fecha inicio, fecha fin, 
+            // estado, tipo, id_usuario (dni), usuario, contrasena, nombre, apellidos, genero, correo electronico, telefono, membresia, libros prestados, fecha inicio, fecha fin,
             getline(ss, dato, ',');
             usuario.estadoUsuario = stoi(dato); // Convertir a entero
-            
+
             getline(ss, dato, ',');
             usuario.tipo = stoi(dato); // Convertir a entero
 
@@ -601,11 +619,10 @@ Lista leerUsuariosCSV(string nombreArchivo)
 
             getline(ss, dato, ',');
             usuario.librosPrestados = stoi(dato); // Convertir a entero
-            
+
             getline(ss, usuario.fechaInicio, ',');
             getline(ss, usuario.fechaFinal, ',');
-            
-            
+
             // Insertar el usuario en la lista enlazada
             insertarFinal(&listaDeUsuarios, &usuario);
         }
@@ -619,7 +636,8 @@ Lista leerUsuariosCSV(string nombreArchivo)
 }
 
 // Función para actualizar estado de membresia
-void actualizarMembresiaUsuarios(){
+void actualizarMembresiaUsuarios()
+{
     Lista listaUsuarios;
     listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
 
@@ -628,8 +646,8 @@ void actualizarMembresiaUsuarios(){
     tm *localTime = localtime(&t);
     string fecha;
     string diaStr = to_string(localTime->tm_mday);
-    string mesStr = to_string(localTime->tm_mon + 1);     
-    string añoStr = to_string(localTime->tm_year + 1900); 
+    string mesStr = to_string(localTime->tm_mon + 1);
+    string añoStr = to_string(localTime->tm_year + 1900);
     fecha = diaStr + "/" + mesStr + "/" + añoStr;
 
     while (actual != nullptr)
@@ -650,57 +668,60 @@ void actualizarMembresiaUsuarios(){
 }
 
 // Muestra un usuario al ingresar su DNI
-bool mostrarUsuarioXDNI(Lista &listaUsuarios, const string &dni) {
+bool mostrarUsuarioXDNI(Lista &listaUsuarios, const string &dni)
+{
     Nodo *actual = listaUsuarios.cabeza; // Apuntar al primer nodo de la lista
 
     // Recorrer la lista buscando el usuario con el DNI indicado
-    while (actual != nullptr) {
-        if (actual->usuario.ID_Usuario == dni) { // Si el DNI del usuario coincide
+    while (actual != nullptr)
+    {
+        if (actual->usuario.ID_Usuario == dni)
+        { // Si el DNI del usuario coincide
             // Mostrar los datos del usuario
             gotoxy(36, 16);
             color(2);
             cout << "1. Nombre: ";
-            color(7);
+            color(0);
             cout << actual->usuario.nombre;
             gotoxy(36, 17);
             color(2);
             cout << "2. Apellidos: ";
-            color(7);
+            color(0);
             cout << actual->usuario.apellidos;
             gotoxy(36, 18);
             color(2);
             cout << "3. Genero: ";
-            color(7);
+            color(0);
             cout << actual->usuario.genero;
             gotoxy(36, 19);
             color(2);
             cout << "4. Correo Electronico: ";
-            color(7);
+            color(0);
             cout << actual->usuario.correoElectronico;
             gotoxy(36, 20);
             color(2);
             cout << "5. Telefono: ";
-            color(7);
+            color(0);
             cout << actual->usuario.telefono;
             gotoxy(36, 21);
             color(2);
             cout << "6. Usuario: ";
-            color(7);
+            color(0);
             cout << actual->usuario.usuario;
             gotoxy(36, 22);
             color(2);
             cout << "7. Estado: ";
-            color(7);
+            color(0);
             cout << (actual->usuario.estadoUsuario == 1 ? "Activo" : "Inactivo");
             gotoxy(36, 23);
             color(2);
             cout << "8. Membresia: ";
-            color(7);
+            color(0);
             cout << (actual->usuario.membresia == "1" ? "Activa" : "Inactiva");
             gotoxy(36, 24);
             color(2);
             cout << "9. Libros Prestados: ";
-            color(7);
+            color(0);
             cout << actual->usuario.librosPrestados;
             return true; // Retorna true si el usuario fue encontrado
             break;
@@ -714,13 +735,16 @@ bool mostrarUsuarioXDNI(Lista &listaUsuarios, const string &dni) {
 }
 
 // Función para buscar un usuario por DNI
-Nodo* buscarUsuarioPorDNI(Lista& listaUsuarios, const string& dni) {
-    Nodo* actual = listaUsuarios.cabeza;
-    while (actual != nullptr) {
-        if (actual->usuario.ID_Usuario == dni) {
-            return actual;  // Usuario encontrado
+Nodo *buscarUsuarioPorDNI(Lista &listaUsuarios, const string &dni)
+{
+    Nodo *actual = listaUsuarios.cabeza;
+    while (actual != nullptr)
+    {
+        if (actual->usuario.ID_Usuario == dni)
+        {
+            return actual; // Usuario encontrado
         }
         actual = actual->siguiente;
     }
-    return nullptr;  // Usuario no encontrado
+    return nullptr; // Usuario no encontrado
 }

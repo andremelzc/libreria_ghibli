@@ -44,14 +44,14 @@ void menu_opcionesPrincipal()
       {
         setTextColor(White);
         setTextColor(2);
-        gotoxy(46, 16 + i);
+        gotoxy(46, 17 + i);
         cout << "=>   ";
-        gotoxy(48, 16 + i);
+        gotoxy(48, 17 + i);
         cout << opcionesMenuPrincipal[i] << endl;
       }
       else
       {
-        gotoxy(53, 16 + i);
+        gotoxy(53, 17 + i);
         cout << "   " << opcionesMenuPrincipal[i] << endl;
       }
     }
@@ -142,7 +142,8 @@ void menu_opcionesAdministrador()
   {
     limpiarPantalla();
     setConsoleBackground(White);
-    estructura_menu();
+    dibujarTitulo(27, 0, 2, letras);
+    estructura_menu2(16, 103, 10, 27);
     // Imprimir las opciones
     for (int i = 0; i < numAdmin; i++)
     {
@@ -151,14 +152,14 @@ void menu_opcionesAdministrador()
       {
         setTextColor(White);
         color(2);
-        gotoxy(46, 15 + i);
+        gotoxy(46, 16 + i);
         cout << "=>   ";
-        gotoxy(48, 15 + i);
+        gotoxy(48, 16 + i);
         cout << opcionesMenuAdministrador[i] << endl;
       }
       else
       {
-        gotoxy(53, 15 + i);
+        gotoxy(53, 16 + i);
         cout << "   " << opcionesMenuAdministrador[i] << endl;
       }
     }
@@ -227,7 +228,8 @@ void menu_opcionesGestionLibros()
   {
     limpiarPantalla();
     setConsoleBackground(White);
-    estructura_menu();
+    dibujarTitulo(27, 0, 2, letras);
+    estructura_menu2(16, 103, 10, 27);
     // Imprimir las opciones
     for (int i = 0; i < numGestionLibros; i++)
     {
@@ -307,7 +309,8 @@ void menu_opcionesGestionUsuarios()
   {
     limpiarPantalla();
     setConsoleBackground(White);
-    estructura_menu();
+    dibujarTitulo(27, 0, 2, letras);
+    estructura_menu2(16, 103, 10, 27);
     // Imprimir las opciones
     for (int i = 0; i < numGestionUsuarios; i++)
     {
@@ -347,7 +350,6 @@ void menu_opcionesGestionUsuarios()
       case 1:
       {
         // 1. Registrar usuario
-        estructura_menu();
         gestionUsuarios_registrarUsuario();
         break;
       }
@@ -393,7 +395,8 @@ void menu_opcionesGestionPedidos()
   {
     limpiarPantalla();
     setConsoleBackground(White);
-    estructura_menu();
+    dibujarTitulo(27, 0, 2, letras);
+    estructura_menu2(16, 103, 10, 27);
     // Imprimir las opciones
     for (int i = 0; i < numGestionPedidos; i++)
     {
@@ -562,7 +565,8 @@ void menu_opcionesLaptop()
   {
     limpiarPantalla();
     setConsoleBackground(White);
-    estructura_menu();
+    dibujarTitulo(27, 0, 2, letras);
+    estructura_menu2(16, 103, 10, 27);
     // Imprimir las opciones
     for (int i = 0; i < numLaptop; i++)
     {

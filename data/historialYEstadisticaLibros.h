@@ -122,15 +122,17 @@ void mostrarHistorial(){
     color(2);
     cout << "Ingresa el id del cliente que deseas consultar: "<<endl;
     gotoxy(40, 14);
-    color(7);
+    color(0);
     cin >> id;
     cout << "el error esta ";
     colaHistorial historial = cargarHistorialxID("output/pedidos.csv",id);
     cout << "aqui";
     NodoPedidos *actual = desencolarHistorial(historial);
     int contador = 0;
-    system("CLS");
-    estructura_menu();
+    limpiarPantalla();
+    setConsoleBackground(White);
+    dibujarTitulo(27, 0, 2, letras);
+    estructura_menu2(16, 103, 10, 27);
     
 
     cout << "el error esta ";
@@ -146,7 +148,7 @@ void mostrarHistorial(){
     cout << "Libro: ";
     gotoxy(54, 14);
     cout << "Estado del libro: ";
-    color(7);
+    color(0);
 
     while (actual != nullptr)
     {

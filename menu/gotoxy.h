@@ -467,7 +467,7 @@ void estructura_menu2(int comX, int finX, int comY, int finY)
     }
 }
 
-void mostrarVerificando(int x, int y)
+void dibujarTextoPuntos(int x, int y, string mensaje)
 {
     const int maxPuntos = 3; // Número máximo de puntos a mostrar
     const int delay = 500;   // Tiempo de espera en milisegundos
@@ -477,7 +477,7 @@ void mostrarVerificando(int x, int y)
         setTextColor(White);
         setTextColor(2);
         gotoxy(x,y);
-        cout << "Verificando";
+        cout << mensaje;
 
         // Agregar puntos según la iteración
         for (int j = 0; j <= (i % (maxPuntos + 1)); ++j)

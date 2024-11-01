@@ -49,7 +49,7 @@ void inicioSesion(int &tipo, bool &sesion, int &id)
 bool verificacionInicioSesion(string nombre_usuario, string contraseña_usuario, int &tipo, int &dni)
 {
     // Verificando con los puntitos
-    mostrarVerificando(36, 17);
+    dibujarTextoPuntos(36, 17, "Verificando");
     bool taActivo = false;
     // Debo determinar si Existe
     if (verificarUsuarioEnCSV(nombre_usuario))
