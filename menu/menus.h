@@ -24,7 +24,7 @@ void menu_opcionesCliente();
 void menu_opcionesLaptop(); // Declaración previa
 
 // Para cuando se inicie sesión
-int id_usuariolog=0;
+int id_usuariolog = 0;
 
 void menu_opcionesPrincipal()
 {
@@ -80,7 +80,6 @@ void menu_opcionesPrincipal()
       }
       case 2:
         // 2. Registrar cuenta
-        estructura_menu();
         menuInicio_registrarUsuario();
         break;
       case 3:
@@ -106,7 +105,6 @@ void menu_opcionesPrincipal()
             menu_opcionesCliente();
           }
         }
-        system("pause>0");
         break;
       case 4:
         // 4. Salir
@@ -126,7 +124,7 @@ vector<string> opcionesMenuAdministrador = {"Gestionar libros",
                                             "Gestionar pedidos",
                                             "Gestionar laptops",
                                             "Ver estadisticas",
-                                            "Salir"};
+                                            "Cerrar sesion"};
 int numAdmin = opcionesMenuAdministrador.size();
 
 void menu_opcionesGestionLibros();   // Declaración previa
@@ -182,19 +180,23 @@ void menu_opcionesAdministrador()
       case 1:
       {
         // 1. Gestionar libros
+        ejecutarGradienteDoble(150);
         menu_opcionesGestionLibros();
         break;
       }
       case 2:
         // 2. Gestionar usuarios
+        ejecutarGradienteDoble(150);
         menu_opcionesGestionUsuarios();
         break;
       case 3:
         // 3. Gestionar pedidos
+        ejecutarGradienteDoble(150);
         menu_opcionesGestionPedidos();
         break;
       case 4:
         // 4. Gestionar laptops
+        ejecutarGradienteDoble(150);
         menu_opcionesGestionLaptops();
         break;
       case 5:
@@ -217,7 +219,7 @@ vector<string> opcionesMenuGestionLibros = {"Registrar libro",
                                             "Modificar libro",
                                             "Aumentar stock",
                                             "Eliminar libro",
-                                            "Salir"};
+                                            "Retroceder"};
 int numGestionLibros = opcionesMenuGestionLibros.size();
 
 void menu_opcionesGestionLibros()
@@ -298,7 +300,7 @@ vector<string> opcionesMenuGestionUsuarios = {"Registrar usuario",
                                               "Modificar usuario",
                                               "Eliminar usuario",
                                               "Leer usuarios",
-                                              "Salir"};
+                                              "Retroceder"};
 int numGestionUsuarios = opcionesMenuGestionUsuarios.size();
 
 void menu_opcionesGestionUsuarios()
@@ -362,6 +364,10 @@ void menu_opcionesGestionUsuarios()
         break;
       case 4:
         // 4. Mostrar usuarios
+        limpiarPantalla();
+        setConsoleBackground(White);
+        dibujarTitulo(27, 0, 2, letras);
+        estructura_menu2(16, 103, 10, 27);
         listaDeUsuarios = leerUsuariosCSV("output/usuarios.csv");
         // Mostrar los usuarios cargados en la lista
         mostrarUsuarios(listaDeUsuarios);
@@ -384,7 +390,7 @@ vector<string> opcionesMenuGestionPedidos = {"Registrar pedido",
                                              "Modificar pedido",
                                              "Eliminar pedido",
                                              "Leer pedidos",
-                                             "Salir"};
+                                             "Retroceder"};
 int numGestionPedidos = opcionesMenuGestionPedidos.size();
 
 void menu_opcionesGestionPedidos()
@@ -463,7 +469,7 @@ vector<string> opcionesMenuRecepcionista = {"Gestionar pedido de libro",
                                             "Registrar cliente",
                                             "Activar membresia",
                                             "Ver historial de cliente",
-                                            "Salir"};
+                                            "Cerrar sesion"};
 int numRecepcionista = opcionesMenuRecepcionista.size();
 
 void menu_opcionesRecepcionista()
@@ -512,19 +518,19 @@ void menu_opcionesRecepcionista()
       case 1:
       {
         // 1. Gestionar pedido de libro
-        system("CLS");
-        estructura_menu();
+        limpiarPantalla();
+        setConsoleBackground(White);
+        dibujarTitulo(27, 0, 2, letras);
+        estructura_menu2(16, 103, 10, 27);
         gestionarpedido();
         break;
       }
       case 2:
         // 2. Gestionar pedido de laptop
-        estructura_menu();
         menu_opcionesLaptop();
         break;
       case 3:
         // 3. Registrar cliente
-        estructura_menu();
         menuInicio_registrarUsuario();
         break;
       case 4:
@@ -533,8 +539,10 @@ void menu_opcionesRecepcionista()
         break;
       case 5:
         // 5. Ver historial de cliente
-        system("CLS");
-        estructura_menu();
+        limpiarPantalla();
+        setConsoleBackground(White);
+        dibujarTitulo(27, 0, 2, letras);
+        estructura_menu2(16, 103, 10, 27);
         mostrarHistorial();
         break;
       case 6:
@@ -632,13 +640,15 @@ void menu_opcionesLaptop()
 }
 
 // Menu de opciones de cliente
-vector<string> opcionesMenuCliente = {"Ver catalogo",
-                                      "Realizar pedido",
-                                      "Ver historial de pedidos",
-                                      "Agregar al Carrito",
-                                      "Ver Carrito",
-                                      "Efectuar Compra",
-                                      "Salir",};
+vector<string> opcionesMenuCliente = {
+    "Ver catalogo",
+    "Realizar pedido",
+    "Ver historial de pedidos",
+    "Agregar al Carrito",
+    "Ver Carrito",
+    "Efectuar Compra",
+    "Cerrar sesion",
+};
 int numCliente = opcionesMenuCliente.size();
 
 void menu_opcionesCliente()
@@ -696,19 +706,19 @@ void menu_opcionesCliente()
       case 2:
         // 2. Realizar pedido
         adicionarCampoPedido(id_usuariolog);
-        //adicionarCampoPedido();
+        // adicionarCampoPedido();
         break;
       case 3:
         // 3. Ver historial de pedidos
         break;
       case 4:
         // 4."Agregar al Carrito", Miguel
-        agregarCarrito(id_usuariolog);                        
-                                      
+        agregarCarrito(id_usuariolog);
+
       case 5:
-         // 5."Ver Carrito",Miguel
+        // 5."Ver Carrito",Miguel
       case 6:
-         // 6."Efectuar Compra",Miguel
+        // 6."Efectuar Compra",Miguel
       case 7:
         repeat = false;
         system("CLS");
@@ -735,7 +745,8 @@ void menu_opcionesGestionLaptops()
   {
     limpiarPantalla();
     setConsoleBackground(White);
-    estructura_menu();
+    dibujarTitulo(27, 0, 2, letras);
+    estructura_menu2(16, 103, 10, 27);
     // Imprimir las opciones
     for (int i = 0; i < numGestionLaptops; i++)
     {

@@ -105,6 +105,7 @@ void gestionUsuarios_registrarUsuario()
         cout << "Desea registrar otro usuario? (s/n): ";
         color(0);
         cin >> respuesta;
+        cin.ignore();
 
     } while (respuesta[0] == 's' || respuesta[0] == 'S');
 
@@ -178,6 +179,7 @@ void menuInicio_registrarUsuario()
     dibujarTextoPuntos(36, 24, "Registrando usuario");
     gotoxy(36, 24);
     cout << "Usuario registrado con exito!";
+    pausa();
 
     guardar_CSV(lista, "output/usuarios.csv");
 }
@@ -237,7 +239,7 @@ void guardar_CSV(Lista *lista, string nombreArchivo)
     }
 
     archivo.close();
-    cout << "Datos guardados en " << nombreArchivo << endl;
+    // cout << "Datos guardados en " << nombreArchivo << endl;
 }
 
 // Mostrar usuarios
@@ -368,6 +370,12 @@ void gestionUsuario_modificarUsuario()
                     // Modificar estado
                     gotoxy(36, 20);
                     color(2);
+                    cout << "Antiguo estado: ";
+                    gotoxy(52, 20);
+                    color(0);
+                    cout << actual->usuario.estadoUsuario;
+                    gotoxy(36, 21);
+                    color(2);
                     cout << "Nuevo estado (0: desactivado, 1: activado): ";
                     color(0);
                     fflush(stdin);
@@ -379,6 +387,12 @@ void gestionUsuario_modificarUsuario()
                 case 2:
                     // Modificar tipo
                     gotoxy(36, 20);
+                    color(2);
+                    cout << "Antiguo tipo: ";
+                    gotoxy(50, 20);
+                    color(0);
+                    cout << actual->usuario.tipo;
+                    gotoxy(36, 21);
                     color(2);
                     cout << "Nuevo tipo (0, 1, 2): ";
                     color(0);
@@ -392,6 +406,12 @@ void gestionUsuario_modificarUsuario()
                     // Modificar DNI
                     gotoxy(36, 20);
                     color(2);
+                    cout << "Antiguo DNI: ";
+                    gotoxy(49, 20);
+                    color(0);
+                    cout << actual->usuario.ID_Usuario;
+                    gotoxy(36, 21);
+                    color(2);
                     cout << "Nuevo DNI: ";
                     color(0);
                     fflush(stdin);
@@ -401,6 +421,12 @@ void gestionUsuario_modificarUsuario()
                 case 4:
                     // Modificar usuario
                     gotoxy(36, 20);
+                    color(2);
+                    cout << "Antiguo usuario: ";
+                    gotoxy(54, 20);
+                    color(0);
+                    cout << actual->usuario.usuario;
+                    gotoxy(36, 21);
                     color(2);
                     cout << "Nuevo usuario: ";
                     color(0);
@@ -412,6 +438,11 @@ void gestionUsuario_modificarUsuario()
                     // Modificar contraseña
                     gotoxy(36, 20);
                     color(2);
+                    cout << "Antigua contraseña: ";
+                    gotoxy(58, 20);
+                    color(0);
+                    cout << actual->usuario.contrasena;
+                    gotoxy(36, 21);
                     cout << "Nueva contraseña: ";
                     color(0);
                     fflush(stdin);
@@ -421,6 +452,12 @@ void gestionUsuario_modificarUsuario()
                 case 6:
                     // Modificar nombre
                     gotoxy(36, 20);
+                    color(2);
+                    cout << "Antiguo nombre: ";
+                    gotoxy(52, 20);
+                    color(0);
+                    cout << actual->usuario.nombre;
+                    gotoxy(36, 21);
                     color(2);
                     cout << "Nuevo nombre: ";
                     color(0);
@@ -432,6 +469,12 @@ void gestionUsuario_modificarUsuario()
                     // Modificar apellido
                     gotoxy(36, 20);
                     color(2);
+                    cout << "Antiguo apellido: ";
+                    gotoxy(54, 20);
+                    color(0);
+                    cout << actual->usuario.apellidos;
+                    gotoxy(36, 21);
+                    color(2);
                     cout << "Nuevo apellido: ";
                     color(0);
                     fflush(stdin);
@@ -441,6 +484,12 @@ void gestionUsuario_modificarUsuario()
                 case 8:
                     // Modificar género
                     gotoxy(36, 20);
+                    color(2);
+                    cout << "Antiguo género: ";
+                    gotoxy(53, 20);
+                    color(0);
+                    cout << actual->usuario.genero;
+                    gotoxy(36, 21);
                     color(2);
                     cout << "Nuevo género: ";
                     color(0);
@@ -452,6 +501,12 @@ void gestionUsuario_modificarUsuario()
                     // Modificar correo
                     gotoxy(36, 20);
                     color(2);
+                    cout << "Antiguo correo: ";
+                    gotoxy(52, 20);
+                    color(0);
+                    cout << actual->usuario.correoElectronico;
+                    gotoxy(36, 21);
+                    color(2);
                     cout << "Nuevo correo: ";
                     color(0);
                     fflush(stdin);
@@ -461,6 +516,12 @@ void gestionUsuario_modificarUsuario()
                 case 10:
                     // Modificar teléfono
                     gotoxy(36, 20);
+                    color(2);
+                    cout << "Antiguo teléfono: ";
+                    gotoxy(55, 20);
+                    color(0);
+                    cout << actual->usuario.telefono;
+                    gotoxy(36, 21);
                     color(2);
                     cout << "Nuevo teléfono: ";
                     color(0);
@@ -482,7 +543,7 @@ void gestionUsuario_modificarUsuario()
     limpiarCSV("output/usuarios.csv");
     guardar_CSV(&listaUsuarios, "output/usuarios.csv");
 
-    gotoxy(36, 22);
+    gotoxy(36, 23);
     color(2);
     cout << "Modificación realizada con éxito";
     system("pause>0");

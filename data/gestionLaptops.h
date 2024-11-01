@@ -70,6 +70,7 @@ void mostrarPilaLaptops(PilaLaptops *pila)
     setConsoleBackground(White);
     dibujarTitulo(27, 0, 2, letras);
     estructura_menu2(16, 103, 10, 27);
+    
     Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
     NodoLaptops *actual = pila->cima;
     gotoxy(50, 12);
@@ -208,6 +209,10 @@ void gestionLaptops_registrarLaptop()
         cin >> respuesta;
         cin.ignore();
 
+        dibujarTextoPuntos(36, 26, "Registrando laptop");
+        gotoxy(36, 26);
+        cout << "Laptop registrada con exito!";
+
     } while (respuesta[0] == 's' || respuesta[0] == 'S');
 
     limpiarCSV("output/laptops.csv");
@@ -302,7 +307,11 @@ void leerLaptopsCSV(PilaLaptops *pila, string nombreArchivo)
 
 void prestarLaptop(PilaLaptops *pila)
 {
-    system("CLS");
+    limpiarPantalla();
+    setConsoleBackground(White);
+    dibujarTitulo(27, 0, 2, letras);
+    estructura_menu2(16, 103, 10, 27);
+
     mostrarPilaLaptops(pila);
 
     int idCliente;
@@ -391,7 +400,11 @@ void prestarLaptop(PilaLaptops *pila)
 
 void devolverLaptop(PilaLaptops *pila)
 {
-    system("CLS");
+    limpiarPantalla();
+    setConsoleBackground(White);
+    dibujarTitulo(27, 0, 2, letras);
+    estructura_menu2(16, 103, 10, 27);
+
     mostrarPilaLaptops(pila);
 
     int idCliente;
@@ -468,7 +481,7 @@ void restaurarLaptop(PilaLaptops *pila)
             // Cambiar el estado a 1 y asignar el id_cliente a 0
             actualCima->laptop.estado = 1;     // Cambiar el estado a 1
             actualCima->laptop.id_cliente = 0; // Asignar un id_cliente de 0 (Sin asignar)
-
+            gotoxy(36, 27);
             cout << "La laptop ha sido restaurada y está ahora en servicio." << endl;
             laptopRestaurada = true; // Indicamos que se ha restaurado una laptop
             break;                   // Salimos del bucle después de restaurar una laptop
@@ -478,6 +491,7 @@ void restaurarLaptop(PilaLaptops *pila)
 
     if (!laptopRestaurada)
     {
+        gotoxy(36, 27);
         cout << "No hay laptops fuera de servicio para restaurar." << endl;
     }
 
@@ -502,7 +516,7 @@ void marcarLaptopFueraDeServicio(PilaLaptops *pila)
         {
             actual->laptop.estado = 0;      // Cambiar el estado a 0
             actual->laptop.id_cliente = -1; // Asignar un valor especial para indicar "Fuera de Servicio"
-
+            gotoxy(36, 27);
             cout << "La laptop ha sido marcada como fuera de servicio." << endl;
             laptopMarcada = true; // Indicamos que se ha marcado una laptop
             break;
@@ -512,6 +526,7 @@ void marcarLaptopFueraDeServicio(PilaLaptops *pila)
 
     if (!laptopMarcada)
     {
+        gotoxy(36, 27);
         cout << "No hay laptops disponibles para cambiar el estado." << endl;
     }
     limpiarCSV("output/laptops.csv");

@@ -42,16 +42,16 @@ void guardar_CSV_Libros(ListaLibros *lista, string nombreArchivo)
 
     if (!filesystem::exists("output/libros.csv"))
     {
-        //std::cerr << "Error: El directorio 'output' no existe." << std::endl;
-        system("PAUSE");
+        // std::cerr << "Error: El directorio 'output' no existe." << std::endl;
+        pausa();
         return;
     }
 
     if (!archivo.is_open())
     {
-        //cout << "No se pudo abrir el archivo. " << nombreArchivo << endl;
+        // cout << "No se pudo abrir el archivo. " << nombreArchivo << endl;
         perror("Error al abrir el archivo");
-        system("PAUSE");
+        pausa();
         return;
     }
 
@@ -80,8 +80,8 @@ void guardar_CSV_Libros(ListaLibros *lista, string nombreArchivo)
     }
 
     archivo.close();
-    //cout << "Datos guardados en " << nombreArchivo << endl;
-    system("PAUSE");
+    // cout << "Datos guardados en " << nombreArchivo << endl;
+    pausa();
 }
 
 // Interacción con el usuario para ingresar datos
@@ -144,12 +144,12 @@ void adicionarCampo()
         insertarFinalListaLibro(listaLibros, libro);
 
         dibujarTextoPuntos(36, 22, "Registrando libro");
-        gotoxy(36,22);
+        gotoxy(36, 22);
         cout << "Libro registrado con exito!";
 
         gotoxy(36, 24);
         color(2);
-        cout << "Desea registrar otro usuario? (s/n): ";
+        cout << "Desea registrar otro libro? (s/n): ";
         color(0);
         cin >> respuesta;
         cin.ignore();
@@ -188,7 +188,7 @@ void modificarLibro()
     {
         gotoxy(36, 25);
         color(2);
-        cout << "Desea modificar datos de este usuario? (s/n): ";
+        cout << "Desea modificar datos de este libro? (s/n): ";
         color(0);
         fflush(stdin);
         getline(cin, respuesta);
@@ -618,59 +618,76 @@ void mostrarLibros(ListaDobleLibros &lista)
         limpiarPantalla();
         setConsoleBackground(White);
         dibujarTitulo(27, 0, 2, letras);
-        estructura_menu2(16, 103, 10, 27);
+        estructura_menu2(8, 111, 10, 27);
 
         int contador = 0; // Contador para mostrar los libros de 10 en 10
 
-        gotoxy(50, 12);
+        gotoxy(50, 11);
         color(2);
         cout << "Catálogo de libros";
-        gotoxy(20, 14);
+        gotoxy(13, 13);
         cout << "ID";
-        gotoxy(33, 14);
+        gotoxy(18, 13);
         cout << "Nombre";
-        gotoxy(54, 14);
+        gotoxy(47, 13);
         cout << "Autor";
-        gotoxy(74, 14);
+        gotoxy(71, 13);
         cout << "Género";
+        gotoxy(93, 13);
+        cout << "Año";
+        gotoxy(102, 13);
+        cout << "Stock";
+
         color(0);
 
         // Mostrar los libros a partir de la posición actual
         nodoDobleLibros *temporal = actual; // Se usa un puntero temporal para mostrar los libros
         while (temporal != nullptr && contador < 10)
         {
-            gotoxy(20, 16 + contador);
+            gotoxy(13, 15 + contador);
             cout << temporal->libro.id;
 
-            gotoxy(33, 16 + contador);
-            if (temporal->libro.nombre_Libro.length() > 20)
+            gotoxy(18, 15 + contador);
+            if (temporal->libro.nombre_Libro.length() > 25)
             {
-                cout << temporal->libro.nombre_Libro.substr(0, 17) + "...";
+                cout << temporal->libro.nombre_Libro.substr(0, 22) + "...";
             }
             else
             {
                 cout << temporal->libro.nombre_Libro;
             }
 
-            gotoxy(54, 16 + contador);
-            if (temporal->libro.Autor.length() > 20)
+            gotoxy(47, 15 + contador);
+            if (temporal->libro.Autor.length() > 18)
             {
-                cout << temporal->libro.Autor.substr(0, 17) + "...";
+                cout << temporal->libro.Autor.substr(0, 15) + "...";
             }
             else
             {
                 cout << temporal->libro.Autor;
             }
 
-            gotoxy(74, 16 + contador);
-            cout << temporal->libro.Genero;
+            gotoxy(71, 15 + contador);
+            if (temporal->libro.Genero.length() > 17)
+            {
+                cout << temporal->libro.Genero.substr(0, 14) + "...";
+            }
+            else
+            {
+                cout << temporal->libro.Genero;
+            }
+            gotoxy(93, 15 + contador);
+            cout << temporal->libro.Ano;
+
+            gotoxy(102, 15 + contador);
+            cout << temporal->libro.StockActual;
 
             temporal = temporal->siguiente;
             contador++;
         }
 
         // Mostrar el menú de navegación al final de la lista
-        gotoxy(20, 27);
+        gotoxy(13, 26);
         color(2);
         cout << "Ingrese opción: (0 = salir, 1 = anterior, 2 = siguiente): ";
         color(0);
