@@ -77,6 +77,7 @@ bool verificacionInicioSesion(string nombre_usuario, string contraseña_usuario,
             color(4);
             cout << "Contraseña o Usuario Incorrecto" << endl;
             color(7);
+            pausa();
         }
     }
     else
@@ -85,6 +86,7 @@ bool verificacionInicioSesion(string nombre_usuario, string contraseña_usuario,
         color(4);
         cout << "Usuario No Existente" << endl;
         color(7);
+        pausa();
     }
     return false;
 }

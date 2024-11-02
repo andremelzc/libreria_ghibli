@@ -320,11 +320,12 @@ void prestarLaptop(PilaLaptops *pila)
     Laptop laptopsPrestadas[tamanoAntes] = {};
     Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
 
-    gotoxy(35, 27);
+    gotoxy(20, 27);
     color(2);
     cout << "DNI del cliente que solicita una Laptop: ";
     color(0);
     cin >> idCliente;
+    cin.ignore();
 
     NodoLaptops *actual = pila->cima;
     int contador = 0;

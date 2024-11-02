@@ -22,6 +22,11 @@ void menu_opcionesAdministrador(); // Declaración Previa  -> Para el Switch cas
 void menu_opcionesRecepcionista();
 void menu_opcionesCliente();
 void menu_opcionesLaptop(); // Declaración previa
+void menu_opcionesGestionLibros();
+void menu_opcionesGestionUsuarios();
+void menu_opcionesGestionPedidos();
+void menu_opcionesGestionLaptops();
+void menu_opcionesPedido();
 
 // Para cuando se inicie sesión
 int id_usuariolog = 0;
@@ -201,6 +206,7 @@ void menu_opcionesAdministrador()
         break;
       case 5:
         // 5. Ver estadisticas
+        ejecutarGradienteDoble(150);
         break;
       case 6:
         // 6. Salir
@@ -480,7 +486,8 @@ void menu_opcionesRecepcionista()
   {
     limpiarPantalla();
     setConsoleBackground(White);
-    estructura_menu();
+    dibujarTitulo(27, 0, 2, letras);
+    estructura_menu2(16, 103, 10, 27);
     // Imprimir las opciones
     for (int i = 0; i < numRecepcionista; i++)
     {
@@ -522,7 +529,7 @@ void menu_opcionesRecepcionista()
         setConsoleBackground(White);
         dibujarTitulo(27, 0, 2, letras);
         estructura_menu2(16, 103, 10, 27);
-        gestionarpedido();
+        menu_opcionesPedido();
         break;
       }
       case 2:
@@ -659,7 +666,8 @@ void menu_opcionesCliente()
   {
     limpiarPantalla();
     setConsoleBackground(White);
-    estructura_menu();
+    dibujarTitulo(27, 0, 2, letras);
+    estructura_menu2(16, 103, 10, 27);
     // Imprimir las opciones
     for (int i = 0; i < numCliente; i++)
     {
@@ -730,6 +738,7 @@ void menu_opcionesCliente()
   }
 }
 
+// Menu de opciones de gestionar laptops (Administrador)
 vector<string> opcionesMenuGestionLaptops = {"Visualizar Pila de Laptops",
                                              "Agregar Laptop",
                                              "Eliminar Laptop",
@@ -807,6 +816,83 @@ void menu_opcionesGestionLaptops()
         break;
       case 5:
         // 5. Salir
+        repeat = false;
+        system("CLS");
+        break;
+      default:
+        cout << "Estas fuera del rango\n";
+      }
+    }
+  }
+}
+
+// Menu de opciones de gestionar pedidos de libros (Recepcionista)
+vector<string> opcionesMenuGestionPedidosLibros = {"Atender pedido",
+                                                   "Registrar devolucion de libro",
+                                                   "Ver pedidos pendientes",
+                                                   "Retroceder"};
+
+int numGestionPedidosLibros = opcionesMenuGestionPedidosLibros.size();
+
+void menu_opcionesPedido()
+{
+  bool repeat = true;
+  int opt = 1;
+  while (repeat)
+  {
+    limpiarPantalla();
+    setConsoleBackground(White);
+    dibujarTitulo(27, 0, 2, letras);
+    estructura_menu2(16, 103, 10, 27);
+    // Imprimir las opciones
+    for (int i = 0; i < numGestionPedidosLibros; i++)
+    {
+      color(0);
+      if (i == opt - 1)
+      {
+        color(2);
+        gotoxy(46, 15 + i);
+        cout << "=>   ";
+        gotoxy(48, 15 + i);
+        cout << opcionesMenuGestionPedidosLibros[i] << endl;
+      }
+      else
+      {
+        gotoxy(53, 15 + i);
+        cout << "   " << opcionesMenuGestionPedidosLibros[i] << endl;
+      }
+    }
+    // Capturamos la entrada de usuario
+    int input = _getch();
+    switch (input)
+    {
+    // Aumentar o disminuir la opcion en la que estamos
+    case 72: // Flecha arriba
+      opt = (opt == 1) ? numGestionPedidosLibros : --opt;
+      break;
+    case 80: // Flecha abajo
+      opt = (opt == numGestionPedidosLibros) ? 1 : ++opt;
+      break;
+    // Ejecutar una de las opciones del menu
+    case 13:
+      switch (opt)
+      {
+      case 1:
+      {
+        // 1. Atender pedido
+        getch();
+        break;
+      }
+      case 2:
+        // 2. Registrar devolucion de libro
+        getch();
+        break;
+      case 3:
+        // 3. Ver pedidos pendientes
+        getch();
+        break;
+      case 4:
+        // 4. Salir
         repeat = false;
         system("CLS");
         break;

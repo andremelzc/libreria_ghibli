@@ -702,6 +702,7 @@ void mostrarLibros(ListaDobleLibros &lista)
             {
                 actual = actual->anterior;
             }
+            pausa();
         }
         else if (opcion == 2) // Avanzar
         {
@@ -710,14 +711,15 @@ void mostrarLibros(ListaDobleLibros &lista)
             {
                 actual = actual->siguiente;
             }
+            pausa();
         }
         else if (opcion != 0)
         {
             cout << "Opción no válida. Inténtelo de nuevo." << endl;
+            pausa();
         }
     }
 
-    system("PAUSE>0");
 }
 
 nodoLibros *buscarLibroPorID(ListaLibros &listaLibros, int idLibro)

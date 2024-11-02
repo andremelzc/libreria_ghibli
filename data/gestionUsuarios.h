@@ -604,6 +604,8 @@ void activarMembresi()
                 añoStr = to_string(localTime->tm_year + 1901);
                 fecha = diaStr + "/" + mesStr + "/" + añoStr;
                 actual->usuario.fechaFinal = fecha;
+                color(2);
+                dibujarTextoPuntos(36, 19, "Activando membresia");
                 gotoxy(36, 19);
                 cout << "Membresia activada correctamente!";
             }

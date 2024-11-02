@@ -117,37 +117,42 @@ string devolverNombre(Lista &Usuarios, int id){
 }
 
 void mostrarHistorial(){
-    int id;
-    gotoxy(40, 12);
+    gotoxy(51,11);
     color(2);
-    cout << "Ingresa el id del cliente que deseas consultar: "<<endl;
+    cout << "Historial de Pedidos";
+    int id;
+    gotoxy(26, 13);
+    color(2);
+    cout << "DNI del cliente a consultar: ";
     gotoxy(40, 14);
     color(0);
     cin >> id;
-    cout << "el error esta ";
+    cin.ignore();
+    
+    // Se crea una cola para el usuario ingresado
     colaHistorial historial = cargarHistorialxID("output/pedidos.csv",id);
-    cout << "aqui";
+    
     NodoPedidos *actual = desencolarHistorial(historial);
+
     int contador = 0;
     limpiarPantalla();
     setConsoleBackground(White);
     dibujarTitulo(27, 0, 2, letras);
     estructura_menu2(16, 103, 10, 27);
     
-
-    cout << "el error esta ";
     Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
-    cout << "aqui";
-    gotoxy(40, 12);
+    gotoxy(44, 12);
     color(2);
     cout << "Historial de Pedidos de "<<devolverNombre(listaUsuarios,id) ;
 
     gotoxy(20, 14);
-    cout << "id Pedido:";
-    gotoxy(33, 14);
-    cout << "Libro: ";
+    cout << "ID";
+    gotoxy(26, 14);
+    cout << "Libro";
     gotoxy(54, 14);
-    cout << "Estado del libro: ";
+    cout << "Estado";
+    gotoxy(70, 14);
+    cout << "Fecha de pedido";
     color(0);
 
     while (actual != nullptr)
@@ -155,15 +160,16 @@ void mostrarHistorial(){
 
         gotoxy(20, 16 + contador);
         cout << actual->pedido.ID_pedido;
-        gotoxy(33, 16 + contador);
+        gotoxy(26, 16 + contador);
         cout << actual->pedido.ID_libro;
         gotoxy(54, 16 + contador);
         cout << actual->pedido.estadoPedido;
-
+        gotoxy(70, 16 + contador);
+        cout << fechaAString(actual->pedido.fechaPedido);
         actual = actual->sgte;
         contador++;
     }
-    system("PAUSE");
+    pausa();
 }
 
 void encolarEstadistica(NodoEstadisticas *stat, colaPrioEstadisticas &q){

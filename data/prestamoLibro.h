@@ -10,19 +10,6 @@
 
 using namespace std;
 
-// contar lineas -- falta agregar algo para que si agregas más de un pedido te lo cuente
-int countLinesFile(string nombreArchivo, int i)
-{
-    ifstream archivo(nombreArchivo);
-    string linea;
-    int cont = 0;
-    while (getline(archivo, linea))
-    {
-        cont++;
-    }
-    return cont + i;
-}
-
 void insertarFinalListaPedido(ListaPedidos *lista, Pedidos *pedido)
 {
     NodoPedidos *NodoPedido = new NodoPedidos(*pedido);
@@ -156,46 +143,37 @@ bool mostrarLibroXidCopy(ListaLibros &Libros, int id)
         if (actual->libro.id == id) // Si el ID del libro coincide
         {
             // Mostrar los datos del libros
-            gotoxy(36, 18);
+            gotoxy(27, 14);
             color(2);
             cout << "1. Nombre del Libro: ";
             color(0);
             cout << actual->libro.nombre_Libro;
-            gotoxy(36, 19);
+            gotoxy(27, 15);
             color(2);
             cout << "2. Autor: ";
             color(0);
             cout << actual->libro.Autor;
-            gotoxy(36, 20);
+            gotoxy(27, 16);
             color(2);
             cout << "3. Genero: ";
             color(0);
             cout << actual->libro.Genero;
-            gotoxy(36, 21);
+            gotoxy(27, 17);
             color(2);
             cout << "4. Ano: ";
             color(0);
             cout << actual->libro.Ano;
-            gotoxy(36, 22);
+            gotoxy(27, 18);
             color(2);
-            cout << "5. Stock Inventario: ";
-            color(0);
-            cout << actual->libro.Stock_Inventario;
-            gotoxy(36, 23);
-            color(2);
-            cout << "6. Stock Actual: ";
+            cout << "5. Stock: ";
             color(0);
             cout << actual->libro.StockActual;
-            gotoxy(36, 24);
+            gotoxy(27, 19);
             color(2);
-            cout << "7. Precio: ";
+            cout << "6. Precio: ";
             color(0);
             cout << actual->libro.precio;
-            gotoxy(36, 25);
-            color(2);
-            cout << "8. Estado: ";
-            color(0);
-            cout << actual->libro.estado;
+
             return true; // Retorna true si el libro fue encontrado
             break;
         }
@@ -203,27 +181,33 @@ bool mostrarLibroXidCopy(ListaLibros &Libros, int id)
     }
 
     // Si el libro no fue encontrado
-    cout << "No se encontro ningun libro con el ID: " << id << endl;
+    // cout << "No se encontro ningun libro con el ID: " << id << endl;
     return false; // Retorna false si no encontró el libro
 }
 
 bool verificarMembresiaYMax(Lista &Usuarios, int id)
 { // verifica que tengas membresia activa y menos de 4 libros sin devolver
+    bool find = false;
     Nodo *actual = Usuarios.cabeza;
+
+    cout << endl;
     while (actual != nullptr)
     {
-        // cout << endl << "ciclo infinito?";
-        if (stoi(actual->usuario.ID_Usuario) == id)
+        int id_lista_usuario = stoi(actual->usuario.ID_Usuario);
+        if (id_lista_usuario == id)
         {
-            if (actual->usuario.membresia == "ACTIVA" && actual->usuario.librosPrestados <= 2)
+            if (actual->usuario.membresia == "ACTIVA" && actual->usuario.librosPrestados < 3)
             {
+                find = true;
                 return true;
             }
         }
         actual = actual->siguiente;
     }
 
-    return false;
+    if(!find){
+        return false;
+    }
 }
 
 void modificarCantPrestada(int idUsuario)
@@ -261,58 +245,60 @@ void adicionarCampoPedido(int id_usuariologeado)
         dibujarTitulo(27, 0, 2, letras);
         estructura_menu2(16, 103, 10, 27);
         Pedidos *pedido = new Pedidos();
-        pedido->ID_pedido = countLinesFile("output/pedidos.csv", i);
-        gotoxy(36, 11);
-        color(2);
-        cout << "a continuación confirme que desea realizar un pedido (s/n)" << endl;
-        gotoxy(36, 12);
-        color(0);
-        cin >> respuesta;
-        if (respuesta[0] == 'n' or respuesta[0] == 'N')
-        {
-            break;
-        }
+        pedido->ID_pedido = contarFilasCSV("output/pedidos.csv")+i;
 
-        gotoxy(36, 13);
-        color(2);
-        cout << "Su codigo de usuario es: ";
-        color(0);
-        gotoxy(36, 14);
-        cout << id_usuariologeado;
+        gotoxy(52, 11);
+        cout << "Préstamo de libro";
+
         pedido->ID_usuario = id_usuariologeado;
 
         Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv"); // cargando lista de usuarios
-        // cout << endl<< "comprobando q todo esta bien";
+
+        verificarMembresiaYMax(listaUsuarios, id_usuariologeado);
+
         if (!(verificarMembresiaYMax(listaUsuarios, id_usuariologeado)))
         { // si es falso volvera a preguntar si deseas hacer una peticion
             // cout << endl<< "comprobando q todo esta bien 2";
+            gotoxy(27, 13);
+            color(4);
+            cout << "Usuario no habilitado para solicitar préstamo";
+            color(0);
+            gotoxy(27, 14);
+            cout << "Posibles causas:";
+            gotoxy(27, 15);
+            cout << "1. Membresia inactiva";
             gotoxy(27, 16);
-            color(3);
-            cout << "No tiene una membresia para el prestamo o supero el limite de libros prestados";
-            gotoxy(27, 17);
-            system("PAUSE");
-            respuesta[0] = 's';
-            continue;
-        }
+            cout << "2. Ya tiene 3 libros prestados";
+            pausa();
+            break;
+        } else{
+            
+        } 
 
-        gotoxy(36, 15);
+
+        gotoxy(27, 13);
         color(2);
-        cout << "Ahora ingrese el codigo identificador del libro: ";
-        gotoxy(36, 16);
+        cout << "ID del libro a solicitar préstamo: ";
         color(0);
-        cin.ignore();
         cin >> pedido->ID_libro;
+        cin.ignore();
+
         ListaLibros libros = leerLibrosCSV("output/libros.csv");
         bool find = mostrarLibroXidCopy(libros, pedido->ID_libro);
         if (find)
         {
             char check;
             i++;
-            gotoxy(36, 26);
+            gotoxy(27, 21);
             color(2);
             cout << "Este es el libro que deseas solcitar?(s/n): ";
             color(0);
             cin >> check;
+            cin.ignore();
+            color(2);
+            dibujarTextoPuntos(27, 22, "Solicitando prestamo");
+            gotoxy(27, 22);
+            cout << "Préstamo solicitado con éxito!";
             if (!(check == 's' or check == 'S'))
             {
                 respuesta[0] = 's';
@@ -321,10 +307,10 @@ void adicionarCampoPedido(int id_usuariologeado)
         }
         else
         {
-            gotoxy(36, 18);
-            color(3);
-            cout << "No se encontro un libro con el codigo que buscas";
-            respuesta[0] = 's';
+            gotoxy(27, 18);
+            color(4);
+            cout << "No se encontro un libro con el ID que buscas, ingrese otro";
+            pausa();
             continue;
         }
 
@@ -353,37 +339,19 @@ void adicionarCampoPedido(int id_usuariologeado)
         // usamos esta funcion para aumentar en 1 la cantidad prestada
         modificarCantPrestada(pedido->ID_usuario); //------------- quitar de aqui y mandar a cuando se acepte el pedido
 
-        gotoxy(36, 28);
+        gotoxy(27, 24);
         color(2);
         cout << "Desea solicitar otro prestamo? (s/n): ";
         color(0);
         cin >> respuesta;
+        cin.ignore();
+
     } while (respuesta[0] == 's' || respuesta[0] == 'S');
 
     guardar_CSV_Pedido(listaPedido, "output/pedidos.csv");
 }
 
-fecha convertirFecha(const string &campo)
-{
-    stringstream ss(campo);
-    string parte;
-    int dia, mes, año;
 
-    // Leer el día
-    getline(ss, parte, '/');
-    dia = stoi(parte);
-
-    // Leer el mes
-    getline(ss, parte, '/');
-    mes = stoi(parte);
-
-    // Leer el año
-    getline(ss, parte);
-    año = stoi(parte);
-
-    // Retornar un objeto de tipo 'fecha'
-    return {dia, mes, año};
-}
 
 ListaPedidos leerPedidosDesdeCSV(string nombreArchivo)
 {

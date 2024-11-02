@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <iomanip> 
 
 using namespace std;
 
@@ -51,4 +52,34 @@ void limpiarCSV(string nombreArchivo) {
 
     // Cerrar el archivo inmediatamente para limpiar su contenido
     archivoSalida.close();
+}
+
+fecha convertirFecha(const string &campo)
+{
+    stringstream ss(campo);
+    string parte;
+    int dia, mes, año;
+
+    // Leer el día
+    getline(ss, parte, '/');
+    dia = stoi(parte);
+
+    // Leer el mes
+    getline(ss, parte, '/');
+    mes = stoi(parte);
+
+    // Leer el año
+    getline(ss, parte);
+    año = stoi(parte);
+
+    // Retornar un objeto de tipo 'fecha'
+    return {dia, mes, año};
+}
+
+string fechaAString(const fecha &f) {
+    ostringstream ss;
+    ss << setw(2) << setfill('0') << f.dia << "/"
+       << setw(2) << setfill('0') << f.mes << "/"
+       << f.año;
+    return ss.str();
 }
