@@ -224,7 +224,6 @@ void menu_opcionesAdministrador()
 vector<string> opcionesMenuGestionLibros = {"Registrar libro",
                                             "Modificar libro",
                                             "Aumentar stock",
-                                            "Eliminar libro",
                                             "Retroceder"};
 int numGestionLibros = opcionesMenuGestionLibros.size();
 
@@ -287,10 +286,7 @@ void menu_opcionesGestionLibros()
         // 3. Aumentar stock
         break;
       case 4:
-        // 4. Eliminar libro
-        break;
-      case 5:
-        // 5. Salir
+        // 4. Salir
         repeat = false;
         system("CLS");
         break;
@@ -304,7 +300,6 @@ void menu_opcionesGestionLibros()
 // Menu de opciones de gestionar usuarios (Administrador)
 vector<string> opcionesMenuGestionUsuarios = {"Registrar usuario",
                                               "Modificar usuario",
-                                              "Eliminar usuario",
                                               "Leer usuarios",
                                               "Retroceder"};
 int numGestionUsuarios = opcionesMenuGestionUsuarios.size();
