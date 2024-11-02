@@ -205,9 +205,7 @@ bool verificarMembresiaYMax(Lista &Usuarios, int id)
         actual = actual->siguiente;
     }
 
-    if(!find){
-        return false;
-    }
+   return false;
 }
 
 void modificarCantPrestada(int idUsuario)
