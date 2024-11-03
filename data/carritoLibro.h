@@ -400,26 +400,44 @@ void efectuarCompraCarrito(int id_usuario){
         while(listaCarritosGeneral.head != NULL){
 
             if(temporal->carrito.id_cliente == id_usuario && temporal->carrito.estado == 0 && temporal->carrito.id_carrito == compra){
-                
+                //En este punto el cliente si hizo su solicitud, esta completamente logeado y verificado
+                cout<<"Estamos Procesando su Solicitud de Compra..."<<endl;
+                //Habrá el stock suficiente, el producto seguirá disponible?
                 producto = buscarLibroPorID(listalibros, temporal->carrito.id_producto);
-                cout<<temporal->carrito.id_carrito<<"\t";
-                cout<<producto->libro.nombre_Libro<<"\t";
-                cout<<temporal->carrito.cantidad<<"\t";
-                cout<<producto->libro.precio<<"\t";
-                cout<<temporal->carrito.cantidad * producto->libro.precio<<endl;
+                int stockRequerido = temporal->carrito.cantidad;
+                int stockDisponible = producto->libro.StockActual;
 
-                cout << "Desea efectuar el pago para concretar la compra (s/n): ";
-                cin>> respuesta;
-                if(respuesta =='s' || respuesta =='S'){
-                    confirmacion = true;
-                    temporal->carrito.estado = 1;
+                if((stockRequerido <= stockDisponible) && (producto->libro.estado == "Disponible")){
+                    
+                    cout<<temporal->carrito.id_carrito<<"\t";
+                    cout<<producto->libro.nombre_Libro<<"\t";
+                    cout<<temporal->carrito.cantidad<<"\t";
+                    cout<<producto->libro.precio<<"\t";
+                    cout<<temporal->carrito.cantidad * producto->libro.precio<<endl;
+                    //cout<<producto->libro.StockActual<<endl;
+                    cout << "Desea efectuar el pago para concretar la compra (s/n): ";
+                    cin>> respuesta;
+                    if(respuesta =='s' || respuesta =='S'){
+                        confirmacion = true;
+                        temporal->carrito.estado = 1;
+                        producto->libro.StockActual = stockDisponible - stockRequerido;
+
+                        //cout<<producto->libro.nombre_Libro<<"\t";
+                        //cout<<producto->libro.StockActual<<endl;
+                        
+
+                    }
+                }else{
+                    cout<<"No poseemos el Stock Suficiente o el Producto ya no se encuentra Disponible"<<endl;
                 }
+                
             }
             
             listaCarritosGeneral.head = temporal->sgte;
             temporal = listaCarritosGeneral.head;  
         }
         guardar_CSV_Carritos(&inicio,"output/carrito.csv");
+        guardar_CSV_Libros_Sobreescribir(&listalibros, "output/Libros.csv");
     }else{
         cout<<"Usted no posee un registro en su Carrito con ese Id"<<endl;
     }

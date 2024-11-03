@@ -735,60 +735,51 @@ nodoLibros *buscarLibroPorID(ListaLibros &listaLibros, int idLibro)
     }
     return nullptr; // Libro no encontrado
 }
-/*//Miguel:tmb presente en el codigo de Fabri
-int countLinesFiles(string nombreArchivo){
-    ifstream archivo(nombreArchivo);
-    string linea;
-    int cont = 0;
-    while(getline(archivo, linea)){
-        cont++;
+
+void guardar_CSV_Libros_Sobreescribir(ListaLibros *lista, string nombreArchivo)
+{
+    fstream archivo(nombreArchivo, fstream::out);
+
+    if (!filesystem::exists("output/libros.csv"))
+    {
+        // std::cerr << "Error: El directorio 'output' no existe." << std::endl;
+        pausa();
+        return;
     }
-    return cont;
+
+    if (!archivo.is_open())
+    {
+        // cout << "No se pudo abrir el archivo. " << nombreArchivo << endl;
+        perror("Error al abrir el archivo");
+        pausa();
+        return;
+    }
+
+    // Recorre la lista enlazada y escribe cada nodo en el archivo
+    nodoLibros *actual = lista->cabeza;
+    while (actual != nullptr)
+    {
+        Libro libro = actual->libro;
+        archivo << libro.id << ","
+                << libro.nombre_Libro << ","
+                << libro.Autor << ","
+                << libro.Ano << ","
+                << libro.Genero << ","
+                << libro.Stock_Inventario << ","
+                << libro.StockActual << ","
+                << libro.precio << ","
+                << libro.estado << "\n";
+
+        actual = actual->siguiente;
+    }
+
+    if (archivo.fail())
+    {
+        std::cerr << "Error: Fallo al escribir en el archivo." << std::endl;
+        return; // Salir con error
+    }
+
+    archivo.close();
+    // cout << "Datos guardados en " << nombreArchivo << endl;
+    pausa();
 }
-
-
-void agregarCarrito(int id_usuario){
-    system("CLS");
-    int id_carrito = countLinesFiles("output/carrito.csv") + 1;
-
-
-    int id_producto, cantidad;
-    ListaLibros listalibros;
-    listalibros = leerLibrosCSV("output/libros.csv");
-    nodoLibros* producto;
-
-    cout<<"Ingrese el ID del producto que quiere comprar: "<<endl;
-    cin>>id_producto;
-
-    bool confirmacion_agregar = false;
-    char desicion;
-    producto = buscarLibroPorID(listalibros, id_producto);
-    if(producto != nullptr){
-        cout<<"Libro a Adquirir:"<<endl;
-        cout<<producto->libro.nombre_Libro<<endl;
-
-        cout<<"Ingresar la cantidad a comprar: "<<endl;
-        cin>>cantidad;
-
-        cout<<"Desea agregar: "<<cantidad<<" - "<<producto->libro.nombre_Libro<<endl;
-        cout<<"Marque 's' para confirmar:"<<endl;
-        cin>>desicion;
-        if(desicion == 's' || desicion == 'S'){
-            confirmacion_agregar = true;
-        }
-    }
-    if(confirmacion_agregar){
-        // Obtener la fecha y hora actual
-        time_t now = time(0);
-        // Convertir a una estructura tm
-        tm *ltm = localtime(&now);
-        // Obtener día, mes y año
-        int dia = ltm->tm_mday;
-        int mes = 1 + ltm->tm_mon; // tm_mon va de 0 a 11
-        int anio = 1900 + ltm->tm_year; // tm_year cuenta años desde 1900
-    }
-
-
-
-}
-*/
