@@ -716,16 +716,25 @@ void menu_opcionesCliente()
         break;
       case 4:
         // 4."Agregar al Carrito", Miguel
+        system("CLS");
         agregarCarrito(id_usuariolog);
-
+        break;
       case 5:
-        // 5."Ver Carrito",Miguel
+        // 5."Ver Carrito del Usuario", Miguel
+        system("CLS");
+        mostrarCarritoUsuarioEstado(id_usuariolog, 0);//Agregado No Pagado
+        mostrarCarritoUsuarioEstado(id_usuariolog, 1);//Agregado y Pagado
+        getch();
+        break;
       case 6:
         // 6."Efectuar Compra",Miguel
+        efectuarCompraCarrito(id_usuariolog);
+        break;
       case 7:
         repeat = false;
         system("CLS");
         break;
+
       default:
         cout << "Estas fuera del rango\n";
       }

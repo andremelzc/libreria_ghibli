@@ -7,6 +7,7 @@
 #include <ctime>
 #include <filesystem>
 #include <cctype> // Para usar isdigit()
+#include <conio.h>
 using namespace std;
 
 // Miguel:tmb presente en el codigo de Fabri
@@ -184,7 +185,7 @@ ListaCarritos leerCSV(string nombreArchivo)
     }
 
     archivo.close();
-    cout << "Datos cargados desde " << nombreArchivo << endl;
+    //cout << "Datos cargados desde " << nombreArchivo << endl;
     return lista;
 }
 
@@ -299,5 +300,127 @@ void agregarCarrito(int id_usuario)
         // Cargare al csv todo lo de lista Carrito Actual
         unirListas(listaCarritosGeneral, listaCarritoActual);
         guardar_CSV_Carritos(&listaCarritosGeneral, "output/carrito.csv");
+    }
+}
+
+void mostrarTodoCarrito(){
+    ListaCarritos listaCarritosGeneral = leerCSV("output/carrito.csv");
+
+    // Creo una lista para obtener todos los libros
+    ListaLibros listalibros;
+    listalibros = leerLibrosCSV("output/libros.csv");
+    nodoLibros *producto;
+
+    //system("CLS");
+    if(listaCarritosGeneral.head != NULL){
+        NodoCarritos *temporal = listaCarritosGeneral.head;
+        while(listaCarritosGeneral.head != NULL){
+            cout<<temporal->carrito.cantidad<<"\t";
+            producto = buscarLibroPorID(listalibros, temporal->carrito.id_producto);
+            cout<<producto->libro.nombre_Libro<<"\t";
+            cout<<temporal->carrito.cantidad * producto->libro.precio<<endl;
+
+            listaCarritosGeneral.head = temporal->sgte;
+            temporal = listaCarritosGeneral.head;
+            
+        }
+    }else{
+        cout<<"No hay ningun Registro de Carritos"<<endl;
+    }
+    
+    getch();
+}
+
+void mostrarEstado(int estado){
+    switch (estado){
+        case 0:
+        cout<<"Pago Pendiente:"<<endl;
+        break;
+        case 1:
+        cout<<"Mis Compras:"<<endl;
+        break;
+        case 2:
+        cout<<"Eliminados"<<endl;
+        break;
+    }
+}
+
+void mostrarCarritoUsuarioEstado(int id_usuario, int estado){
+    ListaCarritos listaCarritosGeneral = leerCSV("output/carrito.csv");
+    //Podemos verificar usar un nuevo parametro para determinar que mostrar 
+    //0->En carrito - No pagado - No entregado
+    //1->             Pagado Y Entregado
+    //2->Eliminado
+
+    // Creo una lista para obtener todos los libros
+    ListaLibros listalibros;
+    listalibros = leerLibrosCSV("output/libros.csv");
+    nodoLibros *producto;
+
+    if(listaCarritosGeneral.head != NULL){
+        mostrarEstado(estado);
+        NodoCarritos *temporal = listaCarritosGeneral.head;
+        while(listaCarritosGeneral.head != NULL){
+
+            if(temporal->carrito.id_cliente == id_usuario && temporal->carrito.estado == estado){
+                
+                producto = buscarLibroPorID(listalibros, temporal->carrito.id_producto);
+                cout<<temporal->carrito.id_carrito<<"\t";
+                cout<<producto->libro.nombre_Libro<<"\t";
+                cout<<temporal->carrito.cantidad<<"\t";
+                cout<<producto->libro.precio<<"\t";
+                cout<<temporal->carrito.cantidad * producto->libro.precio<<endl;
+            }
+            
+            listaCarritosGeneral.head = temporal->sgte;
+            temporal = listaCarritosGeneral.head;
+            
+        }
+    }else{
+        cout<<"No hay ningun Registro de Carritos"<<endl;
+    }
+}
+
+void efectuarCompraCarrito(int id_usuario){
+    ListaCarritos listaCarritosGeneral = leerCSV("output/carrito.csv");
+    ListaCarritos inicio = listaCarritosGeneral;
+    // Creo una lista para obtener todos los libros
+    ListaLibros listalibros;
+    listalibros = leerLibrosCSV("output/libros.csv");
+    nodoLibros *producto;
+    system("CLS");
+    int compra;
+    cout<<"Ingrese el ID de su Pedido a Pagar:"<<endl;
+    cin>>compra;
+
+    char respuesta;bool confirmacion = false;
+    if(listaCarritosGeneral.head != NULL){
+        
+        NodoCarritos *temporal = listaCarritosGeneral.head;
+        while(listaCarritosGeneral.head != NULL){
+
+            if(temporal->carrito.id_cliente == id_usuario && temporal->carrito.estado == 0 && temporal->carrito.id_carrito == compra){
+                
+                producto = buscarLibroPorID(listalibros, temporal->carrito.id_producto);
+                cout<<temporal->carrito.id_carrito<<"\t";
+                cout<<producto->libro.nombre_Libro<<"\t";
+                cout<<temporal->carrito.cantidad<<"\t";
+                cout<<producto->libro.precio<<"\t";
+                cout<<temporal->carrito.cantidad * producto->libro.precio<<endl;
+
+                cout << "Desea efectuar el pago para concretar la compra (s/n): ";
+                cin>> respuesta;
+                if(respuesta =='s' || respuesta =='S'){
+                    confirmacion = true;
+                    temporal->carrito.estado = 1;
+                }
+            }
+            
+            listaCarritosGeneral.head = temporal->sgte;
+            temporal = listaCarritosGeneral.head;  
+        }
+        guardar_CSV_Carritos(&inicio,"output/carrito.csv");
+    }else{
+        cout<<"Usted no posee un registro en su Carrito con ese Id"<<endl;
     }
 }
