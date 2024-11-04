@@ -140,7 +140,7 @@ bool mostrarLibroXidCopy(ListaLibros &Libros, int id)
     // Recorrer la lista buscando el libro con el ID indicado
     while (actual != nullptr)
     {
-        if (actual->libro.id == id) // Si el ID del libro coincide
+        if (actual->libro.id == id && actual->libro.estado == "Disponible") // Si el ID del libro coincide
         {
             // Mostrar los datos del libros
             gotoxy(27, 14);
@@ -307,7 +307,7 @@ void adicionarCampoPedido(int id_usuariologeado)
         {
             gotoxy(27, 18);
             color(4);
-            cout << "No se encontro un libro con el ID que buscas, ingrese otro";
+            cout << "Libro no existente o no disponible, revise en el catálogo";
             pausa();
             continue;
         }
@@ -348,8 +348,6 @@ void adicionarCampoPedido(int id_usuariologeado)
 
     guardar_CSV_Pedido(listaPedido, "output/pedidos.csv");
 }
-
-
 
 ListaPedidos leerPedidosDesdeCSV(string nombreArchivo)
 {

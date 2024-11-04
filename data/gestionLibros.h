@@ -65,8 +65,6 @@ void guardar_CSV_Libros(ListaLibros *lista, string nombreArchivo)
                 << libro.Autor << ","
                 << libro.Ano << ","
                 << libro.Genero << ","
-                << libro.Stock_Inventario << ","
-                << libro.StockActual << ","
                 << libro.precio << ","
                 << libro.estado << "\n";
 
@@ -97,7 +95,6 @@ void adicionarCampo()
         dibujarTitulo(27, 0, 2, letras);
         estructura_menu2(16, 103, 10, 27);
         Libro *libro = new Libro();
-        libro->id = contarFilasCSV("output/libros.csv") + contador;
         libro->estado = "Disponible";
         gotoxy(52, 12);
         color(2);
@@ -115,7 +112,7 @@ void adicionarCampo()
         getline(cin, libro->Autor);
         gotoxy(36, 16);
         color(2);
-        cout << "year de publicacion: ";
+        cout << "Año de publicacion: ";
         color(0);
         cin >> libro->Ano;
         cin.ignore();
@@ -126,34 +123,33 @@ void adicionarCampo()
         getline(cin, libro->Genero);
         gotoxy(36, 18);
         color(2);
-        cout << "Stock total en inventario: ";
+        cout << "Stock ingresado: ";
         color(0);
-        cin >> libro->Stock_Inventario;
+        cin >> libro->stock;
         gotoxy(36, 19);
-        color(2);
-        cout << "Stock actual disponible: ";
-        color(0);
-        cin >> libro->StockActual;
-        gotoxy(36, 20);
         color(2);
         cout << "Precio (S/): ";
         color(0);
         cin >> libro->precio;
         cin.ignore();
 
-        insertarFinalListaLibro(listaLibros, libro);
+        for (int i = 0; i < libro->stock; i++)
+        {
+            libro->id = contarFilasCSV("output/libros.csv") + contador;
+            insertarFinalListaLibro(listaLibros, libro);
+            contador++;
+        }
 
-        dibujarTextoPuntos(36, 22, "Registrando libro");
-        gotoxy(36, 22);
-        cout << "Libro registrado con exito!";
+        dibujarTextoPuntos(36, 21, "Registrando libro(s)");
+        gotoxy(36, 21);
+        cout << "Libro(s) registrado con exito!";
 
         gotoxy(36, 24);
         color(2);
-        cout << "Desea registrar otro libro? (s/n): ";
+        cout << "Desea registrar otro(s) libro(s)? (s/n): ";
         color(0);
         cin >> respuesta;
         cin.ignore();
-        contador++;
     } while (respuesta[0] == 's' || respuesta[0] == 'S');
 
     guardar_CSV_Libros(listaLibros, "output/libros.csv");
@@ -286,36 +282,6 @@ void modificarLibro()
                         actual->libro.Ano = datoInt;
                         break;
                     case 5:
-                        // Modificar stock de inventario
-                        gotoxy(36, 16);
-                        color(2);
-                        cout << "Antiguo stock de inventario: ";
-                        color(0);
-                        cout << actual->libro.Stock_Inventario;
-                        gotoxy(36, 17);
-                        color(2);
-                        cout << "Nuevo stock de inventario: ";
-                        color(0);
-                        cin >> datoInt;
-                        cin.ignore();
-                        actual->libro.Stock_Inventario = datoInt;
-                        break;
-                    case 6:
-                        // Modificar stock actual
-                        gotoxy(36, 16);
-                        color(2);
-                        cout << "Antiguo stock actual: ";
-                        color(0);
-                        cout << actual->libro.StockActual;
-                        gotoxy(36, 17);
-                        color(2);
-                        cout << "Nuevo stock actual: ";
-                        color(0);
-                        cin >> datoInt;
-                        cin.ignore();
-                        actual->libro.StockActual = datoInt;
-                        break;
-                    case 7:
                         // Modificar precio
                         gotoxy(36, 16);
                         color(2);
@@ -329,7 +295,7 @@ void modificarLibro()
                         cin >> actual->libro.precio;
                         cin.ignore();
                         break;
-                    case 8:
+                    case 6:
                         // Modificar estado
                         gotoxy(36, 16);
                         color(2);
@@ -497,22 +463,12 @@ bool mostrarLibroXid(ListaLibros &Libros, int id)
             cout << actual->libro.Ano;
             gotoxy(36, 20);
             color(2);
-            cout << "5. Stock Inventario: ";
-            color(0);
-            cout << actual->libro.Stock_Inventario;
-            gotoxy(36, 21);
-            color(2);
-            cout << "6. Stock Actual: ";
-            color(0);
-            cout << actual->libro.StockActual;
-            gotoxy(36, 22);
-            color(2);
-            cout << "7. Precio: ";
+            cout << "5. Precio: ";
             color(0);
             cout << actual->libro.precio;
-            gotoxy(36, 23);
+            gotoxy(36, 21);
             color(2);
-            cout << "8. Estado: ";
+            cout << "6. Estado: ";
             color(0);
             cout << actual->libro.estado;
             return true; // Retorna true si el libro fue encontrado
@@ -545,7 +501,7 @@ void insertarDobleLibro(ListaDobleLibros &lista, Libro nuevoLibro)
 }
 
 // Función para crear una lista enlazada doble en base a los datos del csv
-ListaDobleLibros leerLibrosDoblesCSV(string nombreArchivo)
+ListaDobleLibros leerLibrosDoblesCSV(string nombreArchivo, bool userView)
 {
     ListaDobleLibros listaLibros;
 
@@ -570,20 +526,27 @@ ListaDobleLibros leerLibrosDoblesCSV(string nombreArchivo)
 
             Libro libro;
 
-            // Suponiendo que el CSV tiene los campos en el siguiente orden:
-            // ID, Nombre, Autor, Año, Género, Stock max, Stock actual, precio, estado
+            // Suponiendo que el CSV tiene los campos en el siguiente orden (para mostrar catálogo):
+            // Nombre, Autor, Año, Género, Stock, precio, estado
             getline(ss, dato, ',');
             libro.id = stoi(dato); // Convertir a entero
             getline(ss, libro.nombre_Libro, ',');
+            if (userView)
+            {
+                if (tituloGuardado("output/libros.csv", libro.id, libro.nombre_Libro))
+                {
+                    continue;
+                }
+            }
             getline(ss, libro.Autor, ',');
             getline(ss, dato, ',');
             libro.Ano = stoi(dato);
             getline(ss, libro.Genero, ',');
             getline(ss, dato, ',');
-            libro.Stock_Inventario = stoi(dato);
-            getline(ss, dato, ',');
-            libro.StockActual = stoi(dato);
-            getline(ss, dato, ',');
+            if (userView)
+            {
+                libro.stock = contarTituloLibro("output/libros.csv", libro.nombre_Libro);
+            }
             libro.precio = stoi(dato);
             getline(ss, libro.estado, ',');
 
@@ -600,7 +563,7 @@ ListaDobleLibros leerLibrosDoblesCSV(string nombreArchivo)
 }
 
 // Funcion para leer una lista enlazada doble
-void mostrarLibros(ListaDobleLibros &lista)
+void mostrarLibros(ListaDobleLibros &lista, bool userView)
 {
     // Verificamos si la lista está vacía
     if (lista.cabeza == nullptr)
@@ -612,6 +575,14 @@ void mostrarLibros(ListaDobleLibros &lista)
     // Creamos un nodo de los libros para tener referencia de la posición en la lista (como puntero)
     nodoDobleLibros *actual = lista.cabeza;
     int opcion = -1; // Variable para las opciones del menú (Salir, página anterior, página siguiente)
+
+    int resta = 0;
+
+    if(userView){
+        resta = 5;
+    } else {
+        resta = 0;
+    }
 
     while (opcion != 0) // 0 significa salir
     {
@@ -625,18 +596,30 @@ void mostrarLibros(ListaDobleLibros &lista)
         gotoxy(50, 11);
         color(2);
         cout << "Catálogo de libros";
-        gotoxy(13, 13);
-        cout << "ID";
-        gotoxy(18, 13);
+        if (!userView)
+        {
+            gotoxy(13, 13);
+            cout << "ID";
+        }
+
+        gotoxy(18-resta, 13);
         cout << "Nombre";
         gotoxy(47, 13);
         cout << "Autor";
         gotoxy(71, 13);
         cout << "Género";
-        gotoxy(93, 13);
-        cout << "Año";
-        gotoxy(102, 13);
-        cout << "Stock";
+        if (userView)
+        {
+            gotoxy(93, 13);
+            cout << "Año";
+            gotoxy(102, 13);
+            cout << "Stock";
+        }
+        else
+        {
+            gotoxy(93, 13);
+            cout << "Estado";
+        }
 
         color(0);
 
@@ -644,10 +627,13 @@ void mostrarLibros(ListaDobleLibros &lista)
         nodoDobleLibros *temporal = actual; // Se usa un puntero temporal para mostrar los libros
         while (temporal != nullptr && contador < 10)
         {
-            gotoxy(13, 15 + contador);
-            cout << temporal->libro.id;
+            if (!userView)
+            {
+                gotoxy(13, 15 + contador);
+                cout << temporal->libro.id;
+            }
 
-            gotoxy(18, 15 + contador);
+            gotoxy(18-resta, 15 + contador);
             if (temporal->libro.nombre_Libro.length() > 25)
             {
                 cout << temporal->libro.nombre_Libro.substr(0, 22) + "...";
@@ -676,11 +662,18 @@ void mostrarLibros(ListaDobleLibros &lista)
             {
                 cout << temporal->libro.Genero;
             }
-            gotoxy(93, 15 + contador);
-            cout << temporal->libro.Ano;
-
-            gotoxy(102, 15 + contador);
-            cout << temporal->libro.StockActual;
+            if (userView)
+            {
+                gotoxy(93, 15 + contador);
+                cout << temporal->libro.Ano;
+                gotoxy(102, 15 + contador);
+                cout << temporal->libro.stock;
+            }
+            else
+            {
+                gotoxy(93, 15 + contador);
+                cout << temporal->libro.estado;
+            }
 
             temporal = temporal->siguiente;
             contador++;
@@ -702,7 +695,6 @@ void mostrarLibros(ListaDobleLibros &lista)
             {
                 actual = actual->anterior;
             }
-            pausa();
         }
         else if (opcion == 2) // Avanzar
         {
@@ -711,7 +703,6 @@ void mostrarLibros(ListaDobleLibros &lista)
             {
                 actual = actual->siguiente;
             }
-            pausa();
         }
         else if (opcion != 0)
         {
@@ -719,7 +710,6 @@ void mostrarLibros(ListaDobleLibros &lista)
             pausa();
         }
     }
-
 }
 
 nodoLibros *buscarLibroPorID(ListaLibros &listaLibros, int idLibro)

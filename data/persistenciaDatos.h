@@ -48,16 +48,24 @@ struct Lista
 // Libros
 struct Libro
 {
-    string nombre_Libro, Autor, Genero, estado;
-    int id, Ano, Stock_Inventario, StockActual;
+    int id;
+    string nombre_Libro;
+    string Autor;
+    int Ano;
+    string Genero;
     float precio;
+    string estado;
+    int stock;
+    int Stock_Inventario, StockActual;
 };
+
 struct nodoLibros
 {
     Libro libro;
     nodoLibros *siguiente;
     nodoLibros(Libro libro1) : libro(libro1), siguiente(nullptr) {}
 };  
+
 struct ListaLibros
 {
     nodoLibros *cabeza;
@@ -124,7 +132,6 @@ struct ListaCarritos{
     NodoCarritos *head;
     ListaCarritos(): head(nullptr), longitud(0) {};
 };
-
 
 // Laptops
 struct Laptop {

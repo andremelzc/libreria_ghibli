@@ -12,7 +12,7 @@ using namespace std;
 
 int main()
 {
- 
+
     // Inicio
     ejecutarGradiente(300);
     dibujarTitulo(32, 5, 1, libros);
@@ -23,7 +23,7 @@ int main()
     // Menú de inicio
     ejecutarGradienteDoble(150);
     dibujarTitulo(27, 0, 2, letras);
-    ocultarCursor();    
+    ocultarCursor();
     estructura_menu2(16, 103, 11, 26);
     menu_opcionesPrincipal();
 

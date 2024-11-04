@@ -79,8 +79,8 @@ void menu_opcionesPrincipal()
       case 1:
       {
         // 1. Ver catalogo
-        listaDeLibros = leerLibrosDoblesCSV("output/libros.csv");
-        mostrarLibros(listaDeLibros);
+        listaDeLibros = leerLibrosDoblesCSV("output/libros.csv", true);
+        mostrarLibros(listaDeLibros, true);
         break;
       }
       case 2:
@@ -702,8 +702,8 @@ void menu_opcionesCliente()
       case 1:
       {
         // 1. Ver catalogo
-        listaDeLibros = leerLibrosDoblesCSV("output/libros.csv");
-        mostrarLibros(listaDeLibros);
+        listaDeLibros = leerLibrosDoblesCSV("output/libros.csv", true);
+        mostrarLibros(listaDeLibros, true);
         break;
       }
       case 2:

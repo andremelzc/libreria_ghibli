@@ -1,18 +1,20 @@
+#pragma once
 #include <iostream>
 #include <windows.h>
 #include <conio.h>
 #include <vector>
 #include <string>
-
-//Headers
-#include "menu/gotoxy.h"
-#include "menu/menus.h"
+#include "data/persistenciaDatos.h"
+#include "servicio/funcionalidades.h"
 
 using namespace std;
 
 int main() {
-    agregarCarrito(74935134);
+    if(tituloGuardado("output/libros.csv", 3, "Circe")){
+        cout << "El libro se encuentra en la base de datos" << endl;
+    } else {
+        cout << "El libro no se encuentra en la base de datos" << endl;
+    }
     
-    getch();
     return 0;
 }
