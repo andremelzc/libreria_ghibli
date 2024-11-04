@@ -206,7 +206,7 @@ void agregarCarrito(int id_usuario)
 
         gotoxy(48,11);
         color(2);
-        cout << "Agregando carrito al libro";
+        cout << "Agregando libro al carrito";
         color(0);
 
         confirmacion_agregar = false;
@@ -220,19 +220,20 @@ void agregarCarrito(int id_usuario)
         listalibros = leerLibrosCSV("output/libros.csv");
         nodoLibros *producto;
 
+        string nombreLibro;
         gotoxy(27, 13);
         color(2);
-        cout << "ID del libro a comprar: ";
+        cout << "Nombre del libro a comprar: ";
         color(0);
-        cin >> id_producto;
+        getline(cin , nombreLibro);
         cin.ignore();   
 
 
         char desicion;
-        producto = buscarLibroPorID(listalibros, id_producto);
+        producto = buscarLibroPorTitulo(listalibros, nombreLibro);
         if (producto != nullptr)
         {
-            mostrarLibroXidCopy(listalibros, id_producto);
+            mostrarLibroXTitulo(listalibros, producto->libro.nombre_Libro,id_producto);
             gotoxy(27, 21);
             color(2);
             cout << "Cantidad que desea comprar: ";

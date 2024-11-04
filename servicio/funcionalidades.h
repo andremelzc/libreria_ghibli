@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <vector>
 #include <iomanip>
 
 using namespace std;
@@ -188,4 +189,31 @@ bool tituloGuardado(string nombreArchivo, int id, string titulo)
     archivoCSV.close();
 
     return false; // Retorna false si no se encontró el título
+}
+
+int distanciaLevenshtein(const std::string& s1, const std::string& s2) {
+    std::vector<std::vector<int>> d(s1.size() + 1, std::vector<int>(s2.size() + 1));
+
+    // Inicializar la matriz
+    for (size_t i = 0; i <= s1.size(); ++i) {
+        d[i][0] = i; // Borrados
+    }
+    for (size_t j = 0; j <= s2.size(); ++j) {
+        d[0][j] = j; // Insertados
+    }
+
+    // Calcular la distancia
+    for (size_t i = 1; i <= s1.size(); ++i) {
+        for (size_t j = 1; j <= s2.size(); ++j) {
+            int costo = (s1[i - 1] == s2[j - 1]) ? 0 : 1;
+
+            int borrado = d[i - 1][j] + 1;        // Borrado
+            int insercion = d[i][j - 1] + 1;      // Inserción
+            int sustitucion = d[i - 1][j - 1] + costo; // Sustitución
+
+            // Encuentra el mínimo
+            d[i][j] = std::min(borrado, std::min(insercion, sustitucion));
+        }
+    }
+    return d[s1.size()][s2.size()];
 }

@@ -140,9 +140,63 @@ bool mostrarLibroXidCopy(ListaLibros &Libros, int id)
     // Recorrer la lista buscando el libro con el ID indicado
     while (actual != nullptr)
     {
-        if (actual->libro.id == id && actual->libro.estado == "Disponible") // Si el ID del libro coincide
+        if (actual->libro.id == id) // Si el ID del libro coincide
         {
             // Mostrar los datos del libros
+            gotoxy(27, 14);
+            color(2);
+            cout << "1. Nombre del Libro: ";
+            color(0);
+            cout << actual->libro.nombre_Libro;
+            gotoxy(27, 15);
+            color(2);
+            cout << "2. Autor: ";
+            color(0);
+            cout << actual->libro.Autor;
+            gotoxy(27, 16);
+            color(2);
+            cout << "3. Genero: ";
+            color(0);
+            cout << actual->libro.Genero;
+            gotoxy(27, 17);
+            color(2);
+            cout << "4. Ano: ";
+            color(0);
+            cout << actual->libro.Ano;
+            gotoxy(27, 18);
+            color(2);
+            cout << "5. Stock: ";
+            color(0);
+            cout << actual->libro.StockActual;
+            gotoxy(27, 19);
+            color(2);
+            cout << "6. Precio: ";
+            color(0);
+            cout << actual->libro.precio;
+
+            return true; // Retorna true si el libro fue encontrado
+            break;
+        }
+        actual = actual->siguiente; // Mover al siguiente nodo
+    }
+
+    // Si el libro no fue encontrado
+    // cout << "No se encontro ningun libro con el ID: " << id << endl;
+    return false; // Retorna false si no encontró el libro
+}
+
+bool mostrarLibroXTitulo(ListaLibros &Libros, string tituloPedido, int &id)
+{
+    nodoLibros *actual = Libros.cabeza; // Apuntar al primer nodo de la lista
+
+    // Recorrer la lista buscando el libro con el ID indicado
+    while (actual != nullptr)
+    {
+        int distancia = distanciaLevenshtein(actual->libro.nombre_Libro, tituloPedido);
+        if (distancia<4 && actual->libro.estado == "Disponible") // Si el titulo del libro coincide y si hay alguno disponible
+        {
+            // Mostrar los datos del libros
+            id = actual->libro.id;
             gotoxy(27, 14);
             color(2);
             cout << "1. Nombre del Libro: ";
@@ -273,23 +327,24 @@ void adicionarCampoPedido(int id_usuariologeado)
             
         } 
 
-
+        string nombreLibro; 
         gotoxy(27, 13);
         color(2);
-        cout << "ID del libro a solicitar préstamo: ";
+        cout << "Nombre del libro a solicitar préstamo: ";
         color(0);
-        cin >> pedido->ID_libro;
+        getline(cin, nombreLibro);
+
         cin.ignore();
 
         ListaLibros libros = leerLibrosCSV("output/libros.csv");
-        bool find = mostrarLibroXidCopy(libros, pedido->ID_libro);
+        bool find = mostrarLibroXTitulo(libros, nombreLibro, pedido->ID_libro);
         if (find)
         {
             char check;
             i++;
             gotoxy(27, 21);
             color(2);
-            cout << "Este es el libro que deseas solcitar?(s/n): ";
+            cout << "Este es el libro que deseas solicitar?(s/n): ";
             color(0);
             cin >> check;
             cin.ignore();

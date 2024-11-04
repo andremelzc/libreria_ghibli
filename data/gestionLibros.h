@@ -399,23 +399,18 @@ ListaLibros leerLibrosCSV(string nombreArchivo)
 
             Libro libro;
 
-            // Suponiendo que el CSV tiene los campos en el siguiente orden:
-            // id, nombre_Libro,Autor,Ano,Genero,Stock_Inventario,StockActual,Precio,Estado
+            // Suponiendo que el CSV tiene los campos en el siguiente orden (para mostrar catálogo):
+            // Nombre, Autor, Año, Género, Stock, precio, estado
             getline(ss, dato, ',');
             libro.id = stoi(dato); // Convertir a entero
-
             getline(ss, libro.nombre_Libro, ',');
             getline(ss, libro.Autor, ',');
             getline(ss, dato, ',');
             libro.Ano = stoi(dato);
             getline(ss, libro.Genero, ',');
             getline(ss, dato, ',');
-            libro.Stock_Inventario = stoi(dato);
-            getline(ss, dato, ',');
-            libro.StockActual = stoi(dato);
-
-            getline(ss, dato, ',');
             libro.precio = stoi(dato);
+            libro.stock = contarTituloLibro("output/libros.csv", libro.nombre_Libro);
             getline(ss, libro.estado, ',');
 
             // Insertar el libro en la lista enlazada
@@ -718,6 +713,21 @@ nodoLibros *buscarLibroPorID(ListaLibros &listaLibros, int idLibro)
     while (actual != nullptr)
     {
         if (actual->libro.id == idLibro)
+        {
+            return actual; // Libro encontrado
+        }
+        actual = actual->siguiente;
+    }
+    return nullptr; // Libro no encontrado
+}
+
+nodoLibros *buscarLibroPorTitulo(ListaLibros &listaLibros, string tituloLibro)
+{
+    nodoLibros *actual = listaLibros.cabeza;
+    while (actual != nullptr)
+    {
+        int distancia = distanciaLevenshtein(actual->libro.nombre_Libro, tituloLibro);
+        if (distancia<4 && actual->libro.estado == "Disponible")
         {
             return actual; // Libro encontrado
         }
