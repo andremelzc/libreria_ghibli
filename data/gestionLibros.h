@@ -765,8 +765,6 @@ void guardar_CSV_Libros_Sobreescribir(ListaLibros *lista, string nombreArchivo)
                 << libro.Autor << ","
                 << libro.Ano << ","
                 << libro.Genero << ","
-                << libro.Stock_Inventario << ","
-                << libro.StockActual << ","
                 << libro.precio << ","
                 << libro.estado << "\n";
 
@@ -781,5 +779,4 @@ void guardar_CSV_Libros_Sobreescribir(ListaLibros *lista, string nombreArchivo)
 
     archivo.close();
     // cout << "Datos guardados en " << nombreArchivo << endl;
-    pausa();
 }

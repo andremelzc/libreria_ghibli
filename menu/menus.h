@@ -30,6 +30,8 @@ void menu_opcionesPedido();
 
 // Para cuando se inicie sesión
 int id_usuariolog = 0;
+int costoTotal = 0;
+int mora = 0;
 
 void menu_opcionesPrincipal()
 {
@@ -722,8 +724,8 @@ void menu_opcionesCliente()
       case 5:
         // 5."Ver Carrito del Usuario", Miguel
         system("CLS");
-        mostrarCarritoUsuarioEstado(id_usuariolog, 0);//Agregado No Pagado
-        mostrarCarritoUsuarioEstado(id_usuariolog, 1);//Agregado y Pagado
+        mostrarCarritoUsuarioEstado(id_usuariolog, 0); // Agregado No Pagado
+        mostrarCarritoUsuarioEstado(id_usuariolog, 1); // Agregado y Pagado
         getch();
         break;
       case 6:
@@ -889,6 +891,8 @@ void menu_opcionesPedido()
       }
       case 2:
         // 2. Registrar devolucion de libro
+        system("CLS");
+        registrarDevolucionLibro(mora);
         getch();
         break;
       case 3:
