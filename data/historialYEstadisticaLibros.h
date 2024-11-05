@@ -116,6 +116,18 @@ string devolverNombre(Lista &Usuarios, int id){
     return "Nombre no encontrado";
 }
 
+string devolverLibroNombre(ListaLibros &Libros, int id){
+    nodoLibros *actual = Libros.cabeza;
+
+    while(actual != nullptr){
+        if (actual->libro.id == id){
+            return actual->libro.nombre_Libro;
+        }
+        actual = actual->siguiente;
+    }
+
+}
+
 void mostrarHistorial(){
     gotoxy(51,11);
     color(2);
@@ -135,39 +147,73 @@ void mostrarHistorial(){
     NodoPedidos *actual = desencolarHistorial(historial);
 
     int contador = 0;
+    int contadorEntregasTarde = 0;
+    bool aptoParaPrestamos = false;
+    
     limpiarPantalla();
     setConsoleBackground(White);
     dibujarTitulo(27, 0, 2, letras);
     estructura_menu2(16, 103, 10, 27);
     
     Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
-    gotoxy(44, 12);
+    gotoxy(44, 10);
     color(2);
-    cout << "Historial de Pedidos de "<<devolverNombre(listaUsuarios,id) ;
-
-    gotoxy(20, 14);
+    cout << "Historial de Pedidos de ";
+    color(0);
+    cout <<devolverNombre(listaUsuarios,id) ;
+    color(2);
+    gotoxy(20, 12);
     cout << "ID";
-    gotoxy(26, 14);
-    cout << "Libro";
-    gotoxy(54, 14);
+    gotoxy(26, 12);
+    cout << "Libro(codigo-nombre)";
+    gotoxy(54, 12);
     cout << "Estado";
-    gotoxy(70, 14);
+    gotoxy(70, 12);
     cout << "Fecha de pedido";
     color(0);
-
+    ListaLibros Libros = leerLibrosCSV("output/libros.csv");
     while (actual != nullptr)
     {
-
-        gotoxy(20, 16 + contador);
+        if(contador < 10){
+        color(0);
+        gotoxy(20, 14 + contador);
         cout << actual->pedido.ID_pedido;
-        gotoxy(26, 16 + contador);
-        cout << actual->pedido.ID_libro;
-        gotoxy(54, 16 + contador);
+        gotoxy(26, 14 + contador);
+        cout << actual->pedido.ID_libro << "-"<< devolverLibroNombre(Libros,actual->pedido.ID_libro);
+        gotoxy(54, 14 + contador);
+        if(actual->pedido.estadoPedido == "NO_DEVUELTO" or actual->pedido.estadoPedido == "DEVUELTO_TARDE" ){
+            color(4);
+        }
         cout << actual->pedido.estadoPedido;
-        gotoxy(70, 16 + contador);
+        color(0);
+        gotoxy(70, 14 + contador);
         cout << fechaAString(actual->pedido.fechaPedido);
-        actual = actual->sgte;
+        }
         contador++;
+        if(actual->pedido.estadoPedido == "DEVUELTO_TARDE"){
+            contadorEntregasTarde++;
+        }
+        if(actual->pedido.estadoPedido == "NO_DEVUELTO" && aptoParaPrestamos == false){
+            color(0);
+            gotoxy(20, 26);
+            cout << "Observacion: " ;
+            color(5);
+            cout << "El cliente no es apto para prestamos, pues tiene libros sin devolver ";
+            aptoParaPrestamos == true;
+        }
+        actual = actual->sgte; //pasando al siguiente nodo
+    }
+    
+    if(contador > 10){
+        gotoxy(20, 26);
+        cout << "Y mas ...";
+    }
+    if(contador/contadorEntregasTarde > 0.3){
+            color(0);
+            gotoxy(20, 27);
+            cout << "Observacion: " ;
+            color(5);
+            cout << "El cliente tiene tendencia de devolver tarde";
     }
     pausa();
 }
