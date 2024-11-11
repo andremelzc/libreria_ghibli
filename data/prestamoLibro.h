@@ -599,32 +599,33 @@ void mostrarPedidos(ListaPedidos &listaPedidos)
     system("PAUSE>0");
 }
 
-void mostrarPedidosxdni(ListaPedidos &listaPedidos, string dni)
+bool mostrarPedidosxdni(ListaPedidos &listaPedidos, string dni)
 {
     NodoPedidos *actual = listaPedidos.head;
     ListaLibros listaLibros = leerLibrosCSV("output/libros.csv");
 
     int contador = 0;
     int id_libro;
+    bool usuarioEncontrado = false;
     gotoxy(35, 12);
     color(2);
     cout << "                                                                   ";
     gotoxy(50, 12);
     cout << "Lista de Pedidos";
     gotoxy(18, 14);
-    cout << "ID:";
-    gotoxy(22, 14);
-    cout << "DNI: ";
+    cout << "ID";
+    gotoxy(25, 14);
+    cout << "DNI ";
     gotoxy(34, 14);
-    cout << "ID: ";
-    gotoxy(38, 14);
-    cout << "Libro: ";
+    cout << "ID ";
+    gotoxy(45, 14);
+    cout << "Libro ";
     gotoxy(66, 14);
-    cout << "Pedido: ";
+    cout << "Pedido ";
     gotoxy(78, 14);
-    cout << "Devuelto: ";
+    cout << "Devuelto ";
     gotoxy(90, 14);
-    cout << "Estado: ";
+    cout << "Estado ";
     color(0);
     while (actual != nullptr)
     {
@@ -660,12 +661,21 @@ void mostrarPedidosxdni(ListaPedidos &listaPedidos, string dni)
             cout << actual->pedido.devolucion.dia << "/" << actual->pedido.devolucion.mes << "/" << actual->pedido.devolucion.año;
             gotoxy(90, 16 + contador);
             cout << actual->pedido.estadoPedido;
-
+            usuarioEncontrado = true;
             contador++;
         }
         actual = actual->sgte;
     }
+    if (usuarioEncontrado == false)
+    {
+        gotoxy(40, 12);
+        color(4);
+        cout << "Usuario no tiene libros prestados.";
+        color(0);
+    }
+
     system("PAUSE>0");
+    return usuarioEncontrado;
 }
 
 int calcularDiasEntreFechas(int anio1, int mes1, int dia1, int anio2, int mes2, int dia2)
@@ -695,93 +705,120 @@ int calcularDiasEntreFechas(int anio1, int mes1, int dia1, int anio2, int mes2, 
 
 void registrarDevolucionLibro(int &mora)
 {
-    limpiarPantalla();
-    setConsoleBackground(White);
-    ejecutarGradienteDoble(150);
-    estructura_menu2(16, 103, 11, 26);
-    dibujarTitulo(27, 0, 2, letras);
-
     string dni;
     string id_libro;
     ListaPedidos listaPedidos = leerPedidosDesdeCSV("output/pedidos.csv");
     int dias;
+    bool usuarioEncontrado = false;
     mora = 0;
-    gotoxy(40, 12);
-    cout << "Ingrese el DNI del usuario: ";
-    getline(cin, dni);
-
-    mostrarPedidosxdni(listaPedidos, dni);
-
-    gotoxy(40, 20);
-    cout << "Ingrese el ID del libro a devolver: ";
-    getline(cin, id_libro);
-
-    NodoPedidos *actual = listaPedidos.head;
-    while (actual != nullptr)
+    bool idLibroEncontrado = false;
+    do
     {
-        if (actual->pedido.ID_usuario == stoi(dni) && actual->pedido.ID_libro == stoi(id_libro) && (actual->pedido.estadoPedido == "PRESTADO" || actual->pedido.estadoPedido == "NO_DEVUELTO"))
+        limpiarPantalla();
+        setConsoleBackground(White);
+        ejecutarGradienteDoble(150);
+        estructura_menu2(16, 103, 11, 26);
+        dibujarTitulo(27, 0, 2, letras);
+        gotoxy(42, 12);
+        cout << "Ingrese el DNI del usuario: ";
+        getline(cin, dni);
+
+        usuarioEncontrado = mostrarPedidosxdni(listaPedidos, dni);
+        if (usuarioEncontrado == false)
         {
-            ListaLibros listaLibros = leerLibrosCSV("output/libros.csv");
-            nodoLibros *actualLibro = listaLibros.cabeza;
-            while (actualLibro != nullptr)
+            gotoxy(40, 16);
+            cout << "Desea buscar otro usuario (s/n): ";
+            string respuesta;
+            getline(cin, respuesta);
+            if (respuesta[0] == 'n' || respuesta[0] == 'N')
             {
-                if (actualLibro->libro.id == stoi(id_libro))
-                {
-                    actualLibro->libro.estado = "Disponible";
-                    break;
-                }
-                actualLibro = actualLibro->siguiente;
+                break;
             }
-
-            guardar_CSV_Libros_Sobreescribir(&listaLibros, "output/libros.csv");
-
-            time_t tiempoActual = time(nullptr);
-
-            // Convierte el tiempo a una estructura tm
-            tm *tiempoLocal = localtime(&tiempoActual);
-
-            actual->pedido.devolucion.año = tiempoLocal->tm_year + 1900;
-            actual->pedido.devolucion.mes = tiempoLocal->tm_mon + 1;
-            actual->pedido.devolucion.dia = tiempoLocal->tm_mday;
-
-            dias = calcularDiasEntreFechas(actual->pedido.fechaPedido.año, actual->pedido.fechaPedido.mes, actual->pedido.fechaPedido.dia, actual->pedido.devolucion.año, actual->pedido.devolucion.mes, actual->pedido.devolucion.dia);
-
-            if (dias > 7)
-            {
-                mora = 3 * (dias - 7);
-                actual->pedido.estadoPedido = "DEVUELTO_TARDE";
-            }
-            else
-            {
-                actual->pedido.estadoPedido = "DEVUELTO";
-            }
-
-            guardar_CSV_PedidoReferencia(listaPedidos, "output/pedidos.csv");
-
-            Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
-            Nodo *actualUsuario = listaUsuarios.cabeza;
-
-            while (actualUsuario != nullptr)
-            {
-                if (actualUsuario->usuario.ID_Usuario == dni)
-                {
-                    actualUsuario->usuario.librosPrestados--;
-                    break;
-                }
-                actualUsuario = actualUsuario->siguiente;
-            }
-            limpiarCSV("output/usuarios.csv");
-            guardar_CSV(&listaUsuarios, "output/usuarios.csv");
         }
 
-        actual = actual->sgte;
+    } while (!usuarioEncontrado);
+
+    if (usuarioEncontrado)
+    {
+        gotoxy(40, 20);
+        cout << "Ingrese el ID del libro a devolver: ";
+        getline(cin, id_libro);
+
+        NodoPedidos *actual = listaPedidos.head;
+        while (actual != nullptr)
+        {
+            if (actual->pedido.ID_usuario == stoi(dni) && actual->pedido.ID_libro == stoi(id_libro) && (actual->pedido.estadoPedido == "PRESTADO" || actual->pedido.estadoPedido == "NO_DEVUELTO"))
+            {
+                idLibroEncontrado = true;
+                ListaLibros listaLibros = leerLibrosCSV("output/libros.csv");
+                nodoLibros *actualLibro = listaLibros.cabeza;
+                while (actualLibro != nullptr)
+                {
+                    if (actualLibro->libro.id == stoi(id_libro))
+                    {
+                        actualLibro->libro.estado = "Disponible";
+                        break;
+                    }
+                    actualLibro = actualLibro->siguiente;
+                }
+
+                guardar_CSV_Libros_Sobreescribir(&listaLibros, "output/libros.csv");
+
+                time_t tiempoActual = time(nullptr);
+
+                // Convierte el tiempo a una estructura tm
+                tm *tiempoLocal = localtime(&tiempoActual);
+
+                actual->pedido.devolucion.año = tiempoLocal->tm_year + 1900;
+                actual->pedido.devolucion.mes = tiempoLocal->tm_mon + 1;
+                actual->pedido.devolucion.dia = tiempoLocal->tm_mday;
+
+                dias = calcularDiasEntreFechas(actual->pedido.fechaPedido.año, actual->pedido.fechaPedido.mes, actual->pedido.fechaPedido.dia, actual->pedido.devolucion.año, actual->pedido.devolucion.mes, actual->pedido.devolucion.dia);
+
+                if (dias > 7)
+                {
+                    mora = 3 * (dias - 7);
+                    actual->pedido.estadoPedido = "DEVUELTO_TARDE";
+                }
+                else
+                {
+                    actual->pedido.estadoPedido = "DEVUELTO";
+                }
+
+                guardar_CSV_PedidoReferencia(listaPedidos, "output/pedidos.csv");
+
+                Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
+                Nodo *actualUsuario = listaUsuarios.cabeza;
+
+                while (actualUsuario != nullptr)
+                {
+                    if (actualUsuario->usuario.ID_Usuario == dni)
+                    {
+                        actualUsuario->usuario.librosPrestados--;
+                        break;
+                    }
+                    actualUsuario = actualUsuario->siguiente;
+                }
+                limpiarCSV("output/usuarios.csv");
+                guardar_CSV(&listaUsuarios, "output/usuarios.csv");
+            }
+
+            actual = actual->sgte;
+        }
+        if (idLibroEncontrado)
+        {
+            gotoxy(44, 22);
+            cout << "Libro devuelto con exito.";
+            gotoxy(40, 23);
+            cout << "Dias de prestamo: " << dias;
+            gotoxy(40, 24);
+            cout << "Dias de retraso: " << dias - 7;
+            gotoxy(40, 25);
+            cout << "Mora a pagar: S/ " << mora;
+        }
+        else{
+            gotoxy(40, 22);
+            cout << "Libro no encontrado...";
+        }
     }
-    gotoxy(44, 22);
-    cout << "Libro devuelto con exito.";
-    gotoxy(40, 23);
-    cout << "Dias de prestamo: " << dias;
-    gotoxy(40, 24);
-    cout << "Dias de retraso: " << dias - 7;
-    gotoxy(40, 25);
-    cout << "Mora a pagar: S/ " << mora;
 }

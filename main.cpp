@@ -12,7 +12,6 @@ using namespace std;
 
 int main()
 {
-
     // Inicio
     ejecutarGradiente(300);
     dibujarTitulo(32, 5, 1, libros);
