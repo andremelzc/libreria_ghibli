@@ -274,7 +274,6 @@ void mostrarUsuarios(Lista &lista)
         actual = actual->siguiente;
         contador++;
     }
-    system("PAUSE>0");
 }
 
 // Modificar datos de usuario

@@ -302,6 +302,7 @@ void menu_opcionesGestionLibros()
 // Menu de opciones de gestionar usuarios (Administrador)
 vector<string> opcionesMenuGestionUsuarios = {"Registrar usuario",
                                               "Modificar usuario",
+                                              "Eliminar usuario",
                                               "Leer usuarios",
                                               "Retroceder"};
 int numGestionUsuarios = opcionesMenuGestionUsuarios.size();
@@ -374,7 +375,7 @@ void menu_opcionesGestionUsuarios()
         listaDeUsuarios = leerUsuariosCSV("output/usuarios.csv");
         // Mostrar los usuarios cargados en la lista
         mostrarUsuarios(listaDeUsuarios);
-        getch();
+        pausa();
         break;
       case 5:
         // 5. Salir
