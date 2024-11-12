@@ -4,6 +4,9 @@
 #include <sstream>
 #include <vector>
 #include <iomanip>
+#include <algorithm>
+#include <cctype>
+
 
 using namespace std;
 
@@ -215,4 +218,12 @@ int distanciaLevenshtein(const std::string& s1, const std::string& s2) {
         }
     }
     return d[s1.size()][s2.size()];
+}
+
+// Función para convertir un string a minúsculas
+string convertirAMinuscula(const string& str)
+{
+    string result = str;
+    transform(result.begin(), result.end(), result.begin(), ::tolower);
+    return result;
 }
