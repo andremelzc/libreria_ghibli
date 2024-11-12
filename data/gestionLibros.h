@@ -15,7 +15,7 @@ void insertarLibro(ListaLibros &lista, Libro nuevoLibro);
 ListaLibros leerLibrosCSV(string nombreArchivo);
 bool mostrarLibroXid(ListaLibros &Libros, int id);
 void insertarArbolLibro(LibroNodoArbol *&raiz, Libro *libro);
-Libro *buscarLibroArbol(LibroNodoArbol *raiz, string nombreLibroBuscar);
+Libro *buscarLibroArbol(LibroNodoArbol *raiz, const string& nombreLibroBuscar);
 LibroNodoArbol *leerLibrosArbol(string nombreArchivo, bool userView);
 
 // Inserta libros al final de una lista enlazada
@@ -899,30 +899,36 @@ void insertarArbolLibro(LibroNodoArbol *&raiz, Libro *libro)
     }
 }
 
-// Función para buscar un libro en el arbol
-Libro *buscarLibroArbol(LibroNodoArbol *raiz, string nombreLibroBuscar)
+// Función para buscar un libro en el árbol
+Libro *buscarLibroArbol(LibroNodoArbol *raiz, const string& nombreLibroBuscar)
 {
     if (raiz == nullptr)
     {
         return nullptr;
     }
 
+    // Convertir ambos títulos a minúsculas
+    string tituloNodo = convertirAMinuscula(raiz->libro.nombre_Libro);
+    string tituloBuscar = convertirAMinuscula(nombreLibroBuscar);
+
     // Buscar si el título ingresado es una subcadena del título del nodo
-    if (raiz->libro.nombre_Libro.find(nombreLibroBuscar) != string::npos || raiz->libro.nombre_Libro == nombreLibroBuscar)
+    if (tituloNodo.find(tituloBuscar) != string::npos || tituloNodo == tituloBuscar)
     {
         return &raiz->libro;
     }
 
     // Buscar en el subárbol izquierdo
-    if (raiz->libro.nombre_Libro > nombreLibroBuscar)
+    if (tituloNodo > tituloBuscar)
     {
         return buscarLibroArbol(raiz->izquierda, nombreLibroBuscar);
     }
     else
-    { // Buscar en el subárbol derecho
+    { 
+        // Buscar en el subárbol derecho
         return buscarLibroArbol(raiz->derecha, nombreLibroBuscar);
     }
 }
+
 
 LibroNodoArbol *leerLibrosArbol(string nombreArchivo, bool userView)
 {
