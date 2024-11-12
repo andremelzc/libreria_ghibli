@@ -14,7 +14,7 @@ void modificarLibro();
 void insertarLibro(ListaLibros &lista, Libro nuevoLibro);
 ListaLibros leerLibrosCSV(string nombreArchivo);
 bool mostrarLibroXid(ListaLibros &Libros, int id);
-void insertarArbolLibro(LibroNodoArbol *raiz, Libro *libro);
+void insertarArbolLibro(LibroNodoArbol *&raiz, Libro *libro);
 Libro *buscarLibroArbol(LibroNodoArbol *raiz, string nombreLibroBuscar);
 LibroNodoArbol *leerLibrosArbol(string nombreArchivo, bool userView);
 
@@ -683,7 +683,15 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
         // Mostrar el menú de navegación al final de la lista
         gotoxy(13, 26);
         color(2);
-        cout << "Ingrese opción: (0 = salir, 1 = anterior, 2 = siguiente, 3 = buscar título): ";
+        if (userView)
+        {
+            cout << "Opciones: (0 = salir, 1 = anterior, 2 = siguiente, 3 = buscar por título): ";
+        }
+        else
+        {
+            cout << "Opciones: (0 = salir, 1 = anterior, 2 = siguiente): ";
+        }
+
         color(0);
         cin >> opcion;
         cin.ignore();
@@ -705,26 +713,85 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
                 actual = actual->siguiente;
             }
         }
-        else if (opcion == 3) // Filtro
+        else if (opcion == 3 && userView) // Filtro
         {
+            
             LibroNodoArbol *arbol = leerLibrosArbol("output/libros.csv", true);
-            if (arbol == nullptr)
-            {
-                cout << "No se pudo cargar el catálogo de libros." << endl;
-                pausa();
-                return;
-            }
             string titulo;
+            gotoxy(13, 27);
+            color(2);
+            cout << "Título del libro: ";
+            color(0);
             getline(cin, titulo);
-            Libro *libro = buscarLibroArbol(arbol, titulo);
-            if (libro != nullptr)
+            Libro *libroEncontrado = buscarLibroArbol(arbol, titulo);
+
+            limpiarPantalla();
+            setConsoleBackground(White);
+            dibujarTitulo(27, 0, 2, letras);
+            estructura_menu2(8, 111, 10, 27);
+
+            int contador = 0; // Contador para mostrar los libros de 10 en 10
+
+            gotoxy(50, 11);
+            color(2);
+            cout << "Catálogo de libros";
+
+            gotoxy(13, 13);
+            color(2);
+            cout << "Resultados para: ";
+            color(0);
+            cout << titulo;
+
+            color(2);
+            gotoxy(18 - resta, 15);
+            cout << "Nombre";
+            gotoxy(47, 15);
+            cout << "Autor";
+            gotoxy(71, 15);
+            cout << "Género";
+            gotoxy(93, 15);
+            cout << "Año";
+            gotoxy(102, 15);
+            cout << "Stock";
+            color(0);
+
+            gotoxy(18 - resta, 17);
+            if (libroEncontrado->nombre_Libro.length() > 25)
             {
-                cout << libro->nombre_Libro << endl;
+                cout << libroEncontrado->nombre_Libro.substr(0, 22) + "...";
             }
             else
             {
-                cout << "Libro no encontrado." << endl;
+                cout << libroEncontrado->nombre_Libro;
             }
+
+            gotoxy(47, 17);
+            if (libroEncontrado->Autor.length() > 18)
+            {
+                cout << libroEncontrado->Autor.substr(0, 15) + "...";
+            }
+            else
+            {
+                cout << libroEncontrado->Autor;
+            }
+
+            gotoxy(71, 17);
+            if (libroEncontrado->Genero.length() > 17)
+            {
+                cout << libroEncontrado->Genero.substr(0, 14) + "...";
+            }
+            else
+            {
+                cout << libroEncontrado->Genero;
+            }
+            if (userView)
+            {
+                gotoxy(93, 17);
+                cout << libroEncontrado->Ano;
+                gotoxy(102, 17);
+                cout << libroEncontrado->stock;
+            }
+
             pausa();
         }
         else if (opcion != 0)
@@ -812,7 +879,7 @@ void guardar_CSV_Libros_Sobreescribir(ListaLibros *lista, string nombreArchivo)
 }
 
 // Función para insertar nodos en el arbol
-void insertarArbolLibro(LibroNodoArbol *raiz, Libro *libro)
+void insertarArbolLibro(LibroNodoArbol *&raiz, Libro *libro)
 {
     if (raiz == nullptr)
     {
@@ -871,48 +938,52 @@ LibroNodoArbol *leerLibrosArbol(string nombreArchivo, bool userView)
         return arbol;
     }
 
-    if (archivo.is_open())
+    // Leer el archivo línea por línea
+    while (getline(archivo, linea))
     {
-        // Leer el archivo línea por línea
-        while (getline(archivo, linea))
+        stringstream ss(linea);
+        string dato;
+
+        Libro libro;
+
+        // Suponiendo que el CSV tiene los campos en el siguiente orden (para mostrar catálogo):
+        // Nombre, Autor, Año, Género, Stock, precio, estado
+        try
         {
-            stringstream ss(linea);
-            string dato;
-
-            Libro libro;
-
-            // Suponiendo que el CSV tiene los campos en el siguiente orden (para mostrar catálogo):
-            // Nombre, Autor, Año, Género, Stock, precio, estado
             getline(ss, dato, ',');
             libro.id = stoi(dato); // Convertir a entero
+
             getline(ss, libro.nombre_Libro, ',');
-            if (userView)
+            if (userView && tituloGuardado("output/libros.csv", libro.id, libro.nombre_Libro))
             {
-                if (tituloGuardado("output/libros.csv", libro.id, libro.nombre_Libro))
-                {
-                    continue;
-                }
+                continue;
             }
+
             getline(ss, libro.Autor, ',');
+
             getline(ss, dato, ',');
             libro.Ano = stoi(dato);
+
             getline(ss, libro.Genero, ',');
+
             getline(ss, dato, ',');
             if (userView)
             {
                 libro.stock = contarTituloLibro("output/libros.csv", libro.nombre_Libro);
             }
+
             libro.precio = stoi(dato);
             getline(ss, libro.estado, ',');
 
-            // Insertar el libro en la lista enlazada
+            // Insertar el libro en el árbol
             insertarArbolLibro(arbol, &libro);
         }
-        archivo.close();
+        catch (const std::exception &e)
+        {
+            
+        }
     }
-    else
-    {
-        cout << "No se pudo abrir el archivo " << nombreArchivo << endl;
-    }
+
+    archivo.close();
     return arbol;
 }
