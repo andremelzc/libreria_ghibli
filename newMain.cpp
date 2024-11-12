@@ -10,11 +10,8 @@
 using namespace std;
 
 int main() {
-    if(tituloGuardado("output/libros.csv", 3, "Circe")){
-        cout << "El libro se encuentra en la base de datos" << endl;
-    } else {
-        cout << "El libro no se encuentra en la base de datos" << endl;
-    }
+    int stock = contarTituloLibro("output/libros.csv", "Circe");
+    cout << "Stock: " << stock << endl;
     
     return 0;
 }

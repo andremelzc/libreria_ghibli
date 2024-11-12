@@ -248,6 +248,15 @@ string letras = R"(
  _________________________________________________________________                          
     )";
 
+string carritoCompras = R"(        
+        ____
+       / __ \____
+      //     |   \
+     ||      |    |
+     ||______|____|
+      |            |
+     (o)          (o))";
+
 // Función para dibujar presionar la tecla
 void dibujarPresionaTecla(int x, int y)
 {

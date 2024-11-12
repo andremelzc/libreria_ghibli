@@ -726,7 +726,6 @@ void menu_opcionesCliente()
         // 5."Ver Carrito del Usuario", Miguel
         system("CLS");
         mostrarCarritoUsuarioEstado(id_usuariolog, 0); // Agregado No Pagado
-        mostrarCarritoUsuarioEstado(id_usuariolog, 1); // Agregado y Pagado
         getch();
         break;
       case 6:

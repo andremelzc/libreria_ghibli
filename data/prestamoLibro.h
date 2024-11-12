@@ -221,12 +221,13 @@ bool mostrarLibroXTitulo(ListaLibros &Libros, string tituloPedido, int &id)
             color(2);
             cout << "5. Stock: ";
             color(0);
-            cout << actual->libro.StockActual;
+            actual->libro.stock = contarTituloLibro("output/Libros.csv", actual->libro.nombre_Libro);
+            cout << actual->libro.stock;
             gotoxy(27, 19);
             color(2);
             cout << "6. Precio: ";
             color(0);
-            cout << actual->libro.precio;
+            cout << "S/ " << actual->libro.precio;
 
             return true; // Retorna true si el libro fue encontrado
             break;
@@ -607,37 +608,30 @@ bool mostrarPedidosxdni(ListaPedidos &listaPedidos, string dni)
     int contador = 0;
     int id_libro;
     bool usuarioEncontrado = false;
-    gotoxy(35, 12);
+
+    Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
+    Nodo *actualUsuario = buscarUsuarioPorDNI(listaUsuarios, dni);
+
+    gotoxy(47, 17);
     color(2);
-    cout << "                                                                   ";
-    gotoxy(50, 12);
-    cout << "Lista de Pedidos";
-    gotoxy(18, 14);
+    cout << "Pedidos de " << actualUsuario->usuario.nombre << " " << actualUsuario->usuario.apellidos;
+    gotoxy(18, 19);
     cout << "ID";
-    gotoxy(25, 14);
-    cout << "DNI ";
-    gotoxy(34, 14);
-    cout << "ID ";
-    gotoxy(45, 14);
-    cout << "Libro ";
-    gotoxy(66, 14);
-    cout << "Pedido ";
-    gotoxy(78, 14);
-    cout << "Devuelto ";
-    gotoxy(90, 14);
+    gotoxy(25, 19);
+    cout << "Libro";
+    gotoxy(66, 19);
+    cout << "F. Pedido ";
+    gotoxy(90, 19);
     cout << "Estado ";
     color(0);
     while (actual != nullptr)
     {
         if (actual->pedido.ID_usuario == stoi(dni) && actual->pedido.estadoPedido == "PRESTADO" || actual->pedido.estadoPedido == "NO_DEVUELTO")
         {
-            gotoxy(18, 16 + contador);
+            gotoxy(18, 21 + contador);
             cout << actual->pedido.ID_pedido;
-            gotoxy(22, 16 + contador);
-            cout << actual->pedido.ID_usuario;
-            gotoxy(34, 16 + contador);
-            cout << actual->pedido.ID_libro;
-            gotoxy(38, 16 + contador);
+            gotoxy(25, 21 + contador);
+            cout << actual->pedido.ID_libro << ") ";
             nodoLibros *actualLibro = listaLibros.cabeza;
             while (actualLibro != nullptr)
             {
@@ -655,11 +649,9 @@ bool mostrarPedidosxdni(ListaPedidos &listaPedidos, string dni)
                 }
                 actualLibro = actualLibro->siguiente;
             }
-            gotoxy(66, 16 + contador);
+            gotoxy(66, 21 + contador);
             cout << actual->pedido.fechaPedido.dia << "/" << actual->pedido.fechaPedido.mes << "/" << actual->pedido.fechaPedido.año;
-            gotoxy(78, 16 + contador);
-            cout << actual->pedido.devolucion.dia << "/" << actual->pedido.devolucion.mes << "/" << actual->pedido.devolucion.año;
-            gotoxy(90, 16 + contador);
+            gotoxy(90, 21 + contador);
             cout << actual->pedido.estadoPedido;
             usuarioEncontrado = true;
             contador++;
@@ -668,13 +660,19 @@ bool mostrarPedidosxdni(ListaPedidos &listaPedidos, string dni)
     }
     if (usuarioEncontrado == false)
     {
-        gotoxy(40, 12);
+        gotoxy(40, 21);
         color(4);
         cout << "Usuario no tiene libros prestados.";
         color(0);
     }
+    else
+    {
+        gotoxy(27, 15);
+        color(2);
+        cout << "Usuario encontrado!  ";
+    }
 
-    system("PAUSE>0");
+    pausa();
     return usuarioEncontrado;
 }
 
@@ -719,13 +717,23 @@ void registrarDevolucionLibro(int &mora)
         ejecutarGradienteDoble(150);
         estructura_menu2(16, 103, 11, 26);
         dibujarTitulo(27, 0, 2, letras);
-        gotoxy(42, 12);
-        cout << "Ingrese el DNI del usuario: ";
+        gotoxy(44, 12);
+        color(2);
+        cout << "Registrar devolucion de libro";
+        gotoxy(27, 14);
+        cout << "DNI del usuario: ";
+        color(0);
         getline(cin, dni);
+        color(2);
+        dibujarTextoPuntos(27, 15, "Buscando usuario");
 
         usuarioEncontrado = mostrarPedidosxdni(listaPedidos, dni);
-        if (usuarioEncontrado == false)
+
+        if (!usuarioEncontrado)
         {
+            gotoxy(27, 15);
+            color(4);
+            cout << "Usuario no encontrado";
             gotoxy(40, 16);
             cout << "Desea buscar otro usuario (s/n): ";
             string respuesta;
@@ -735,16 +743,18 @@ void registrarDevolucionLibro(int &mora)
                 break;
             }
         }
-
     } while (!usuarioEncontrado);
 
     if (usuarioEncontrado)
     {
-        gotoxy(40, 20);
-        cout << "Ingrese el ID del libro a devolver: ";
+        gotoxy(27, 25);
+        color(2);
+        cout << "ID del libro a devolver: ";
+        color(0);
         getline(cin, id_libro);
 
         NodoPedidos *actual = listaPedidos.head;
+        string nombreLibroDevuelto;
         while (actual != nullptr)
         {
             if (actual->pedido.ID_usuario == stoi(dni) && actual->pedido.ID_libro == stoi(id_libro) && (actual->pedido.estadoPedido == "PRESTADO" || actual->pedido.estadoPedido == "NO_DEVUELTO"))
@@ -757,6 +767,7 @@ void registrarDevolucionLibro(int &mora)
                     if (actualLibro->libro.id == stoi(id_libro))
                     {
                         actualLibro->libro.estado = "Disponible";
+                        nombreLibroDevuelto = actualLibro->libro.nombre_Libro;
                         break;
                     }
                     actualLibro = actualLibro->siguiente;
@@ -807,16 +818,45 @@ void registrarDevolucionLibro(int &mora)
         }
         if (idLibroEncontrado)
         {
-            gotoxy(44, 22);
-            cout << "Libro devuelto con exito.";
-            gotoxy(40, 23);
-            cout << "Dias de prestamo: " << dias;
-            gotoxy(40, 24);
-            cout << "Dias de retraso: " << dias - 7;
-            gotoxy(40, 25);
-            cout << "Mora a pagar: S/ " << mora;
+            limpiarPantalla();
+            setConsoleBackground(White);
+            ejecutarGradienteDoble(150);
+            estructura_menu2(16, 103, 11, 26);
+            dibujarTitulo(27, 0, 2, letras);
+            gotoxy(44, 12);
+            color(2);
+            cout << "Registrar devolucion de libro";
+            dibujarTextoPuntos(27, 14, "Devolviendo libro");
+            gotoxy(27, 14);
+            cout << "Libro '";
+            color(0);
+            cout << nombreLibroDevuelto;
+            color(2);
+            cout << "' ha sido devuelto con exito!";
+            gotoxy(27, 16);
+            cout << "Dias de prestamo: ";
+            color(0);
+            cout << dias << " días";
+            gotoxy(27, 17);
+            color(2);
+            cout << "Dias de retraso: ";
+            color(0);
+            if (dias > 7)
+            {
+                cout << dias - 7 << " días";
+            }
+            else
+            {
+                cout << "0 días";
+            }
+            gotoxy(27, 18);
+            color(2);
+            cout << "Mora a pagar: S/ ";
+            color(0);
+            cout << mora;
         }
-        else{
+        else
+        {
             gotoxy(40, 22);
             cout << "Libro no encontrado...";
         }

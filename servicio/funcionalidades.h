@@ -119,18 +119,17 @@ int contarTituloLibro(string nombreArchivo, string titulo)
         string estadoLibro;
 
         // Suponiendo que el CSV tiene los campos en el siguiente orden:
-        // id, nombre_Libro,Autor,Ano,Genero,stock,Precio,Estado
-        getline(ss, dato, ','); // Leer el ID
-        getline(ss, tituloLibro, ','); // Leer el título del libro
-        getline(ss, dato, ','); // Leer el autor
-        getline(ss, dato, ','); // Leer el año
-        getline(ss, dato, ','); // Leer el género
-        getline(ss, dato, ','); // Leer el stock 
-        getline(ss, dato, ','); // Leer el precio
-        getline(ss, estadoLibro, ','); // Leer el estado
+        // id, nombre_Libro, Autor, Ano, Genero, stock, Precio, Estado
+        getline(ss, dato, ',');           // Leer el ID
+        getline(ss, tituloLibro, ',');    // Leer el título del libro
+        getline(ss, dato, ',');           // Leer el autor
+        getline(ss, dato, ',');           // Leer el año
+        getline(ss, dato, ',');           // Leer el género
+        getline(ss, dato, ',');           // Leer el precio
+        getline(ss, estadoLibro, ',');    // Leer el estado
 
-        // Comparar el título del libro con el título buscado
-        if (dato == titulo && estadoLibro == "Disponible")
+        // Comparar el título del libro con el título buscado y verificar si está disponible
+        if (tituloLibro == titulo && estadoLibro == "Disponible")
         {
             contador++;
         }
@@ -139,7 +138,7 @@ int contarTituloLibro(string nombreArchivo, string titulo)
     // Cerrar el archivo
     archivoCSV.close();
 
-    return contador; // Devuelve el número de filas
+    return contador; // Devuelve el número de filas que cumplen con el criterio
 }
 
 bool tituloGuardado(string nombreArchivo, int id, string titulo)
