@@ -221,7 +221,7 @@ bool mostrarLibroXTitulo(ListaLibros &Libros, string tituloPedido, int &id)
             color(2);
             cout << "5. Stock: ";
             color(0);
-            actual->libro.stock = contarTituloLibro("output/Libros.csv", actual->libro.nombre_Libro);
+            actual->libro.stock = contarTituloLibro("output/libros.csv", actual->libro.nombre_Libro);
             cout << actual->libro.stock;
             gotoxy(27, 19);
             color(2);

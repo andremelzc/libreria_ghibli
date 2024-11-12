@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <ctime> /*Para registrar la fecha */
 using namespace std;
+
 // Declaraciones previas
 void insertarFinalListaLibro(ListaLibros *lista, Libro *libro);
 void guardar_CSV_Libros(ListaLibros *lista, string nombreArchivo);
@@ -13,6 +14,9 @@ void modificarLibro();
 void insertarLibro(ListaLibros &lista, Libro nuevoLibro);
 ListaLibros leerLibrosCSV(string nombreArchivo);
 bool mostrarLibroXid(ListaLibros &Libros, int id);
+void insertarArbolLibro(LibroNodoArbol *raiz, Libro *libro);
+Libro *buscarLibroArbol(LibroNodoArbol *raiz, string nombreLibroBuscar);
+LibroNodoArbol *leerLibrosArbol(string nombreArchivo, bool userView);
 
 // Inserta libros al final de una lista enlazada
 void insertarFinalListaLibro(ListaLibros *lista, Libro *libro)
@@ -499,7 +503,6 @@ void insertarDobleLibro(ListaDobleLibros &lista, Libro nuevoLibro)
 ListaDobleLibros leerLibrosDoblesCSV(string nombreArchivo, bool userView)
 {
     ListaDobleLibros listaLibros;
-
     ifstream archivo(nombreArchivo);
     string linea;
 
@@ -573,9 +576,12 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
 
     int resta = 0;
 
-    if(userView){
+    if (userView)
+    {
         resta = 5;
-    } else {
+    }
+    else
+    {
         resta = 0;
     }
 
@@ -597,7 +603,7 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
             cout << "ID";
         }
 
-        gotoxy(18-resta, 13);
+        gotoxy(18 - resta, 13);
         cout << "Nombre";
         gotoxy(47, 13);
         cout << "Autor";
@@ -628,7 +634,7 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
                 cout << temporal->libro.id;
             }
 
-            gotoxy(18-resta, 15 + contador);
+            gotoxy(18 - resta, 15 + contador);
             if (temporal->libro.nombre_Libro.length() > 25)
             {
                 cout << temporal->libro.nombre_Libro.substr(0, 22) + "...";
@@ -677,7 +683,7 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
         // Mostrar el menú de navegación al final de la lista
         gotoxy(13, 26);
         color(2);
-        cout << "Ingrese opción: (0 = salir, 1 = anterior, 2 = siguiente): ";
+        cout << "Ingrese opción: (0 = salir, 1 = anterior, 2 = siguiente, 3 = buscar título): ";
         color(0);
         cin >> opcion;
         cin.ignore();
@@ -699,6 +705,28 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
                 actual = actual->siguiente;
             }
         }
+        else if (opcion == 3) // Filtro
+        {
+            LibroNodoArbol *arbol = leerLibrosArbol("output/libros.csv", true);
+            if (arbol == nullptr)
+            {
+                cout << "No se pudo cargar el catálogo de libros." << endl;
+                pausa();
+                return;
+            }
+            string titulo;
+            getline(cin, titulo);
+            Libro *libro = buscarLibroArbol(arbol, titulo);
+            if (libro != nullptr)
+            {
+                cout << libro->nombre_Libro << endl;
+            }
+            else
+            {
+                cout << "Libro no encontrado." << endl;
+            }
+            pausa();
+        }
         else if (opcion != 0)
         {
             cout << "Opción no válida. Inténtelo de nuevo." << endl;
@@ -707,6 +735,7 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
     }
 }
 
+// Buscar libro por id
 nodoLibros *buscarLibroPorID(ListaLibros &listaLibros, int idLibro)
 {
     nodoLibros *actual = listaLibros.cabeza;
@@ -721,13 +750,14 @@ nodoLibros *buscarLibroPorID(ListaLibros &listaLibros, int idLibro)
     return nullptr; // Libro no encontrado
 }
 
+// Buscar libro por título
 nodoLibros *buscarLibroPorTitulo(ListaLibros &listaLibros, string tituloLibro)
 {
     nodoLibros *actual = listaLibros.cabeza;
     while (actual != nullptr)
     {
         int distancia = distanciaLevenshtein(actual->libro.nombre_Libro, tituloLibro);
-        if (distancia<4 && actual->libro.estado == "Disponible")
+        if (distancia < 4 && actual->libro.estado == "Disponible")
         {
             return actual; // Libro encontrado
         }
@@ -779,4 +809,110 @@ void guardar_CSV_Libros_Sobreescribir(ListaLibros *lista, string nombreArchivo)
 
     archivo.close();
     // cout << "Datos guardados en " << nombreArchivo << endl;
+}
+
+// Función para insertar nodos en el arbol
+void insertarArbolLibro(LibroNodoArbol *raiz, Libro *libro)
+{
+    if (raiz == nullptr)
+    {
+        // Si es el primer elemento, se crea la raíz
+        raiz = new LibroNodoArbol(*libro);
+    }
+    else
+    {
+        if (libro->nombre_Libro < raiz->libro.nombre_Libro)
+        {
+            insertarArbolLibro(raiz->izquierda, libro);
+        }
+        else
+        {
+            insertarArbolLibro(raiz->derecha, libro);
+        }
+    }
+}
+
+// Función para buscar un libro en el arbol
+Libro *buscarLibroArbol(LibroNodoArbol *raiz, string nombreLibroBuscar)
+{
+    if (raiz == nullptr)
+    {
+        return nullptr;
+    }
+
+    // Buscar si el título ingresado es una subcadena del título del nodo
+    if (raiz->libro.nombre_Libro.find(nombreLibroBuscar) != string::npos || raiz->libro.nombre_Libro == nombreLibroBuscar)
+    {
+        return &raiz->libro;
+    }
+
+    // Buscar en el subárbol izquierdo
+    if (raiz->libro.nombre_Libro > nombreLibroBuscar)
+    {
+        return buscarLibroArbol(raiz->izquierda, nombreLibroBuscar);
+    }
+    else
+    { // Buscar en el subárbol derecho
+        return buscarLibroArbol(raiz->derecha, nombreLibroBuscar);
+    }
+}
+
+LibroNodoArbol *leerLibrosArbol(string nombreArchivo, bool userView)
+{
+    LibroNodoArbol *arbol = nullptr;
+    ifstream archivo(nombreArchivo);
+    string linea;
+
+    if (!archivo.is_open())
+    {
+        cout << "No se pudo abrir el archivo. " << nombreArchivo << endl;
+        perror("Error al abrir el archivo");
+        system("PAUSE");
+        return arbol;
+    }
+
+    if (archivo.is_open())
+    {
+        // Leer el archivo línea por línea
+        while (getline(archivo, linea))
+        {
+            stringstream ss(linea);
+            string dato;
+
+            Libro libro;
+
+            // Suponiendo que el CSV tiene los campos en el siguiente orden (para mostrar catálogo):
+            // Nombre, Autor, Año, Género, Stock, precio, estado
+            getline(ss, dato, ',');
+            libro.id = stoi(dato); // Convertir a entero
+            getline(ss, libro.nombre_Libro, ',');
+            if (userView)
+            {
+                if (tituloGuardado("output/libros.csv", libro.id, libro.nombre_Libro))
+                {
+                    continue;
+                }
+            }
+            getline(ss, libro.Autor, ',');
+            getline(ss, dato, ',');
+            libro.Ano = stoi(dato);
+            getline(ss, libro.Genero, ',');
+            getline(ss, dato, ',');
+            if (userView)
+            {
+                libro.stock = contarTituloLibro("output/libros.csv", libro.nombre_Libro);
+            }
+            libro.precio = stoi(dato);
+            getline(ss, libro.estado, ',');
+
+            // Insertar el libro en la lista enlazada
+            insertarArbolLibro(arbol, &libro);
+        }
+        archivo.close();
+    }
+    else
+    {
+        cout << "No se pudo abrir el archivo " << nombreArchivo << endl;
+    }
+    return arbol;
 }

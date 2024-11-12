@@ -90,6 +90,14 @@ struct ListaDobleLibros
     ListaDobleLibros() : cabeza(nullptr), final(nullptr) {} // Inicializar cabeza a nullptr
 };
 
+struct LibroNodoArbol
+{
+    Libro libro;
+    LibroNodoArbol *izquierda;
+    LibroNodoArbol *derecha;
+    LibroNodoArbol(Libro libro1) : libro(libro1), izquierda(nullptr), derecha(nullptr) {}
+};
+
 // Pedidos (libros)
 struct Pedidos{
     int ID_pedido,ID_libro,ID_usuario;
