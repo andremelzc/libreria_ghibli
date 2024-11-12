@@ -444,6 +444,7 @@ void menu_opcionesGestionPedidos()
       case 1:
       {
         // 1. Registrar pedido
+        
         break;
       }
       case 2:
@@ -472,7 +473,6 @@ vector<string> opcionesMenuRecepcionista = {"Gestionar pedido de libro",
                                             "Gestionar pedido de laptop",
                                             "Registrar cliente",
                                             "Activar membresia",
-                                            "Ver historial de cliente",
                                             "Cerrar sesion"};
 int numRecepcionista = opcionesMenuRecepcionista.size();
 
@@ -543,15 +543,7 @@ void menu_opcionesRecepcionista()
         activarMembresi();
         break;
       case 5:
-        // 5. Ver historial de cliente
-        limpiarPantalla();
-        setConsoleBackground(White);
-        dibujarTitulo(27, 0, 2, letras);
-        estructura_menu2(16, 103, 10, 27);
-        mostrarHistorial();
-        break;
-      case 6:
-        // 6. Salir
+        // 5. Salir
         repeat = false;
         system("CLS");
         break;
@@ -716,6 +708,8 @@ void menu_opcionesCliente()
         break;
       case 3:
         // 3. Ver historial de pedidos
+        limpiarPantalla();
+        mostrarHistorialCliente(id_usuariolog);
         break;
       case 4:
         // 4."Agregar al Carrito", Miguel
@@ -835,7 +829,7 @@ void menu_opcionesGestionLaptops()
 // Menu de opciones de gestionar pedidos de libros (Recepcionista)
 vector<string> opcionesMenuGestionPedidosLibros = {"Atender pedido",
                                                    "Registrar devolucion de libro",
-                                                   "Ver pedidos pendientes",
+                                                   "Ver pedidos de cliente",
                                                    "Retroceder"};
 
 int numGestionPedidosLibros = opcionesMenuGestionPedidosLibros.size();
@@ -896,7 +890,12 @@ void menu_opcionesPedido()
         getch();
         break;
       case 3:
-        // 3. Ver pedidos pendientes
+        // 3. Ver pedidos de cliente
+        limpiarPantalla();
+        setConsoleBackground(White);
+        dibujarTitulo(27, 0, 2, letras);
+        estructura_menu2(16, 103, 10, 27);
+        mostrarHistorial();
         getch();
         break;
       case 4:
