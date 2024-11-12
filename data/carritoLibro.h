@@ -177,6 +177,45 @@ ListaCarritos leerCSV(string nombreArchivo)
     return lista;
 }
 
+
+bool verificarRegistroPreExistente(int id_usuario, std::string nom_libro) {
+    // Inicializo registroExiste como false
+    bool registroExiste = false;
+    
+    // Leer las listas desde los archivos CSV
+    ListaCarritos listaCarritosGeneral = leerCSV("output/carrito.csv");
+    ListaLibros listaLibrosGeneral = leerLibrosCSV("output/libros.csv");
+    nodoLibros* libroTraido;
+
+    if (listaCarritosGeneral.head != NULL) {
+        NodoCarritos* temporal = listaCarritosGeneral.head;
+
+        // Recorre cada registro en el carrito del usuario
+        while (temporal != NULL) {
+            // Si el usuario del carrito coincide con id_usuario
+            if (temporal->carrito.id_cliente == id_usuario) {
+                // Busca el libro en la lista de libros usando el id_producto del carrito
+                int idLibroBusqueda = temporal->carrito.id_producto;
+                libroTraido = buscarLibroPorID(listaLibrosGeneral, idLibroBusqueda);
+
+                if (libroTraido != NULL) {
+                    // Compara el nombre del libro en el carrito con nom_libro
+                    if (libroTraido->libro.nombre_Libro == nom_libro) {
+                        registroExiste = true;
+                        break; // Salir del bucle, ya que encontramos el registro
+                    }
+                }
+            }
+            // Avanza al siguiente nodo sin alterar listaCarritosGeneral.head
+            temporal = temporal->sgte;
+        }
+    }
+    
+    // Devuelve true si el registro existe, false si no
+    return registroExiste;
+}
+
+
 void agregarCarrito(int id_usuario)
 {
     ListaCarritos listaCarritosGeneral = leerCSV("output/carrito.csv");
