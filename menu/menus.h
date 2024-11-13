@@ -719,7 +719,7 @@ void menu_opcionesCliente()
       case 5:
         // 5."Ver Carrito del Usuario", Miguel
         system("CLS");
-        mostrarCarritoUsuarioEstado(id_usuariolog, 0); // Agregado No Pagado
+        mostrarCarritoUsu(id_usuariolog, 0); // Agregado No Pagado
         getch();
         break;
       case 6:
