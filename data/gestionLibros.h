@@ -396,6 +396,30 @@ void insertarNodoLibroAlFinal(ListaLibros *lista, nodoLibros *nodo) {
     lista->longitud++;
 }
 
+//Creada para ser Usada en AgregarCarrito en CarritoLibro.h
+void modificarEstadoLibro(ListaLibros *listaDeLibros, int idLibro_Modificar, string estadoNuevo)
+{
+    nodoLibros *actual = listaDeLibros->cabeza; // Asumiendo que la lista tiene un puntero a su nodo cabeza
+    if (actual != nullptr){
+        // Recorrer la lista enlazada
+        while (actual != nullptr)
+        {
+            // Verificar si el ID del libro actual coincide con el ID proporcionado
+            if (actual->libro.id == idLibro_Modificar)
+            {
+                // Modificar el estado del libro
+                actual->libro.estado = estadoNuevo;
+                //cout << "Estado del libro con ID " << idLibro_Modificar << " actualizado a: " << estadoNuevo << endl;
+                return; // Salir de la función una vez modificado
+            }
+            actual = actual->siguiente; // Pasar al siguiente nodo
+        }
+    }else{
+        // Si el libro no se encuentra, mostrar un mensaje
+    cout << "No se encontró un libro con el ID " << idLibro_Modificar << " en la lista." << endl;
+    }
+    
+}
 
 
 //Creada para poder ser Usada en Lista LibroEspecifico en CarritoLibro.h
@@ -1135,3 +1159,4 @@ void mostrarListaLibroSimple(ListaLibros listaMostrar)
         }
     }
 }
+

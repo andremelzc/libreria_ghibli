@@ -257,6 +257,7 @@ void agregarCarrito(int id_usuario)
 {
     ListaCarritos listaCarritosGeneral = leerCSV("output/carrito.csv");
     ListaCarritos listaCarritoActual; // Para almacenar todos los pedidos que haga
+    ListaLibros listaLibrosGeneral = leerLibrosCSV("output/libros.csv");//Para cargar las Modificaciones de Estado de los Libros
     bool confirmacion_agregar = false;
     bool seguir_agregando = false;
     bool stock_suficiente = false;
@@ -370,7 +371,7 @@ void agregarCarrito(int id_usuario)
                 }
                 
             }
-            
+    
         }
         
         if (confirmacion_agregar)
@@ -390,14 +391,18 @@ void agregarCarrito(int id_usuario)
 
             if(stock_suficiente){
                 for(int i=0;i<cantidad;i++){
+                    int id_modificar;
                     structCarritoActual.id_carrito = id_carritoInicial + agregado;
                     structCarritoActual.id_producto = listaLibroEspecifico.cabeza->libro.id;
+                    id_modificar = listaLibroEspecifico.cabeza->libro.id;
                     structCarritoActual.id_cliente = id_usuario;
                     structCarritoActual.cantidad = 1;
                     structCarritoActual.fecha = to_string(dia) + "/" + to_string(mes) + "/" + to_string(anio);
                     structCarritoActual.estado = 0;
                     // Agregamos el Nodo a nuestra lista de Pedidos Actuales
                     insertarCarritoFinal(&listaCarritoActual, structCarritoActual);
+                    //Modificare la ListaGeneralLibros para guardar los cambios al finalizar el proceso de Agregar Carrito
+                    modificarEstadoLibro(&listaLibrosGeneral, id_modificar, "Pedido");
                     eliminarPrimerLibro(&listaLibroEspecifico);
                     agregado++;
                 }
@@ -423,6 +428,7 @@ void agregarCarrito(int id_usuario)
         // Cargare al csv todo lo de lista Carrito Actual
         unirListas(listaCarritosGeneral, listaCarritoActual);
         guardar_CSV_Carritos(&listaCarritosGeneral, "output/carrito.csv");
+        guardar_CSV_Libros_Sobreescribir(&listaLibrosGeneral, "output/libros.csv");
     }
 }
 
