@@ -1,17 +1,18 @@
-#pragma once
 #include <iostream>
 #include <windows.h>
 #include <conio.h>
 #include <vector>
 #include <string>
-#include "data/persistenciaDatos.h"
-#include "servicio/funcionalidades.h"
+
+// Headers
+#include "menu/gotoxy.h"
+#include "menu/menus.h"
 
 using namespace std;
 
-int main() {
-    int stock = contarTituloLibro("output/libros.csv", "Circe");
-    cout << "Stock: " << stock << endl;
+int main()
+{
+    menu_CompraCarrito(72832373);
     
     return 0;
 }

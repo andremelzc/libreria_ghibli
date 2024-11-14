@@ -6,11 +6,11 @@
 #include <locale>
 #include <ctime>
 #include <filesystem>
-#include <cctype> // Para usar isdigit()
+#include <cctype> 
 #include <conio.h>
 #include <windows.h>
 using namespace std;
-
+void menu_CompraCarrito(int id_usuario);
 // Uno listas en los Carritos
 void unirListas(ListaCarritos &lista1, ListaCarritos &lista2)
 {
@@ -112,7 +112,7 @@ void guardar_CSV_Carritos(ListaCarritos *lista, string nombreArchivo)
 
     archivo.close();
     // cout << "Datos guardados en " << nombreArchivo << endl;
-    pausa();
+    //pausa();
 }
 
 // Función para leer el archivo CSV y devolver una lista de carritos
@@ -298,7 +298,7 @@ void agregarCarrito(int id_usuario)
         getline(cin, nombreLibro);
 
         char desicion;
-        producto = buscarLibroPorTitulo(listalibros, nombreLibro);//nodoLibros
+        producto = buscarLibroPorTitulo(listalibros, nombreLibro);//*nodoLibros
         if (producto != nullptr)
         {   
             //Si ingreso un Nombre Valido
@@ -491,7 +491,6 @@ string mostrarEstadoCarrito(int estado)
     return str_estado;
 }
 
-
 bool VerificarSiLibroEstaLista(ListaLibros lista, std::string nombreLibro) {
     // Puntero al primer nodo de la lista de carritos
     nodoLibros *actual = lista.cabeza;
@@ -519,102 +518,6 @@ void mostrarListaCarrito(ListaCarritos listaMostrar){
     }
     
 }
-/* //FUNCION OBSOLETA DEBIDO A UNICIDAD DE LIBROS -> NO ELIMINAR:Se sigue empleando como Referencia
-void mostrarCarritoUsuarioEstado(int id_usuario, int estado_pedido_carrito)
-{
-    setConsoleBackground(White);
-    dibujarTitulo(27, 0, 2, letras);
-    estructura_menu2(16, 103, 10, 27);
-    gotoxy(50, 11);
-    color(2);
-    cout << "Carrito de Compras";
-
-    dibujarTitulo(22, 18, 2, carritoCompras);
-
-    ListaCarritos listaCarritosGeneral = leerCSV("output/carrito.csv");
-    // Podemos verificar usar un nuevo parametro para determinar que mostrar
-    // 0->Pedido
-    // 1->Comprado
-    // 2->Eliminado
-    
-    // Creo una lista para obtener todos los libros
-    ListaLibros listalibros;
-    listalibros = leerLibrosCSV("output/libros.csv");
-    nodoLibros *producto;
-
-    Libro *libroCargaUnico;
-
-    int contador = 0;
-    int precioTotal = 0;
-    int cantidad = 0;
-    ListaLibros listaLibrosUnicos;
-    string estadoLibro = obtenerEstadoLibro(0);//Setear Luego cuando Habilites el Cambio de Estado del Libro al Comprar
-    if (listaCarritosGeneral.head != NULL)
-    {
-        color(2);
-        gotoxy(27, 13);
-        cout << "Libro";
-        gotoxy(50, 13);
-        cout << "Cantidad";
-        gotoxy(60, 13);
-        cout << "P. unitario";
-        gotoxy(75, 13);
-        cout << "P. total";
-        color(0);
-        NodoCarritos *temporal = listaCarritosGeneral.head;
-        while (listaCarritosGeneral.head != NULL)
-        {
-            //Debo buscar en aquellos que el Usuario ha pedido y cuyo estado es Pedido (0)
-            if (temporal->carrito.id_cliente == id_usuario && temporal->carrito.estado == estado_pedido_carrito)
-            {
-                //Obtengo el libro empleando el Id del Pedido
-                producto = buscarLibroPorID(listalibros, temporal->carrito.id_producto);//Puntero tipo nodoLibro
-                //Verifico si no he graficado el Libro anteriormente
-                if(!VerificarSiLibroEstaLista(listaLibrosUnicos, producto->libro.nombre_Libro)){
-                    // Titulo del libro
-                    gotoxy(27, 14 + contador);
-                    if (producto->libro.nombre_Libro.length() > 20)
-                    {
-                        cout << producto->libro.nombre_Libro.substr(0, 20) << "...";
-                    }
-                    else
-                    {
-                        cout << producto->libro.nombre_Libro;
-                    }
-                    gotoxy(50, 14 + contador);
-                    // Falta funcionalidad para contar la cantidad de libros con el mismo titulo o el mismo tipo
-                    cantidad = contarPedidosLibroEstado(id_usuario, producto->libro.nombre_Libro, estadoLibro);
-                    cout<<cantidad;
-                    gotoxy(60, 14 + contador);
-                    cout << producto->libro.precio;
-                    gotoxy(75, 14 + contador);
-                    cout << temporal->carrito.cantidad * producto->libro.precio;
-                    precioTotal += temporal->carrito.cantidad * producto->libro.precio;
-                    contador++;
-
-                    *libroCargaUnico = producto->libro;
-                    insertarLibrosFinal(&listaLibrosUnicos, libroCargaUnico);
-                    //insertarNodoLibroAlFinal(&listaLibrosUnicos, producto);
-                }
-                
-            }
-
-            listaCarritosGeneral.head = temporal->sgte;
-            temporal = listaCarritosGeneral.head;
-        }
-        gotoxy(27, 15 + contador);
-        color(2);
-        cout << "Total a Pagar: ";
-        gotoxy(75, 15 + contador);
-        cout << precioTotal;
-    }
-    else
-    {
-        cout << "No hay ningun Registro de Carritos" << endl;
-    }
-}*/
-
-
 
 void mostrarCarritoUsu(int id_usuario, int estado)
 {   
@@ -667,7 +570,7 @@ void mostrarCarritoUsu(int id_usuario, int estado)
                     libro_vaceado = temporal_libro->libro;
                     insertarLibrosFinal(&listaLibrosUnicos, &libro_vaceado);
                     //Obtener la cantidad de Libros con idUsuario, nombreLibro, estadoLibro en el Registro de Carritos -> Estado Cambiará Cuando implementemos Cmabios de Estado
-                    cantidad_libro_temporal = contarPedidosLibroEstado(id_usuario, temporal_libro->libro.nombre_Libro, "Disponible");
+                    cantidad_libro_temporal = contarPedidosLibroEstado(id_usuario, temporal_libro->libro.nombre_Libro, "Pedido");
                     
                     //Nombre Libro
                     gotoxy(27, 14 + incremento_linea);
@@ -702,80 +605,215 @@ void mostrarCarritoUsu(int id_usuario, int estado)
         
         gotoxy(77, 14 + incremento_linea + 1);
         cout<<precio_total;
-
+        char compras;
         gotoxy(53, 14 + incremento_linea + 7);
-        cout<<"Ingrese 1 si desea Comprar alguno";
+        cout<<"Desea Comprar un Libro(s/n):";
         gotoxy(53, 14 + incremento_linea + 8);
+        cin>>compras;
+        cin.ignore();
+        if(compras == 's' || compras == 'S'){
+            menu_CompraCarrito(id_usuario);
+        }
     }
     //mostrarListaLibroSimple(listaLibrosUnicos); //Empleado para Pruebas
 }
 
-void efectuarCompraCarrito(int id_usuario)
+void modificarEstadoRegistroCarritoXIdCarrito(ListaCarritos *listaDeCarritos, int idLibro_Modificar, int estadoNuevo)
 {
-    ListaCarritos listaCarritosGeneral = leerCSV("output/carrito.csv");
-    ListaCarritos inicio = listaCarritosGeneral;
-    // Creo una lista para obtener todos los libros
-    ListaLibros listalibros;
-    listalibros = leerLibrosCSV("output/libros.csv");
-    nodoLibros *producto;
-    system("CLS");
-    int compra;
-    cout << "Ingrese el ID de su Pedido a Pagar:" << endl;
-    cin >> compra;
 
-    char respuesta;
-    bool confirmacion = false;
-    if (listaCarritosGeneral.head != NULL)
-    {
-
-        NodoCarritos *temporal = listaCarritosGeneral.head;
-        while (listaCarritosGeneral.head != NULL)
+    NodoCarritos *actual = listaDeCarritos->head; // Asumiendo que la lista tiene un puntero a su nodo cabeza
+    if (actual != nullptr){
+        // Recorrer la lista enlazada
+        while (actual != nullptr)
         {
-
-            if (temporal->carrito.id_cliente == id_usuario && temporal->carrito.estado == 0 && temporal->carrito.id_carrito == compra)
+            // Verificar si el ID del libro actual coincide con el ID proporcionado
+            if (actual->carrito.id_producto == idLibro_Modificar)
             {
-                // En este punto el cliente si hizo su solicitud, esta completamente logeado y verificado
-                cout << "Estamos Procesando su Solicitud de Compra..." << endl;
-                // Habrá el stock suficiente, el producto seguirá disponible?
-                producto = buscarLibroPorID(listalibros, temporal->carrito.id_producto);
-                int stockRequerido = temporal->carrito.cantidad;
-                int stockDisponible = producto->libro.StockActual;
-
-                if ((stockRequerido <= stockDisponible) && (producto->libro.estado == "Disponible"))
-                {
-
-                    cout << temporal->carrito.id_carrito << "\t";
-                    cout << producto->libro.nombre_Libro << "\t";
-                    cout << temporal->carrito.cantidad << "\t";
-                    cout << producto->libro.precio << "\t";
-                    cout << temporal->carrito.cantidad * producto->libro.precio << endl;
-                    // cout<<producto->libro.StockActual<<endl;
-                    cout << "Desea efectuar el pago para concretar la compra (s/n): ";
-                    cin >> respuesta;
-                    if (respuesta == 's' || respuesta == 'S')
-                    {
-                        confirmacion = true;
-                        temporal->carrito.estado = 1;
-                        producto->libro.StockActual = stockDisponible - stockRequerido;
-
-                        // cout<<producto->libro.nombre_Libro<<"\t";
-                        // cout<<producto->libro.StockActual<<endl;
-                    }
-                }
-                else
-                {
-                    cout << "No poseemos el Stock Suficiente o el Producto ya no se encuentra Disponible" << endl;
-                }
+                
+                actual->carrito.estado = estadoNuevo;
+                
+                return; 
             }
-
-            listaCarritosGeneral.head = temporal->sgte;
-            temporal = listaCarritosGeneral.head;
+            actual = actual->sgte; 
         }
-        guardar_CSV_Carritos(&inicio, "output/carrito.csv");
-        guardar_CSV_Libros_Sobreescribir(&listalibros, "output/Libros.csv");
+    }else{
+        // Si el libro no se encuentra, mostrar un mensaje
+    cout << "No se encontró un Registro en Carritos con el ID " << idLibro_Modificar << " en la lista." << endl;
     }
-    else
-    {
-        cout << "Usted no posee un registro en su Carrito con ese Id" << endl;
+    
+}
+
+
+void efectuarCompraCarrito(int id_usuario, bool &seguirComprando)
+{       
+    system("CLS");
+    setConsoleBackground(White);
+    dibujarTitulo(27, 0, 2, letras);
+    estructura_menu2(16, 103, 10, 27);
+    gotoxy(50, 11);
+    color(2);
+    
+    ListaCarritos listaCarritosGeneral = leerCSV("output/carrito.csv");
+    //mostrarListaCarrito(listaCarritosGeneral);
+    NodoCarritos *carrito_temporal = listaCarritosGeneral.head;
+
+    ListaLibros listaLibrosGeneral = leerLibrosCSV("output/libros.csv");
+    ListaLibros listaLibrosEspecifico;listaLibrosEspecifico.longitud = 0;
+    ListaLibros listaLibrosCarrito; listaLibrosCarrito.longitud = 0;
+    //mostrarListaLibroSimple(listaLibrosGeneral);
+
+    nodoLibros *libro_temporal;
+    nodoLibros *libro_pedido;
+    
+    Libro libro_vaceado;
+
+    int cantidad_libro;
+    char comprar;
+    char seguir_comprando;
+    
+    string nombre_libro_pedido;
+    
+    gotoxy(27, 15);
+    cout<<"Ingrese Nombre del Libro a Comprar:";
+    getline(cin,nombre_libro_pedido);
+    
+    //Obtengo un Libro a partir del nombreDeLibro ingresado
+    libro_pedido = buscarLibroPorTituloPedido(listaLibrosGeneral, nombre_libro_pedido);
+    
+    //Si ingreso un Nombre Valido obtendre un libro 
+    if(libro_pedido != nullptr){
+        
+        //Buscare entre los Los Regsitros del Carrito
+        if(carrito_temporal != nullptr){
+        
+            while(carrito_temporal != nullptr){
+                //Obtendre el LibroPedido a partir del idProducto registrado en el Carrito
+                libro_temporal = buscarLibroPorID(listaLibrosGeneral, carrito_temporal->carrito.id_producto);
+
+                if(carrito_temporal->carrito.id_cliente == id_usuario && carrito_temporal->carrito.estado == 0 && libro_temporal->libro.nombre_Libro == libro_pedido->libro.nombre_Libro){
+                    
+                    //cout<<"idPedido: "<<carrito_temporal->carrito.id_carrito;
+                    //cout<<" - idLibro: "<<carrito_temporal->carrito.id_producto<<" - "<<libro_temporal->libro.nombre_Libro<<endl;
+                    
+                    libro_vaceado = libro_temporal->libro;
+                    insertarLibrosFinal(&listaLibrosEspecifico, &libro_vaceado);
+                    //cout<<"Agregamos Nodo a LISTA ESPECIFICA"<<endl;
+                    
+                }
+                carrito_temporal = carrito_temporal->sgte;
+            }
+            //mostrarListaLibroSimple(listaLibrosEspecifico);
+            gotoxy(27, 16);
+            cout<<"Usted ha pedido :"<<listaLibrosEspecifico.longitud<<endl;
+            
+            //Si el CLiente pidio el Libro
+            if(listaLibrosEspecifico.cabeza != nullptr){
+                gotoxy(27, 17);
+                cout<<"Determine la Cantidad a Comprar:";
+                cin>>cantidad_libro;
+                int stock_libro = listaLibrosEspecifico.longitud;
+                if(listaLibrosEspecifico.longitud >= cantidad_libro && cantidad_libro != 0){
+                    //cout<<"Cantidad Suficiente"<<endl;//system("PAUSE");
+                    gotoxy(27, 18);
+                    cout<<"¿Desea Comprar "<<cantidad_libro<<" de "<<listaLibrosEspecifico.cabeza->libro.nombre_Libro<<" ?(s/n):";
+                    cin>>comprar;
+
+                    if(comprar =='s' || comprar =='S'){
+                    
+                        for(int i=0; i<cantidad_libro; i++){
+                            //Agrego a la ListaCarrito
+                            libro_vaceado = listaLibrosEspecifico.cabeza->libro;
+
+                            int id_modificar = listaLibrosEspecifico.cabeza->libro.id;
+                            modificarEstadoLibro(&listaLibrosGeneral, id_modificar, "Comprado");
+                            modificarEstadoRegistroCarritoXIdCarrito(&listaCarritosGeneral, id_modificar, 1);
+                            insertarLibrosFinal(&listaLibrosCarrito, &libro_vaceado);
+
+                            //Quita de la ListaEspecfica
+                            eliminarPrimerLibro(&listaLibrosEspecifico);
+
+                        }
+                        //Debo vacear la listaEspecifica por si quiere un nuevo Comprar un Nuevo Libro
+                        for(int i=0; i<stock_libro-cantidad_libro;i++){
+                            eliminarPrimerLibro(&listaLibrosEspecifico);
+                        }
+                        
+                        guardar_CSV_Carritos(&listaCarritosGeneral, "output/carrito.csv");
+                        guardar_CSV_Libros_Sobreescribir(&listaLibrosGeneral, "output/libros.csv");
+                        //Vacio Carrito
+                        for(int i=0; i<cantidad_libro; i++){
+                            eliminarPrimerLibro(&listaLibrosCarrito);
+                        }
+
+                    }else{
+                        //No quiso Seguir con la Compra
+
+                    }
+                    gotoxy(27, 20);
+                    cout<<"Desea seguir Comprando";
+                    cin>>seguir_comprando;//Aqui es necesario un cin.ignore()
+                    cin.ignore();
+                    seguirComprando = false;
+                    if(seguir_comprando == 's' || seguir_comprando == 'S'){
+                        seguirComprando = true;
+                    }
+                }else{
+                    //system("CLS");
+                    gotoxy(27, 26);
+                    cout<<"ERROR: Cantidad Pedida mayor a su Carrito o 0"<<endl;
+                    gotoxy(27, 27);system("PAUSE");
+                    seguirComprando = true;
+                }
+
+            }else{
+                //system("CLS");
+                gotoxy(27, 26);
+                cout<<"ERROR: Usted No ha agregado a su Carrito el Libro Solicitado"<<endl;
+                gotoxy(27, 27);system("PAUSE");
+                seguirComprando = true;
+            }
+        }else{
+            //NO HAY NINGUN REGISTRO DE NINGUN USUARIO EN CARRITO
+            gotoxy(27, 26);
+            //system("CLS");
+            cout<<"ERROR: NO HAY NINGUN REGISTRO DE NINGUN USUARIO EN CARRITO"<<endl;
+            gotoxy(27, 27);system("PAUSE");
+            seguirComprando = true;
+        }
     }
+    else{
+        //Nombre de Libro Ingresado Invalido
+        gotoxy(27, 26);
+        //system("CLS");
+        cout<<"ERROR:Ha ingresado un Nombre Invalido o no Agregado a su Carrito:"<<nombre_libro_pedido;
+        gotoxy(27, 27);system("PAUSE");
+        seguirComprando = true;
+        
+    }
+    
+}
+
+void menu_CompraCarrito(int id_usuario){
+    setConsoleBackground(White);
+    dibujarTitulo(27, 0, 2, letras);
+    estructura_menu2(16, 103, 10, 27);
+    gotoxy(50, 11);
+    color(2);
+    cout << "INFORMACION BANCARIA";
+
+    dibujarTitulo(22, 18, 2, carritoCompras);
+    string nTarjeta, contra;
+    gotoxy(27, 12);
+    cout<<"Ingresar su Tarjeta:";
+    getline(cin, nTarjeta);
+    gotoxy(27, 14);
+    cout<<"Ingresar Clave:";
+    getline(cin, contra);
+    gotoxy(27, 16);
+    cout<<"Verificamos...";
+
+    bool seguir = false;
+    do{
+        efectuarCompraCarrito(id_usuario, seguir);
+    }while(seguir);
 }

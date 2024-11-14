@@ -965,6 +965,21 @@ nodoLibros *buscarLibroPorTitulo(ListaLibros &listaLibros, string tituloLibro)
     return nullptr; // Libro no encontrado
 }
 
+nodoLibros *buscarLibroPorTituloPedido(ListaLibros &listaLibros, string tituloLibro)
+{
+    nodoLibros *actual = listaLibros.cabeza;
+    while (actual != nullptr)
+    {
+        int distancia = distanciaLevenshtein(actual->libro.nombre_Libro, tituloLibro);
+        if (distancia < 4 && actual->libro.estado == "Pedido")
+        {
+            return actual; // Libro encontrado
+        }
+        actual = actual->siguiente;
+    }
+    return nullptr; // Libro no encontrado
+}
+
 void guardar_CSV_Libros_Sobreescribir(ListaLibros *lista, string nombreArchivo)
 {
     fstream archivo(nombreArchivo, fstream::out);

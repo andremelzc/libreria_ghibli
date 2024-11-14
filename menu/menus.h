@@ -724,7 +724,7 @@ void menu_opcionesCliente()
         break;
       case 6:
         // 6."Efectuar Compra",Miguel
-        efectuarCompraCarrito(id_usuariolog);
+        menu_CompraCarrito(id_usuariolog);
         break;
       case 7:
         repeat = false;
