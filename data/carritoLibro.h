@@ -528,7 +528,7 @@ void mostrarCarritoUsu(int id_usuario, int estado)
     color(2);
     cout << "Carrito de Compras";
 
-    dibujarTitulo(22, 18, 2, carritoCompras);
+    dibujarTitulo(22, 19, 2, carritoCompras);
 
     ListaCarritos listaCarritosGeneral = leerCSV("output/carrito.csv");
     //mostrarListaCarrito(listaCarritosGeneral); //Empleado para Pruebas
@@ -606,9 +606,18 @@ void mostrarCarritoUsu(int id_usuario, int estado)
         gotoxy(77, 14 + incremento_linea + 1);
         cout<<precio_total;
         char compras;
+        gotoxy(53, 14 + incremento_linea + 4);
+        color(2);
+        cout<<"1. Comprar todo los items";
+        gotoxy(53, 14 + incremento_linea + 5);
+        cout<<"2. Comprar un item";
+        gotoxy(53, 14 + incremento_linea + 6);
+        cout<<"3. Eliminar un item";
         gotoxy(53, 14 + incremento_linea + 7);
-        cout<<"Desea Comprar un Libro(s/n):";
+        cout<<"4. Salir";
         gotoxy(53, 14 + incremento_linea + 8);
+        cout<<"Opcion: ";
+        color(0);
         cin>>compras;
         cin.ignore();
         if(compras == 's' || compras == 'S'){
@@ -801,13 +810,17 @@ void menu_CompraCarrito(int id_usuario){
     color(2);
     cout << "INFORMACION BANCARIA";
 
-    dibujarTitulo(22, 18, 2, carritoCompras);
+    dibujarTitulo(22, 19, 2, carritoCompras);
     string nTarjeta, contra;
-    gotoxy(27, 12);
+    gotoxy(27, 13);
+    color(2);
     cout<<"Ingresar su Tarjeta:";
+    color(0);
     getline(cin, nTarjeta);
     gotoxy(27, 14);
+    color(2);
     cout<<"Ingresar Clave:";
+    color(0);
     getline(cin, contra);
     gotoxy(27, 16);
     cout<<"Verificamos...";
