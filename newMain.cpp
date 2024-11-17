@@ -12,7 +12,7 @@ using namespace std;
 
 int main()
 {
-    menu_CompraCarrito(72832373);
+    mostrarCarritoUsu(74935134, 0);
     
     return 0;
 }
