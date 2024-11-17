@@ -901,7 +901,6 @@ void menu_opcionesPedido()
         dibujarTitulo(27, 0, 2, letras);
         estructura_menu2(16, 103, 10, 27);
         mostrarHistorial();
-        getch();
         break;
       case 4:
         // 4. Salir
