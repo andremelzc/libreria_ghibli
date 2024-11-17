@@ -30,14 +30,23 @@ void insertarFinalListaPedido(ListaPedidos *lista, Pedidos *pedido)
     lista->longitud++;
 }
 // Insertar para crear la listaenlazada
-void insertarListaPedidos(ListaPedidos &lista, Pedidos nuevoPedido)
-{
+void insertarListaPedidos(ListaPedidos &lista, Pedidos nuevoPedido) {
     // Crear un nuevo nodo con el pedido
     NodoPedidos *nuevoNodo = new NodoPedidos(nuevoPedido);
+    nuevoNodo->sgte = nullptr;
 
-    // Insertar el nuevo nodo al principio de la lista
-    nuevoNodo->sgte = lista.head;
-    lista.head = nuevoNodo;
+    // Si la lista está vacía, el nuevo nodo es el primero
+    if (lista.head == nullptr) {
+        lista.head = nuevoNodo;
+    } else {
+        // Encontrar el último nodo de la lista
+        NodoPedidos *actual = lista.head;
+        while (actual->sgte != nullptr) {
+            actual = actual->sgte;
+        }
+        // Insertar el nuevo nodo al final de la lista
+        actual->sgte = nuevoNodo;
+    }
 
     // Incrementar la longitud de la lista
     lista.longitud++;
@@ -394,15 +403,15 @@ void adicionarCampoPedido(int id_usuariologeado)
         pedido->fechaPedido.año = localTime->tm_year + 1900; // tm year solo cuenta los años desde 1900
 
         // setting las fechas que no pueden puede ser establecidas en la creacion del pedido
-        pedido->fechaAdquisicion.dia = 0;
-        pedido->fechaAdquisicion.mes = 0;
-        pedido->fechaAdquisicion.año = 0;
-        pedido->entregado.dia = 0;
-        pedido->entregado.mes = 0;
-        pedido->entregado.año = 0;
-        pedido->devolucion.dia = 0;
-        pedido->devolucion.mes = 0;
-        pedido->devolucion.año = 0;
+        pedido->fechaAdquisicion.dia = 00;
+        pedido->fechaAdquisicion.mes = 00;
+        pedido->fechaAdquisicion.año = 00;
+        pedido->entregado.dia = 00;
+        pedido->entregado.mes = 00;
+        pedido->entregado.año = 00;
+        pedido->devolucion.dia = 00;
+        pedido->devolucion.mes = 00;
+        pedido->devolucion.año = 00;
 
         insertarFinalListaPedido(listaPedido, pedido);
 
@@ -478,19 +487,6 @@ ListaPedidos leerPedidosDesdeCSV(string nombreArchivo)
     return lista;    // Regresar la lista de pedidos
 }
 
-fecha obtenerFechaActual()
-{
-    time_t now = time(0);
-    tm *ltm = localtime(&now);
-
-    // Asignar la fecha actual al objeto fecha
-    fecha fechaActual;
-    fechaActual.dia = ltm->tm_mday;
-    fechaActual.mes = 1 + ltm->tm_mon;     // Meses comienzan desde 0, por lo tanto se suma 1
-    fechaActual.año = 1900 + ltm->tm_year; // Año empieza desde 1900, por lo tanto se suma 1900
-
-    return fechaActual;
-}
 
 void gestionarpedido()
 {
@@ -998,6 +994,7 @@ void atenderPrestamo(ColaPedidos &colaPedidos)
             actual->pedido.estadoPedido = "PRESTADO";
             // Actualizar la fecha de adquisición
             actual->pedido.fechaAdquisicion = obtenerFechaActual();
+            actual->pedido.devolucion = sumarDiasAFecha(obtenerFechaActual(), 7);
             break;
         }
         actual = actual->sgte;
