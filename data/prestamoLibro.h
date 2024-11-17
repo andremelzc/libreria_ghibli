@@ -793,11 +793,11 @@ void registrarDevolucionLibro(int &mora)
                 // Convierte el tiempo a una estructura tm
                 tm *tiempoLocal = localtime(&tiempoActual);
 
-                actual->pedido.devolucion.año = tiempoLocal->tm_year + 1900;
-                actual->pedido.devolucion.mes = tiempoLocal->tm_mon + 1;
-                actual->pedido.devolucion.dia = tiempoLocal->tm_mday;
+                actual->pedido.entregado.año = tiempoLocal->tm_year + 1900;
+                actual->pedido.entregado.mes = tiempoLocal->tm_mon + 1;
+                actual->pedido.entregado.dia = tiempoLocal->tm_mday;
 
-                dias = calcularDiasEntreFechas(actual->pedido.fechaPedido.año, actual->pedido.fechaPedido.mes, actual->pedido.fechaPedido.dia, actual->pedido.devolucion.año, actual->pedido.devolucion.mes, actual->pedido.devolucion.dia);
+                dias = calcularDiasEntreFechas(actual->pedido.fechaAdquisicion.año, actual->pedido.fechaAdquisicion.mes, actual->pedido.fechaAdquisicion.dia, actual->pedido.devolucion.año, actual->pedido.devolucion.mes, actual->pedido.devolucion.dia);
 
                 if (dias > 7)
                 {
