@@ -288,7 +288,7 @@ void adicionarCampoPedido(int id_usuariologeado)
     ListaPedidos *listaPedido = new ListaPedidos();
 
     char respuesta[10];
-    int i = 0;
+    int i = 1;
     time_t now = time(0);
     tm *localTime = localtime(&now);
     do
@@ -340,6 +340,7 @@ void adicionarCampoPedido(int id_usuariologeado)
 
         ListaLibros libros = leerLibrosCSV("output/libros.csv");
         bool find = mostrarLibroXTitulo(libros, nombreLibro, pedido->ID_libro);
+
         if (find)
         {
             char check;
@@ -354,6 +355,21 @@ void adicionarCampoPedido(int id_usuariologeado)
             dibujarTextoPuntos(27, 22, "Solicitando prestamo");
             gotoxy(27, 22);
             cout << "Préstamo solicitado con éxito!";
+
+            // Marcar el libro como solicitado
+            nodoLibros *actual = libros.cabeza;
+            while (actual != nullptr)
+            {
+                if (actual->libro.id == pedido->ID_libro)
+                {
+                    actual->libro.estado = "Solicitado";
+                    break;
+                }
+                actual = actual->siguiente;
+            }
+            limpiarCSV("output/libros.csv");
+            guardar_CSV_Libros(&libros, "output/libros.csv");
+
             if (!(check == 's' or check == 'S'))
             {
                 respuesta[0] = 's';
@@ -986,8 +1002,26 @@ void atenderPrestamo(ColaPedidos &colaPedidos)
         }
         actual = actual->sgte;
     }
+
+    // Buscar el libro en la lista de libros
+    ListaLibros listaLibros = leerLibrosCSV("output/libros.csv");
+    nodoLibros *actualLibro = buscarLibroPorID(listaLibros, pedido.ID_libro);
+    while (actualLibro != nullptr)
+    {
+        if (actualLibro->libro.id == pedido.ID_libro)
+        {
+            // Actualizar el estado del libro
+            actualLibro->libro.estado = "Prestado";
+            break;
+        }
+        actualLibro = actualLibro->siguiente;
+    }
+
+    // Modificamos los csv
     limpiarCSV("output/pedidos.csv");
     guardar_CSV_PedidoReferencia(listaPedidos, "output/pedidos.csv");
+    limpiarCSV("output/libros.csv");
+    guardar_CSV_Libros_Sobreescribir(&listaLibros, "output/libros.csv");
 }
 
 void muestraColaPedidosPrestamo(ColaPedidos &colaPedidos, int x, int y, bool &pedidosPendientes)
