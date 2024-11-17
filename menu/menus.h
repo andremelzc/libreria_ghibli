@@ -225,7 +225,6 @@ void menu_opcionesAdministrador()
 // Menu de opciones de gestionar libros (Administrador)
 vector<string> opcionesMenuGestionLibros = {"Registrar libro",
                                             "Modificar libro",
-                                            "Aumentar stock",
                                             "Retroceder"};
 int numGestionLibros = opcionesMenuGestionLibros.size();
 
@@ -285,10 +284,7 @@ void menu_opcionesGestionLibros()
         modificarLibro();
         break;
       case 3:
-        // 3. Aumentar stock
-        break;
-      case 4:
-        // 4. Salir
+        // 3. Salir
         repeat = false;
         system("CLS");
         break;

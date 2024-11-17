@@ -139,6 +139,7 @@ string devolverLibroNombre(ListaLibros &Libros, int id)
         }
         actual = actual->siguiente;
     }
+    return nullptr;
 }
 
 void mostrarHistorial()
