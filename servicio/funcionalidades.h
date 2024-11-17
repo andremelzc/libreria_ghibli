@@ -227,3 +227,41 @@ string convertirAMinuscula(const string& str)
     transform(result.begin(), result.end(), result.begin(), ::tolower);
     return result;
 }
+
+fecha obtenerFechaActual()
+{
+    time_t now = time(0);
+    tm *ltm = localtime(&now);
+
+    // Asignar la fecha actual al objeto fecha
+    fecha fechaActual;
+    fechaActual.dia = ltm->tm_mday;
+    fechaActual.mes = 1 + ltm->tm_mon;     // Meses comienzan desde 0, por lo tanto se suma 1
+    fechaActual.año = 1900 + ltm->tm_year; // Año empieza desde 1900, por lo tanto se suma 1900
+
+    return fechaActual;
+}
+
+fecha sumarDiasAFecha(fecha fechaOriginal, int diasASumar) {
+    tm ltm = {};
+    ltm.tm_mday = fechaOriginal.dia;
+    ltm.tm_mon = fechaOriginal.mes - 1; // Meses comienzan desde 0
+    ltm.tm_year = fechaOriginal.año - 1900; // Año empieza desde 1900
+
+    // Convertir a time_t
+    time_t tiempo = mktime(&ltm);
+
+    // Sumar los días en segundos
+    tiempo += diasASumar * 24 * 60 * 60;
+
+    // Convertir de nuevo a tm
+    ltm = *localtime(&tiempo);
+
+    // Asignar la nueva fecha
+    fecha nuevaFecha;
+    nuevaFecha.dia = ltm.tm_mday;
+    nuevaFecha.mes = ltm.tm_mon + 1;
+    nuevaFecha.año = ltm.tm_year + 1900;
+
+    return nuevaFecha;
+}
