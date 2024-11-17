@@ -15,7 +15,7 @@ void insertarLibro(ListaLibros &lista, Libro nuevoLibro);
 ListaLibros leerLibrosCSV(string nombreArchivo);
 bool mostrarLibroXid(ListaLibros &Libros, int id);
 void insertarArbolLibro(LibroNodoArbol *&raiz, Libro *libro);
-Libro *buscarLibroArbol(LibroNodoArbol *raiz, const string& nombreLibroBuscar);
+Libro *buscarLibroArbol(LibroNodoArbol *raiz, const string &nombreLibroBuscar, bool &busquedaExacta);
 LibroNodoArbol *leerLibrosArbol(string nombreArchivo, bool userView);
 
 // Inserta libros al final de una lista enlazada
@@ -369,9 +369,11 @@ void insertarLibrosFinal(ListaLibros *lista, Libro *libro)
     lista->longitud++;
 }
 
-void insertarNodoLibroAlFinal(ListaLibros *lista, nodoLibros *nodo) {
+void insertarNodoLibroAlFinal(ListaLibros *lista, nodoLibros *nodo)
+{
     // Verificar que el nodo no sea nullptr
-    if (nodo == nullptr) {
+    if (nodo == nullptr)
+    {
         std::cerr << "Error: Nodo es nullptr y no puede insertarse en la lista." << std::endl;
         return;
     }
@@ -380,12 +382,16 @@ void insertarNodoLibroAlFinal(ListaLibros *lista, nodoLibros *nodo) {
     nodo->siguiente = nullptr;
 
     // Verificar si la lista está vacía; si es así, el nuevo nodo será la cabeza
-    if (lista->cabeza == nullptr) {
+    if (lista->cabeza == nullptr)
+    {
         lista->cabeza = nodo;
-    } else {
+    }
+    else
+    {
         // Recorre hasta el último nodo de la lista
         nodoLibros *puntero = lista->cabeza;
-        while (puntero->siguiente != nullptr) {
+        while (puntero->siguiente != nullptr)
+        {
             puntero = puntero->siguiente;
         }
         // Conectar el nuevo nodo al final de la lista
@@ -396,11 +402,12 @@ void insertarNodoLibroAlFinal(ListaLibros *lista, nodoLibros *nodo) {
     lista->longitud++;
 }
 
-//Creada para ser Usada en AgregarCarrito en CarritoLibro.h
+// Creada para ser Usada en AgregarCarrito en CarritoLibro.h
 void modificarEstadoLibro(ListaLibros *listaDeLibros, int idLibro_Modificar, string estadoNuevo)
 {
     nodoLibros *actual = listaDeLibros->cabeza; // Asumiendo que la lista tiene un puntero a su nodo cabeza
-    if (actual != nullptr){
+    if (actual != nullptr)
+    {
         // Recorrer la lista enlazada
         while (actual != nullptr)
         {
@@ -409,20 +416,20 @@ void modificarEstadoLibro(ListaLibros *listaDeLibros, int idLibro_Modificar, str
             {
                 // Modificar el estado del libro
                 actual->libro.estado = estadoNuevo;
-                //cout << "Estado del libro con ID " << idLibro_Modificar << " actualizado a: " << estadoNuevo << endl;
+                // cout << "Estado del libro con ID " << idLibro_Modificar << " actualizado a: " << estadoNuevo << endl;
                 return; // Salir de la función una vez modificado
             }
             actual = actual->siguiente; // Pasar al siguiente nodo
         }
-    }else{
-        // Si el libro no se encuentra, mostrar un mensaje
-    cout << "No se encontró un libro con el ID " << idLibro_Modificar << " en la lista." << endl;
     }
-    
+    else
+    {
+        // Si el libro no se encuentra, mostrar un mensaje
+        cout << "No se encontró un libro con el ID " << idLibro_Modificar << " en la lista." << endl;
+    }
 }
 
-
-//Creada para poder ser Usada en Lista LibroEspecifico en CarritoLibro.h
+// Creada para poder ser Usada en Lista LibroEspecifico en CarritoLibro.h
 void eliminarPrimerLibro(ListaLibros *lista)
 {
     // Verificar si la lista está vacía
@@ -541,16 +548,15 @@ ListaLibros leerLibrosCSV_ObtenerStockLibroEspecifico(string nombreArchivo, stri
             getline(ss, libro.Genero, ',');
             getline(ss, dato, ',');
             libro.precio = stoi(dato);
-            //libro.stock = contarTituloLibro("output/libros.csv", libro.nombre_Libro);
+            // libro.stock = contarTituloLibro("output/libros.csv", libro.nombre_Libro);
             libro.stock = 1;
             getline(ss, libro.estado, ',');
-            //Quiero una Lista solo con los Libros que he pedido
-            if(libro.nombre_Libro == nLibro && libro.estado == "Disponible"){
+            // Quiero una Lista solo con los Libros que he pedido
+            if (libro.nombre_Libro == nLibro && libro.estado == "Disponible")
+            {
                 // Insertar el libro en la lista enlazada
                 insertarLibrosFinal(&listaDeLibros, &libro);
-                
             }
-            
         }
         archivo.close();
     }
@@ -613,6 +619,7 @@ bool mostrarLibroXid(ListaLibros &Libros, int id)
     return false; // Retorna false si no encontró el libro
 }
 
+// -- FUNCIONES PARA VER CATÁLOGO DE LIBROS --
 // Insertar para crear la lista enlazada doble
 void insertarDobleLibro(ListaDobleLibros &lista, Libro nuevoLibro)
 {
@@ -847,15 +854,16 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
         }
         else if (opcion == 3 && userView) // Filtro
         {
-            
+
             LibroNodoArbol *arbol = leerLibrosArbol("output/libros.csv", true);
+            bool busquedaExacta = false;
             string titulo;
             gotoxy(13, 27);
             color(2);
             cout << "Título del libro: ";
             color(0);
             getline(cin, titulo);
-            Libro *libroEncontrado = buscarLibroArbol(arbol, titulo);
+            Libro *libroEncontrado = buscarLibroArbol(arbol, titulo, busquedaExacta);
 
             limpiarPantalla();
             setConsoleBackground(White);
@@ -870,9 +878,14 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
 
             gotoxy(13, 13);
             color(2);
-            cout << "Resultados para: ";
-            color(0);
-            cout << titulo;
+            if (busquedaExacta)
+            {
+                cout << "Resultados para: ";
+            }
+            else
+            {
+                cout << "Resultados similares a: ";
+            }
 
             color(2);
             gotoxy(18 - resta, 15);
@@ -1025,6 +1038,7 @@ void guardar_CSV_Libros_Sobreescribir(ListaLibros *lista, string nombreArchivo)
     // cout << "Datos guardados en " << nombreArchivo << endl;
 }
 
+// -- FUNCIONES PARA EL ÁRBOL DE LIBROS --
 // Función para insertar nodos en el arbol
 void insertarArbolLibro(LibroNodoArbol *&raiz, Libro *libro)
 {
@@ -1047,7 +1061,7 @@ void insertarArbolLibro(LibroNodoArbol *&raiz, Libro *libro)
 }
 
 // Función para buscar un libro en el árbol
-Libro *buscarLibroArbol(LibroNodoArbol *raiz, const string& nombreLibroBuscar)
+Libro *buscarLibroArbol(LibroNodoArbol *raiz, const string &nombreLibroBuscar, bool &busquedaExacta)
 {
     if (raiz == nullptr)
     {
@@ -1059,25 +1073,30 @@ Libro *buscarLibroArbol(LibroNodoArbol *raiz, const string& nombreLibroBuscar)
     string tituloBuscar = convertirAMinuscula(nombreLibroBuscar);
 
     // Buscar si el título ingresado es una subcadena del título del nodo
-    if (tituloNodo.find(tituloBuscar) != string::npos || tituloNodo == tituloBuscar)
+    if(tituloNodo == tituloBuscar){
+        busquedaExacta = true;
+        return &raiz->libro;
+    }
+
+    if (tituloNodo.find(tituloBuscar) != string::npos)
     {
+        busquedaExacta = false;
         return &raiz->libro;
     }
 
     // Buscar en el subárbol izquierdo
     if (tituloNodo > tituloBuscar)
     {
-        return buscarLibroArbol(raiz->izquierda, nombreLibroBuscar);
+        return buscarLibroArbol(raiz->izquierda, nombreLibroBuscar, busquedaExacta);
     }
     else
-    { 
+    {
         // Buscar en el subárbol derecho
-        return buscarLibroArbol(raiz->derecha, nombreLibroBuscar);
+        return buscarLibroArbol(raiz->derecha, nombreLibroBuscar, busquedaExacta);
     }
 }
 
-
-LibroNodoArbol *leerLibrosArbol(string nombreArchivo, bool userView)
+LibroNodoArbol *leerLibrosArbol(string nombreArchivo, bool userView)    
 {
     LibroNodoArbol *arbol = nullptr;
     ifstream archivo(nombreArchivo);
@@ -1133,7 +1152,6 @@ LibroNodoArbol *leerLibrosArbol(string nombreArchivo, bool userView)
         }
         catch (const std::exception &e)
         {
-            
         }
     }
 
@@ -1142,7 +1160,8 @@ LibroNodoArbol *leerLibrosArbol(string nombreArchivo, bool userView)
 }
 
 string obtenerEstadoLibro(int estado)
-{   string str_estado;
+{
+    string str_estado;
     switch (estado)
     {
     case 0:
@@ -1162,16 +1181,18 @@ string obtenerEstadoLibro(int estado)
 }
 
 void mostrarListaLibroSimple(ListaLibros listaMostrar)
-{   
-    if(listaMostrar.cabeza == NULL){
-        cout<<"Lista de Libros Vacia"<<endl;
+{
+    if (listaMostrar.cabeza == NULL)
+    {
+        cout << "Lista de Libros Vacia" << endl;
     }
-    if(listaMostrar.cabeza != NULL){
-        while(listaMostrar.cabeza != NULL){
-            cout<<"Libro: "<<listaMostrar.cabeza->libro.nombre_Libro<<endl;
+    if (listaMostrar.cabeza != NULL)
+    {
+        while (listaMostrar.cabeza != NULL)
+        {
+            cout << "Libro: " << listaMostrar.cabeza->libro.nombre_Libro << endl;
 
             listaMostrar.cabeza = listaMostrar.cabeza->siguiente;
         }
     }
 }
-

@@ -118,6 +118,12 @@ struct ListaPedidos{
     ListaPedidos(): head(nullptr), longitud(0) {}; 
 };
 
+struct ColaPedidos{
+    NodoPedidos *delante;
+    NodoPedidos *atras;
+    ColaPedidos(): delante(nullptr), atras(nullptr){};
+};
+
 //Carrito de Compras
 struct Carritos{
     int id_carrito;

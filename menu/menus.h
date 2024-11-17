@@ -880,6 +880,11 @@ void menu_opcionesPedido()
       case 1:
       {
         // 1. Atender pedido
+        limpiarPantalla();
+        setConsoleBackground(White);
+        dibujarTitulo(27, 0, 2, letras);
+        estructura_menu2(16, 103, 10, 27);
+        atenderPrestamoMenu();
         getch();
         break;
       }

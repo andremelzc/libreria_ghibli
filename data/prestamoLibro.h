@@ -702,6 +702,7 @@ int calcularDiasEntreFechas(int anio1, int mes1, int dia1, int anio2, int mes2, 
 }
 
 void registrarDevolucionLibro(int &mora)
+
 {
     string dni;
     string id_libro;
@@ -860,5 +861,241 @@ void registrarDevolucionLibro(int &mora)
             gotoxy(40, 22);
             cout << "Libro no encontrado...";
         }
+    }
+}
+
+// -- FUNCIONES PARA ATENDER PRÉSTAMO DE LIBROS  (USANDO COLAS) --
+void encolarPrestamoPorPersona(ColaPedidos &colaPedidos, Pedidos pedido)
+{
+    NodoPedidos *nuevoNodo = new NodoPedidos(pedido);
+    if (colaPedidos.delante == nullptr)
+    {
+        colaPedidos.delante = nuevoNodo;
+        colaPedidos.atras = nuevoNodo;
+    }
+    else
+    {
+        colaPedidos.atras->sgte = nuevoNodo;
+        colaPedidos.atras = nuevoNodo;
+    }
+};
+
+Pedidos desencolarPrestamo(ColaPedidos &colaPedidos)
+{
+    if (colaPedidos.delante == nullptr)
+    {
+        cout << "La cola de pedidos está vacía";
+        return Pedidos{}; // Pedido vacio
+    }
+
+    // Nodo que se desencolará
+    NodoPedidos *nodoDesencolado = colaPedidos.delante;
+    // Pedido del nodo
+    Pedidos pedidoDesencolado = nodoDesencolado->pedido;
+
+    // Actualización de punteros
+    colaPedidos.delante = nodoDesencolado->sgte;
+    if (colaPedidos.delante == nullptr)
+    {
+        // Si la cosa se quedó vacía
+        colaPedidos.atras = nullptr;
+    }
+
+    delete nodoDesencolado;
+    return pedidoDesencolado;
+}
+
+ColaPedidos cargarColaPedidosUsuario(int idUsuario)
+{
+    ColaPedidos colaPedidos;
+
+    ifstream archivo("output/pedidos.csv");
+    string linea;
+
+    if (!archivo.is_open())
+    {
+        cerr << "Error al abrir el archivo 'output/pedidos.csv'" << endl;
+        return colaPedidos;
+    }
+
+    if (archivo.is_open())
+    {
+        // Leer el archivo línea por línea
+        while (getline(archivo, linea))
+        {
+            stringstream ss(linea);
+            string dato;
+
+            Pedidos pedido;
+            // El CSV tiene la siguiente estructura:
+            // ID_pedido, ID_usuario, ID_libro, estadoPedido, fechaPedido, fechaAdquisicion, fechaDevolucion, fechaEntregado
+            getline(ss, dato, ',');
+            pedido.ID_pedido = stoi(dato);
+            getline(ss, dato, ',');
+            pedido.ID_usuario = stoi(dato);
+            getline(ss, dato, ',');
+            pedido.ID_libro = stoi(dato);
+            getline(ss, pedido.estadoPedido, ',');
+            getline(ss, dato, ',');
+            pedido.fechaPedido = convertirFecha(dato);
+            getline(ss, dato, ',');
+            pedido.fechaAdquisicion = convertirFecha(dato);
+            getline(ss, dato, ',');
+            pedido.devolucion = convertirFecha(dato);
+            getline(ss, dato, ',');
+            pedido.entregado = convertirFecha(dato);
+
+            if (pedido.ID_usuario == idUsuario && pedido.estadoPedido == "SOLICITADO")
+            {
+                encolarPrestamoPorPersona(colaPedidos, pedido);
+            }
+        }
+        archivo.close();
+    }
+    else
+    {
+        cout << "No se pudo abrir el archivo 'output/pedidos.csv'" << endl;
+    }
+    return colaPedidos;
+}
+
+void atenderPrestamo(ColaPedidos &colaPedidos)
+{
+    if (colaPedidos.delante == nullptr)
+    {
+        cout << "No hay pedidos pendientes para este usuario" << endl;
+        return;
+    }
+
+    ListaPedidos listaPedidos = leerPedidosDesdeCSV("output/pedidos.csv");
+
+    // Desencolar y atender el primer pedido
+    Pedidos pedido = desencolarPrestamo(colaPedidos);
+
+    // Buscar el pedido en la lista de pedidos
+    NodoPedidos *actual = listaPedidos.head;
+    while (actual != nullptr)
+    {
+        if (actual->pedido.ID_pedido == pedido.ID_pedido)
+        {
+            // Actualizar el estado del pedido
+            actual->pedido.estadoPedido = "PRESTADO";
+            // Actualizar la fecha de adquisición
+            actual->pedido.fechaAdquisicion = obtenerFechaActual();
+            break;
+        }
+        actual = actual->sgte;
+    }
+    limpiarCSV("output/pedidos.csv");
+    guardar_CSV_PedidoReferencia(listaPedidos, "output/pedidos.csv");
+}
+
+void muestraColaPedidosPrestamo(ColaPedidos &colaPedidos, int x, int y, bool &pedidosPendientes)
+{
+    NodoPedidos *actual = colaPedidos.delante;
+    int contador = 2;
+    gotoxy(x, y);
+    cout << "ID";
+    gotoxy(x + 6, y);
+    cout << "Libro";
+    gotoxy(x + 40, y);
+    cout << "Estado";
+    gotoxy(x + 55, y);
+    cout << "Fecha Pedido";
+
+    if (actual == nullptr)
+    {
+        pedidosPendientes = false;
+        return;
+    }
+
+    while (actual != nullptr)
+    {
+        color(0);
+        gotoxy(x, y + contador);
+        cout << actual->pedido.ID_pedido;
+        gotoxy(x + 6, y + contador);
+        // Buscamos al libro
+        ListaLibros listaLibros = leerLibrosCSV("output/libros.csv");
+        nodoLibros *Libro = buscarLibroPorID(listaLibros, actual->pedido.ID_libro);
+        cout << actual->pedido.ID_libro << ") ";
+        if (Libro->libro.nombre_Libro.length() > 30)
+        {
+            cout << Libro->libro.nombre_Libro.substr(0, 30) << "...";
+        }
+        else
+        {
+            cout << Libro->libro.nombre_Libro;
+        }
+        gotoxy(x + 40, y + contador);
+        cout << actual->pedido.estadoPedido;
+        gotoxy(x + 55, y + contador);
+        cout << actual->pedido.fechaPedido.dia << "/" << actual->pedido.fechaPedido.mes << "/" << actual->pedido.fechaPedido.año;
+        actual = actual->sgte;
+        contador++;
+    }
+}
+
+void atenderPrestamoMenu()
+{
+    gotoxy(50, 11);
+    color(2);
+    cout << "Atendiendo Préstamos";
+    color(0);
+    gotoxy(27, 13);
+    cout << "Para atender los préstamos, ingrese el ID del usuario";
+    gotoxy(27, 14);
+    color(2);
+    cout << "ID del usuario: ";
+    color(0);
+    int idUsuarioIngresado;
+    cin >> idUsuarioIngresado;
+    cin.ignore();
+    color(2);
+    dibujarTextoPuntos(27, 16, "Cargando pedidos");
+    gotoxy(27, 16);
+    cout << "Pedidos cargados con éxito";
+    ColaPedidos colaPedidos = cargarColaPedidosUsuario(idUsuarioIngresado);
+    if (colaPedidos.delante == nullptr)
+    {
+        gotoxy(27, 18);
+        color(4);
+        cout << "No hay pedidos pendientes para este usuario";
+        color(0);
+        pausa();
+    }
+    else
+    {
+        string respuesta = "s";
+        bool pedidosPendientes = true;
+        do
+        {
+            muestraColaPedidosPrestamo(colaPedidos, 27, 18, pedidosPendientes);
+            gotoxy(27, 24);
+            color(2);
+            cout << "¿Desea atender prestamo? (s/n): ";
+            color(0);
+            getline(cin, respuesta);
+            if (respuesta == "s" || respuesta == "S")
+            {
+                atenderPrestamo(colaPedidos);
+                limpiarPantalla();
+                setConsoleBackground(White);
+                ejecutarGradienteDoble(150);
+                estructura_menu2(16, 103, 11, 26);
+                dibujarTitulo(27, 0, 2, letras);
+                gotoxy(44, 12);
+                color(2);
+                cout << "Atendiendo Préstamos";
+                color(0);
+                gotoxy(27, 13);
+                cout << "Para atender los préstamos, ingrese el ID del usuario";
+                gotoxy(27, 14);
+                color(2);
+                cout << "ID del usuario: " << idUsuarioIngresado;
+                gotoxy(27, 16);
+                cout << "Pedidos cargados con éxito";
+            }
+        } while (respuesta == "s" || respuesta == "S" || pedidosPendientes);
     }
 }
