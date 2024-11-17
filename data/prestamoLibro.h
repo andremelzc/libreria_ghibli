@@ -10,6 +10,11 @@
 
 using namespace std;
 
+// Declaraciones de funciones
+bool verificarMembresiaYMax(Lista &Usuarios, int idUsuario);
+bool mostrarLibroXTitulo(ListaLibros &Libros, string tituloPedido, int &id);
+void modificarCantPrestada(int idUsuario);
+
 // -- FUNCIONES PARA LISTA ENLAZADA DE PEDIDOS --
 // Insertar al final para crear la lista enlazada
 void insertarFinalListaPedido(ListaPedidos *lista, Pedidos *pedido)
