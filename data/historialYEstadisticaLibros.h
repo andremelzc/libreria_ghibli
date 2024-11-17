@@ -15,31 +15,36 @@
 
 using namespace std;
 
-void encolarHistorial(NodoPedidos *pedido, colaHistorial &q){
-    if(q.adelante == nullptr){
+void encolarHistorial(NodoPedidos *pedido, colaHistorial &q)
+{
+    if (q.adelante == nullptr)
+    {
         q.adelante = pedido;
         q.atras = pedido;
-    }else{
+    }
+    else
+    {
         q.atras->sgte = pedido;
         q.atras = pedido;
     }
-    
 }
 
-colaHistorial cargarHistorialxID (string nombreArchivo, int idUsuario){
+colaHistorial cargarHistorialxID(string nombreArchivo, int idUsuario)
+{
     string linea;
     ifstream archivo(nombreArchivo);
     colaHistorial historial;
-    
-    if (!archivo.is_open()) { // Verificar si el archivo se abrió correctamente
+
+    if (!archivo.is_open())
+    { // Verificar si el archivo se abrió correctamente
         cout << "Error al abrir el archivo: " << nombreArchivo << endl;
         system("PAUSE");
 
         return historial; // Regresar la lista vacía si el archivo no se pudo abrir
-
     }
 
-    while(getline(archivo,linea)){
+    while (getline(archivo, linea))
+    {
         stringstream ss(linea);
         string campo;
         Pedidos pedido;
@@ -73,41 +78,47 @@ colaHistorial cargarHistorialxID (string nombreArchivo, int idUsuario){
         getline(ss, campo, ',');
         pedido.entregado = convertirFecha(campo);
 
-        if(idUsuario == pedido.ID_usuario){
-            
+        if (idUsuario == pedido.ID_usuario)
+        {
+
             NodoPedidos *nodo = new NodoPedidos(pedido);
 
             encolarHistorial(nodo, historial);
         }
-
     }
 
     archivo.close();
     return historial;
 }
 
-NodoPedidos* desencolarHistorial(colaHistorial &q){
-    if(q.adelante == nullptr){
-        cout << "La cola de prioridad esta vacia"<< endl;
+NodoPedidos *desencolarHistorial(colaHistorial &q)
+{
+    if (q.adelante == nullptr)
+    {
+        cout << "La cola de prioridad esta vacia" << endl;
         system("pause>0");
         return NULL;
     }
 
-    NodoPedidos* stat = q.adelante;
+    NodoPedidos *stat = q.adelante;
     q.adelante = q.adelante->sgte;
 
-    if(q.adelante==nullptr){
+    if (q.adelante == nullptr)
+    {
         q.atras = nullptr;
     }
 
     return stat;
 }
 
-string devolverNombre(Lista &Usuarios, int id){
+string devolverNombre(Lista &Usuarios, int id)
+{
     Nodo *actual = Usuarios.cabeza;
-    while(actual != nullptr){
-        //cout << endl << "ciclo infinito?";
-        if(stoi(actual->usuario.ID_Usuario) == id){
+    while (actual != nullptr)
+    {
+        // cout << endl << "ciclo infinito?";
+        if (stoi(actual->usuario.ID_Usuario) == id)
+        {
             return actual->usuario.nombre;
         }
         actual = actual->siguiente;
@@ -116,20 +127,24 @@ string devolverNombre(Lista &Usuarios, int id){
     return "Nombre no encontrado";
 }
 
-string devolverLibroNombre(ListaLibros &Libros, int id){
+string devolverLibroNombre(ListaLibros &Libros, int id)
+{
     nodoLibros *actual = Libros.cabeza;
 
-    while(actual != nullptr){
-        if (actual->libro.id == id){
+    while (actual != nullptr)
+    {
+        if (actual->libro.id == id)
+        {
             return actual->libro.nombre_Libro;
         }
         actual = actual->siguiente;
     }
-
+    return nullptr;
 }
 
-void mostrarHistorial(){
-    gotoxy(51,11);
+void mostrarHistorial()
+{
+    gotoxy(51, 11);
     color(2);
     cout << "Historial de Pedidos";
     int id;
@@ -139,27 +154,27 @@ void mostrarHistorial(){
     color(0);
     cin >> id;
     cin.ignore();
-    
+
     // Se crea una cola para el usuario ingresado
-    colaHistorial historial = cargarHistorialxID("output/pedidos.csv",id);
-    
+    colaHistorial historial = cargarHistorialxID("output/pedidos.csv", id);
+
     NodoPedidos *actual = desencolarHistorial(historial);
 
     int contador = 0;
     int contadorEntregasTarde = 0;
     bool aptoParaPrestamos = false;
-    
+
     limpiarPantalla();
     setConsoleBackground(White);
     dibujarTitulo(27, 0, 2, letras);
     estructura_menu2(16, 103, 10, 27);
-    
+
     Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
     gotoxy(44, 11);
     color(2);
     cout << "Historial de Pedidos de ";
     color(0);
-    cout <<devolverNombre(listaUsuarios,id) ;
+    cout << devolverNombre(listaUsuarios, id);
     color(2);
     gotoxy(20, 13);
     cout << "ID";
@@ -173,75 +188,74 @@ void mostrarHistorial(){
     ListaLibros Libros = leerLibrosCSV("output/libros.csv");
     while (actual != nullptr)
     {
-        if(contador < 10){
-        color(0);
-        gotoxy(20, 15 + contador);
-        cout << actual->pedido.ID_pedido;
-        gotoxy(26, 15 + contador);
-        cout << actual->pedido.ID_libro << ") "<< devolverLibroNombre(Libros,actual->pedido.ID_libro);
-        gotoxy(57, 15 + contador);
-        if(actual->pedido.estadoPedido == "NO_DEVUELTO" or actual->pedido.estadoPedido == "DEVUELTO_TARDE" ){
-            color(4);
-        }
-        cout << actual->pedido.estadoPedido;
-        color(0);
-        gotoxy(75, 15 + contador);
-        cout << fechaAString(actual->pedido.fechaPedido);
+        if (contador < 10)
+        {
+            color(0);
+            gotoxy(20, 15 + contador);
+            cout << actual->pedido.ID_pedido;
+            gotoxy(26, 15 + contador);
+            cout << actual->pedido.ID_libro << ") " << devolverLibroNombre(Libros, actual->pedido.ID_libro);
+            gotoxy(57, 15 + contador);
+            if (actual->pedido.estadoPedido == "NO_DEVUELTO" or actual->pedido.estadoPedido == "DEVUELTO_TARDE")
+            {
+                color(4);
+            }
+            cout << actual->pedido.estadoPedido;
+            color(0);
+            gotoxy(75, 15 + contador);
+            cout << fechaAString(actual->pedido.fechaPedido);
         }
         contador++;
-        if(actual->pedido.estadoPedido == "DEVUELTO_TARDE"){
+        if (actual->pedido.estadoPedido == "DEVUELTO_TARDE")
+        {
             contadorEntregasTarde++;
         }
-        if(actual->pedido.estadoPedido == "NO_DEVUELTO" && aptoParaPrestamos == false){
+        if (actual->pedido.estadoPedido == "NO_DEVUELTO" && aptoParaPrestamos == false)
+        {
             color(0);
             gotoxy(20, 25);
-            cout << "Observacion: " ;
+            cout << "Observacion: ";
             color(5);
             cout << "El cliente no es apto para prestamos, pues tiene libros sin devolver ";
             aptoParaPrestamos == true;
         }
-        actual = actual->sgte; //pasando al siguiente nodo
+        actual = actual->sgte; // pasando al siguiente nodo
     }
-    
-    if(contador > 10){
+
+    if (contador > 10)
+    {
         gotoxy(20, 26);
         cout << "Y mas ...";
-    }
-    if(contador/contadorEntregasTarde > 0.3){
-            color(0);
-            gotoxy(20, 27);
-            cout << "Observacion: " ;
-            color(5);
-            cout << "El cliente tiene tendencia de devolver tarde";
     }
     pausa();
 }
 
-void mostrarHistorialCliente(int dni){
-    gotoxy(51,11);
+void mostrarHistorialCliente(int dni)
+{
+    gotoxy(51, 11);
     color(2);
     cout << "Historial de Pedidos";
- 
+
     // Se crea una cola para el usuario ingresado
-    colaHistorial historial = cargarHistorialxID("output/pedidos.csv",dni);
-    
+    colaHistorial historial = cargarHistorialxID("output/pedidos.csv", dni);
+
     NodoPedidos *actual = desencolarHistorial(historial);
 
     int contador = 0;
     int contadorEntregasTarde = 0;
     bool aptoParaPrestamos = false;
-    
+
     limpiarPantalla();
     setConsoleBackground(White);
     dibujarTitulo(27, 0, 2, letras);
     estructura_menu2(16, 103, 10, 27);
-    
+
     Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
     gotoxy(44, 11);
     color(2);
     cout << "Historial de Pedidos de ";
     color(0);
-    cout <<devolverNombre(listaUsuarios,dni) ;
+    cout << devolverNombre(listaUsuarios, dni);
     color(2);
     gotoxy(20, 13);
     cout << "ID";
@@ -255,104 +269,123 @@ void mostrarHistorialCliente(int dni){
     ListaLibros Libros = leerLibrosCSV("output/libros.csv");
     while (actual != nullptr)
     {
-        if(contador < 10){
-        color(0);
-        gotoxy(20, 15 + contador);
-        cout << actual->pedido.ID_pedido;
-        gotoxy(26, 15 + contador);
-        cout << actual->pedido.ID_libro << ") "<< devolverLibroNombre(Libros,actual->pedido.ID_libro);
-        gotoxy(57, 15 + contador);
-        if(actual->pedido.estadoPedido == "NO_DEVUELTO" or actual->pedido.estadoPedido == "DEVUELTO_TARDE" ){
-            color(4);
-        }
-        cout << actual->pedido.estadoPedido;
-        color(0);
-        gotoxy(75, 15 + contador);
-        cout << fechaAString(actual->pedido.fechaPedido);
+        if (contador < 10)
+        {
+            color(0);
+            gotoxy(20, 15 + contador);
+            cout << actual->pedido.ID_pedido;
+            gotoxy(26, 15 + contador);
+            cout << actual->pedido.ID_libro << ") " << devolverLibroNombre(Libros, actual->pedido.ID_libro);
+            gotoxy(57, 15 + contador);
+            if (actual->pedido.estadoPedido == "NO_DEVUELTO" or actual->pedido.estadoPedido == "DEVUELTO_TARDE")
+            {
+                color(4);
+            }
+            cout << actual->pedido.estadoPedido;
+            color(0);
+            gotoxy(75, 15 + contador);
+            cout << fechaAString(actual->pedido.fechaPedido);
         }
         contador++;
-        if(actual->pedido.estadoPedido == "DEVUELTO_TARDE"){
+        if (actual->pedido.estadoPedido == "DEVUELTO_TARDE")
+        {
             contadorEntregasTarde++;
         }
-        actual = actual->sgte; //pasando al siguiente nodo
+        actual = actual->sgte; // pasando al siguiente nodo
     }
-    
-    if(contador > 10){
+
+    if (contador > 10)
+    {
         gotoxy(20, 26);
         cout << "Y mas ...";
     }
     pausa();
 }
 
-void encolarEstadistica(NodoEstadisticas *stat, colaPrioEstadisticas &q){
+void encolarEstadistica(NodoEstadisticas *stat, colaPrioEstadisticas &q)
+{
 
-    if(q.delante==nullptr){
+    if (q.delante == nullptr)
+    {
         q.delante = stat;
         q.atras = stat;
-    }else if(stat->prio > q.delante->prio){
+    }
+    else if (stat->prio > q.delante->prio)
+    {
         stat->sgte = q.delante;
         q.delante = stat;
-    }else{
+    }
+    else
+    {
         NodoEstadisticas *actual = q.delante;
         NodoEstadisticas *anterior = nullptr;
 
-        while(actual != nullptr and actual->prio >= stat->prio){
+        while (actual != nullptr and actual->prio >= stat->prio)
+        {
             anterior = actual;
             actual = actual->sgte;
         }
 
-        if(anterior != nullptr){
+        if (anterior != nullptr)
+        {
             anterior->sgte = stat;
         }
-        stat->sgte=actual;
-        if(actual == nullptr){
+        stat->sgte = actual;
+        if (actual == nullptr)
+        {
             q.atras = stat;
         }
     }
 }
 
-NodoEstadisticas* desencolar(colaPrioEstadisticas &q){
-    if(q.delante == nullptr){
-        cout << "La cola de prioridad esta vacia"<< endl;
+NodoEstadisticas *desencolar(colaPrioEstadisticas &q)
+{
+    if (q.delante == nullptr)
+    {
+        cout << "La cola de prioridad esta vacia" << endl;
         system("pause>0");
         return NULL;
     }
 
-    NodoEstadisticas* stat = q.delante;
+    NodoEstadisticas *stat = q.delante;
     q.delante = q.delante->sgte;
 
-    if(q.delante==nullptr){
+    if (q.delante == nullptr)
+    {
         q.atras = nullptr;
     }
 
     return stat;
 }
 
-colaPrioEstadisticas cargarEstadisticaCSV(string nombreArchivo){
+colaPrioEstadisticas cargarEstadisticaCSV(string nombreArchivo)
+{
     fstream archivo(nombreArchivo);
 
-    colaPrioEstadisticas colaPrincipal; //crear una cola de prioridad vacia
+    colaPrioEstadisticas colaPrincipal; // crear una cola de prioridad vacia
     string linea;
 
-    if (!archivo.is_open()) { // Verificar si el archivo se abrió correctamente
+    if (!archivo.is_open())
+    { // Verificar si el archivo se abrió correctamente
         cout << "Error al abrir el archivo: " << nombreArchivo << endl;
         system("PAUSE");
 
         return colaPrincipal; // Regresar la lista vacía si el archivo no se pudo abrir
     }
 
-    while(getline(archivo, linea)){
+    while (getline(archivo, linea))
+    {
         stringstream ss(linea);
         string campo;
         estadisticaLibro stat;
-        
-        //Leer el ID de libro
 
-        //veces solicitado
+        // Leer el ID de libro
 
-        //veces prestado
+        // veces solicitado
 
-        //veces devuelto tarde
+        // veces prestado
+
+        // veces devuelto tarde
     }
 
     return colaPrincipal;
