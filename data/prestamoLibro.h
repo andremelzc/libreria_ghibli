@@ -10,6 +10,8 @@
 
 using namespace std;
 
+// -- FUNCIONES PARA LISTA ENLAZADA DE PEDIDOS --
+// Insertar al final para crear la lista enlazada
 void insertarFinalListaPedido(ListaPedidos *lista, Pedidos *pedido)
 {
     NodoPedidos *NodoPedido = new NodoPedidos(*pedido);
@@ -29,19 +31,25 @@ void insertarFinalListaPedido(ListaPedidos *lista, Pedidos *pedido)
     }
     lista->longitud++;
 }
-// Insertar para crear la listaenlazada
-void insertarListaPedidos(ListaPedidos &lista, Pedidos nuevoPedido) {
+
+// Insertar para crear la lista enlazada
+void insertarListaPedidos(ListaPedidos &lista, Pedidos nuevoPedido)
+{
     // Crear un nuevo nodo con el pedido
     NodoPedidos *nuevoNodo = new NodoPedidos(nuevoPedido);
     nuevoNodo->sgte = nullptr;
 
     // Si la lista está vacía, el nuevo nodo es el primero
-    if (lista.head == nullptr) {
+    if (lista.head == nullptr)
+    {
         lista.head = nuevoNodo;
-    } else {
+    }
+    else
+    {
         // Encontrar el último nodo de la lista
         NodoPedidos *actual = lista.head;
-        while (actual->sgte != nullptr) {
+        while (actual->sgte != nullptr)
+        {
             actual = actual->sgte;
         }
         // Insertar el nuevo nodo al final de la lista
@@ -52,6 +60,7 @@ void insertarListaPedidos(ListaPedidos &lista, Pedidos nuevoPedido) {
     lista.longitud++;
 }
 
+// -- FUNCIONES PARA LEER Y ESCRIBIR PEDIDOS DESDE UN ARCHIVO CSV --
 void guardar_CSV_Pedido(ListaPedidos *Lista, string nombreArchivo)
 {
     fstream archivo(nombreArchivo, fstream::out | fstream ::app);
@@ -142,6 +151,204 @@ void guardar_CSV_PedidoReferencia(ListaPedidos &Lista, const string &nombreArchi
     // cout << "Datos guardados en " << nombreArchivo << endl;
 }
 
+ListaPedidos leerPedidosDesdeCSV(string nombreArchivo)
+{
+    ListaPedidos lista;              // Crear una lista vacía
+    ifstream archivo(nombreArchivo); // Abrir el archivo CSV
+
+    if (!archivo.is_open())
+    { // Verificar si el archivo se abrió correctamente
+        cout << "Error al abrir el archivo: " << nombreArchivo << endl;
+        system("PAUSE");
+
+        return lista; // Regresar la lista vacía si el archivo no se pudo abrir
+    }
+
+    string linea;
+    while (getline(archivo, linea))
+    { // Leer línea por línea del archivo CSV
+        stringstream ss(linea);
+        string campo;
+        Pedidos pedido;
+
+        // Leer el ID del pedido
+        getline(ss, campo, ',');
+        pedido.ID_pedido = stoi(campo);
+
+        // Leer el ID del usuario
+        getline(ss, campo, ',');
+        pedido.ID_usuario = stoi(campo);
+
+        // Leer el ID del libro
+        getline(ss, campo, ',');
+        pedido.ID_libro = stoi(campo);
+
+        // Leer el estado del pedido
+        getline(ss, campo, ',');
+        pedido.estadoPedido = campo;
+
+        // Leer y convertir las fechas
+        getline(ss, campo, ',');
+        pedido.fechaPedido = convertirFecha(campo);
+
+        getline(ss, campo, ',');
+        pedido.fechaAdquisicion = convertirFecha(campo);
+
+        getline(ss, campo, ',');
+        pedido.devolucion = convertirFecha(campo);
+
+        getline(ss, campo, ',');
+        pedido.entregado = convertirFecha(campo);
+
+        insertarListaPedidos(lista, pedido);
+    }
+
+    archivo.close(); // Cerrar el archivo CSV
+    return lista;    // Regresar la lista de pedidos
+}
+
+// -- FUNCIONES PARA REGISTRAR PEDIDOS DE LIBROS --
+void adicionarCampoPedido(int id_usuariologeado)
+{
+
+    ListaPedidos *listaPedido = new ListaPedidos();
+
+    char respuesta[10];
+    int i = 1;
+    time_t now = time(0);
+    tm *localTime = localtime(&now);
+    do
+    {
+        limpiarPantalla();
+        setConsoleBackground(White);
+        dibujarTitulo(27, 0, 2, letras);
+        estructura_menu2(16, 103, 10, 27);
+        Pedidos *pedido = new Pedidos();
+        pedido->ID_pedido = contarFilasCSV("output/pedidos.csv") + i;
+
+        gotoxy(52, 11);
+        cout << "Préstamo de libro";
+
+        pedido->ID_usuario = id_usuariologeado;
+
+        Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv"); // cargando lista de usuarios
+
+        verificarMembresiaYMax(listaUsuarios, id_usuariologeado);
+
+        if (!(verificarMembresiaYMax(listaUsuarios, id_usuariologeado)))
+        { // si es falso volvera a preguntar si deseas hacer una peticion
+            // cout << endl<< "comprobando q todo esta bien 2";
+            gotoxy(27, 13);
+            color(4);
+            cout << "Usuario no habilitado para solicitar préstamo";
+            color(0);
+            gotoxy(27, 14);
+            cout << "Posibles causas:";
+            gotoxy(27, 15);
+            cout << "1. Membresia inactiva";
+            gotoxy(27, 16);
+            cout << "2. Ya tiene 3 libros prestados";
+            pausa();
+            break;
+        }
+        else
+        {
+        }
+
+        string nombreLibro;
+        gotoxy(27, 13);
+        color(2);
+        cout << "Nombre del libro a solicitar préstamo: ";
+        color(0);
+        getline(cin, nombreLibro);
+
+        cin.ignore();
+
+        ListaLibros libros = leerLibrosCSV("output/libros.csv");
+        bool find = mostrarLibroXTitulo(libros, nombreLibro, pedido->ID_libro);
+
+        if (find)
+        {
+            char check;
+            i++;
+            gotoxy(27, 21);
+            color(2);
+            cout << "Este es el libro que deseas solicitar?(s/n): ";
+            color(0);
+            cin >> check;
+            cin.ignore();
+            color(2);
+            dibujarTextoPuntos(27, 22, "Solicitando prestamo");
+            gotoxy(27, 22);
+            cout << "Préstamo solicitado con éxito!";
+
+            // Marcar el libro como solicitado
+            nodoLibros *actual = libros.cabeza;
+            while (actual != nullptr)
+            {
+                if (actual->libro.id == pedido->ID_libro)
+                {
+                    actual->libro.estado = "Solicitado";
+                    break;
+                }
+                actual = actual->siguiente;
+            }
+            limpiarCSV("output/libros.csv");
+            guardar_CSV_Libros(&libros, "output/libros.csv");
+
+            if (!(check == 's' or check == 'S'))
+            {
+                respuesta[0] = 's';
+                continue;
+            }
+        }
+        else
+        {
+            gotoxy(27, 18);
+            color(4);
+            cout << "Libro no existente o no disponible, revise en el catálogo";
+            pausa();
+            continue;
+        }
+
+        // Estableciendo estadoPedido
+        pedido->estadoPedido = "SOLICITADO";
+
+        // agregando la fecha del día que se realizo el pedido
+        pedido->fechaPedido.dia = localTime->tm_mday;
+        pedido->fechaPedido.mes = localTime->tm_mon + 1;     // mas 1 pq los meses empiezan en 0
+        pedido->fechaPedido.año = localTime->tm_year + 1900; // tm year solo cuenta los años desde 1900
+
+        // setting las fechas que no pueden puede ser establecidas en la creacion del pedido
+        pedido->fechaAdquisicion.dia = 00;
+        pedido->fechaAdquisicion.mes = 00;
+        pedido->fechaAdquisicion.año = 00;
+        pedido->entregado.dia = 00;
+        pedido->entregado.mes = 00;
+        pedido->entregado.año = 00;
+        pedido->devolucion.dia = 00;
+        pedido->devolucion.mes = 00;
+        pedido->devolucion.año = 00;
+
+        insertarFinalListaPedido(listaPedido, pedido);
+
+        // agregar aqui la actualizacion de la cantidad de libros prestado ojo me puedo guiar de la funcion actualizar membresia usuario que tiene un parecido
+        // usamos esta funcion para aumentar en 1 la cantidad prestada
+        modificarCantPrestada(pedido->ID_usuario); //------------- quitar de aqui y mandar a cuando se acepte el pedido
+
+        gotoxy(27, 24);
+        color(2);
+        cout << "Desea solicitar otro prestamo? (s/n): ";
+        color(0);
+        cin >> respuesta;
+        cin.ignore();
+
+    } while (respuesta[0] == 's' || respuesta[0] == 'S');
+
+    guardar_CSV_Pedido(listaPedido, "output/pedidos.csv");
+}
+
+// -- FUNCIONES PARA MOSTRAR PEDIDOS --
 bool mostrarLibroXidCopy(ListaLibros &Libros, int id)
 {
     nodoLibros *actual = Libros.cabeza; // Apuntar al primer nodo de la lista
@@ -291,293 +498,6 @@ void modificarCantPrestada(int idUsuario)
     guardar_CSV(&listaUsuarios, "output/usuarios.csv");
 }
 
-void adicionarCampoPedido(int id_usuariologeado)
-{
-
-    ListaPedidos *listaPedido = new ListaPedidos();
-
-    char respuesta[10];
-    int i = 1;
-    time_t now = time(0);
-    tm *localTime = localtime(&now);
-    do
-    {
-        limpiarPantalla();
-        setConsoleBackground(White);
-        dibujarTitulo(27, 0, 2, letras);
-        estructura_menu2(16, 103, 10, 27);
-        Pedidos *pedido = new Pedidos();
-        pedido->ID_pedido = contarFilasCSV("output/pedidos.csv") + i;
-
-        gotoxy(52, 11);
-        cout << "Préstamo de libro";
-
-        pedido->ID_usuario = id_usuariologeado;
-
-        Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv"); // cargando lista de usuarios
-
-        verificarMembresiaYMax(listaUsuarios, id_usuariologeado);
-
-        if (!(verificarMembresiaYMax(listaUsuarios, id_usuariologeado)))
-        { // si es falso volvera a preguntar si deseas hacer una peticion
-            // cout << endl<< "comprobando q todo esta bien 2";
-            gotoxy(27, 13);
-            color(4);
-            cout << "Usuario no habilitado para solicitar préstamo";
-            color(0);
-            gotoxy(27, 14);
-            cout << "Posibles causas:";
-            gotoxy(27, 15);
-            cout << "1. Membresia inactiva";
-            gotoxy(27, 16);
-            cout << "2. Ya tiene 3 libros prestados";
-            pausa();
-            break;
-        }
-        else
-        {
-        }
-
-        string nombreLibro;
-        gotoxy(27, 13);
-        color(2);
-        cout << "Nombre del libro a solicitar préstamo: ";
-        color(0);
-        getline(cin, nombreLibro);
-
-        cin.ignore();
-
-        ListaLibros libros = leerLibrosCSV("output/libros.csv");
-        bool find = mostrarLibroXTitulo(libros, nombreLibro, pedido->ID_libro);
-
-        if (find)
-        {
-            char check;
-            i++;
-            gotoxy(27, 21);
-            color(2);
-            cout << "Este es el libro que deseas solicitar?(s/n): ";
-            color(0);
-            cin >> check;
-            cin.ignore();
-            color(2);
-            dibujarTextoPuntos(27, 22, "Solicitando prestamo");
-            gotoxy(27, 22);
-            cout << "Préstamo solicitado con éxito!";
-
-            // Marcar el libro como solicitado
-            nodoLibros *actual = libros.cabeza;
-            while (actual != nullptr)
-            {
-                if (actual->libro.id == pedido->ID_libro)
-                {
-                    actual->libro.estado = "Solicitado";
-                    break;
-                }
-                actual = actual->siguiente;
-            }
-            limpiarCSV("output/libros.csv");
-            guardar_CSV_Libros(&libros, "output/libros.csv");
-
-            if (!(check == 's' or check == 'S'))
-            {
-                respuesta[0] = 's';
-                continue;
-            }
-        }
-        else
-        {
-            gotoxy(27, 18);
-            color(4);
-            cout << "Libro no existente o no disponible, revise en el catálogo";
-            pausa();
-            continue;
-        }
-
-        // Estableciendo estadoPedido
-        pedido->estadoPedido = "SOLICITADO";
-
-        // agregando la fecha del día que se realizo el pedido
-        pedido->fechaPedido.dia = localTime->tm_mday;
-        pedido->fechaPedido.mes = localTime->tm_mon + 1;     // mas 1 pq los meses empiezan en 0
-        pedido->fechaPedido.año = localTime->tm_year + 1900; // tm year solo cuenta los años desde 1900
-
-        // setting las fechas que no pueden puede ser establecidas en la creacion del pedido
-        pedido->fechaAdquisicion.dia = 00;
-        pedido->fechaAdquisicion.mes = 00;
-        pedido->fechaAdquisicion.año = 00;
-        pedido->entregado.dia = 00;
-        pedido->entregado.mes = 00;
-        pedido->entregado.año = 00;
-        pedido->devolucion.dia = 00;
-        pedido->devolucion.mes = 00;
-        pedido->devolucion.año = 00;
-
-        insertarFinalListaPedido(listaPedido, pedido);
-
-        // agregar aqui la actualizacion de la cantidad de libros prestado ojo me puedo guiar de la funcion actualizar membresia usuario que tiene un parecido
-        // usamos esta funcion para aumentar en 1 la cantidad prestada
-        modificarCantPrestada(pedido->ID_usuario); //------------- quitar de aqui y mandar a cuando se acepte el pedido
-
-        gotoxy(27, 24);
-        color(2);
-        cout << "Desea solicitar otro prestamo? (s/n): ";
-        color(0);
-        cin >> respuesta;
-        cin.ignore();
-
-    } while (respuesta[0] == 's' || respuesta[0] == 'S');
-
-    guardar_CSV_Pedido(listaPedido, "output/pedidos.csv");
-}
-
-ListaPedidos leerPedidosDesdeCSV(string nombreArchivo)
-{
-    ListaPedidos lista;              // Crear una lista vacía
-    ifstream archivo(nombreArchivo); // Abrir el archivo CSV
-
-    if (!archivo.is_open())
-    { // Verificar si el archivo se abrió correctamente
-        cout << "Error al abrir el archivo: " << nombreArchivo << endl;
-        system("PAUSE");
-
-        return lista; // Regresar la lista vacía si el archivo no se pudo abrir
-    }
-
-    string linea;
-    while (getline(archivo, linea))
-    { // Leer línea por línea del archivo CSV
-        stringstream ss(linea);
-        string campo;
-        Pedidos pedido;
-
-        // Leer el ID del pedido
-        getline(ss, campo, ',');
-        pedido.ID_pedido = stoi(campo);
-
-        // Leer el ID del usuario
-        getline(ss, campo, ',');
-        pedido.ID_usuario = stoi(campo);
-
-        // Leer el ID del libro
-        getline(ss, campo, ',');
-        pedido.ID_libro = stoi(campo);
-
-        // Leer el estado del pedido
-        getline(ss, campo, ',');
-        pedido.estadoPedido = campo;
-
-        // Leer y convertir las fechas
-        getline(ss, campo, ',');
-        pedido.fechaPedido = convertirFecha(campo);
-
-        getline(ss, campo, ',');
-        pedido.fechaAdquisicion = convertirFecha(campo);
-
-        getline(ss, campo, ',');
-        pedido.devolucion = convertirFecha(campo);
-
-        getline(ss, campo, ',');
-        pedido.entregado = convertirFecha(campo);
-
-        insertarListaPedidos(lista, pedido);
-    }
-
-    archivo.close(); // Cerrar el archivo CSV
-    return lista;    // Regresar la lista de pedidos
-}
-
-
-void gestionarpedido()
-{
-
-    Lista lista;
-    lista = leerUsuariosCSV("output/usuarios.csv");
-    ListaLibros listaLibros;
-    listaLibros = leerLibrosCSV("output/libros.csv");
-    ListaPedidos listaPedidos;
-    listaPedidos = leerPedidosDesdeCSV("output/pedidos.csv");
-
-    string dni;
-    cout << "Ingrese el DNI del usuario: ";
-    cin >> dni;
-
-    // Buscar el usuario en la lista de usuarios
-    Nodo *usuarioEncontrado = buscarUsuarioPorDNI(lista, dni);
-    if (usuarioEncontrado == nullptr)
-    {
-        cout << "Usuario no encontrado." << endl;
-        return;
-    }
-
-    cout << "Usuario encontrado: " << usuarioEncontrado->usuario.nombre << " " << usuarioEncontrado->usuario.apellidos << endl;
-
-    // Buscar si el usuario tiene algún pedido con estado "SOLICITADO"
-    NodoPedidos *actualPedido = listaPedidos.head;
-    bool pedidoEncontrado = false;
-
-    while (actualPedido != nullptr)
-    {
-        if (actualPedido->pedido.ID_usuario == stoi(dni) && actualPedido->pedido.estadoPedido == "SOLICITADO")
-        {
-            pedidoEncontrado = true;
-            cout << "Pedido encontrado. ID del pedido: " << actualPedido->pedido.ID_pedido << endl;
-
-            // Buscar el libro correspondiente
-            nodoLibros *libroEncontrado = buscarLibroPorID(listaLibros, actualPedido->pedido.ID_libro);
-            if (libroEncontrado != nullptr)
-            {
-                cout << "Libro encontrado: " << libroEncontrado->libro.nombre_Libro << endl;
-
-                // Preguntar al usuario si desea prestar el libro
-                char respuesta;
-                cout << "¿Desea prestar este libro? (S/N): ";
-                cin >> respuesta;
-
-                if (respuesta == 'S' || respuesta == 's')
-                {
-                    cout << "Esta seguro de que quiere prestar el libro? (S/N): ";
-                    cin >> respuesta;
-
-                    if (respuesta == 'S' || respuesta == 's')
-                    {
-                        // Cambiar el estado a "PRESTADO"
-                        actualPedido->pedido.estadoPedido = "PRESTADO";
-                        cout << "El estado del pedido ha sido actualizado a PRESTADO." << endl;
-
-                        // Obtener la fecha actual usando la función obtenerFechaActual
-                        actualPedido->pedido.fechaAdquisicion = obtenerFechaActual();
-
-                        cout << "Fecha de adquisicion: " << actualPedido->pedido.fechaAdquisicion.dia << "/"
-                             << actualPedido->pedido.fechaAdquisicion.mes << "/"
-                             << actualPedido->pedido.fechaAdquisicion.año << endl;
-                    }
-                    else
-                    {
-                        cout << "Operación cancelada." << endl;
-                    }
-                }
-                else
-                {
-                    cout << "Operación cancelada." << endl;
-                }
-            }
-            else
-            {
-                cout << "Libro no encontrado." << endl;
-            }
-        }
-        actualPedido = actualPedido->sgte;
-    }
-
-    if (!pedidoEncontrado)
-    {
-        cout << "No hay pedidos solicitados para este usuario." << endl;
-    }
-    guardar_CSV_PedidoReferencia(listaPedidos, "output/pedidos.csv");
-    system("PAUSE");
-}
-
 void mostrarPedidos(ListaPedidos &listaPedidos)
 {
     NodoPedidos *actual = listaPedidos.head;
@@ -688,6 +608,7 @@ bool mostrarPedidosxdni(ListaPedidos &listaPedidos, string dni)
     return usuarioEncontrado;
 }
 
+// -- FUNCIONES PARA DEVOLVER LIBROS --
 int calcularDiasEntreFechas(int anio1, int mes1, int dia1, int anio2, int mes2, int dia2)
 {
     // Estructura tm para la primera fecha
