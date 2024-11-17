@@ -199,3 +199,37 @@ struct colaHistorial{
  
     colaHistorial(): adelante(nullptr), atras(nullptr){};
 };
+
+struct NodoLibroSimple {
+    int idLibro;                // ID del libro
+    NodoLibroSimple* siguiente; // Puntero al siguiente nodo
+};
+
+// Cola de libros
+struct ColaLibros {
+    NodoLibroSimple* frente;    // Frente de la cola
+    NodoLibroSimple* final;     // Final de la cola
+
+    // Constructor
+    ColaLibros() : frente(nullptr), final(nullptr) {}
+
+
+};
+
+// Nodo para la cola de clientes
+struct NodoCliente {
+    int dni;                // DNI del cliente
+    ColaLibros libros;      // Cola de libros asociados
+    NodoCliente* siguiente; // Puntero al siguiente nodo
+};
+
+// Cola de clientes
+struct ColaClientes {
+    NodoCliente* frente;    // Frente de la cola
+    NodoCliente* final;     // Final de la cola
+
+    // Constructor
+    ColaClientes() : frente(nullptr), final(nullptr) {}
+
+
+};

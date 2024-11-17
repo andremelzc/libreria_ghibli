@@ -830,6 +830,7 @@ void menu_opcionesGestionLaptops()
 vector<string> opcionesMenuGestionPedidosLibros = {"Atender pedido",
                                                    "Registrar devolucion de libro",
                                                    "Ver pedidos de cliente",
+                                                   "Entregar compra de libro",
                                                    "Retroceder"};
 
 int numGestionPedidosLibros = opcionesMenuGestionPedidosLibros.size();
@@ -904,7 +905,12 @@ void menu_opcionesPedido()
         getch();
         break;
       case 4:
-        // 4. Salir
+        // 4. Entregar compra de libro
+        entregarCompra();
+        getch();
+        break;
+      case 5:
+        // 5. Salir
         repeat = false;
         system("CLS");
         break;
