@@ -900,9 +900,8 @@ void menu_opcionesPedido()
         mostrarHistorial();
         break;
       case 4:
-        // 4. Entregar compra de libro
+        // 4. Entregar compra de libro   
         entregarCompra();
-        getch();
         break;
       case 5:
         // 5. Salir

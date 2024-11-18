@@ -1186,50 +1186,88 @@ void actualizarCSV(const string &nombreArchivo, int dni, int idLibro)
     rename("output/temp.csv", nombreArchivo.c_str());
 }
 
-void mostrarPrimeroColaClientesYEntregarLibro(ColaClientes* cola, Lista* listaDeUsuarios, ListaLibros* listaDeLibros, const string& nombreArchivo) {
-    while (cola->frente != nullptr) {
-        NodoCliente* primero = cola->frente;
+void mostrarPrimeroColaClientesYEntregarLibro(ColaClientes *cola, Lista *listaDeUsuarios, ListaLibros *listaDeLibros, const string &nombreArchivo)
+{
+    while (cola->frente != nullptr)
+    {
+        limpiarPantalla();
+        setConsoleBackground(White);
+        dibujarTitulo(27, 0, 2, letras);
+        estructura_menu2(16, 103, 10, 27);
 
-        cout << "Primer cliente en la cola:" << endl;
-        cout << "DNI: " << primero->dni;
+        NodoCliente *primero = cola->frente;
+        int contador;
+
+        gotoxy(47, 11);
+        color(2);
+        cout << "Primer cliente en la cola" << endl;
+        gotoxy(32, 13);
+        color(2);
+        cout << "DNI: ";
+        color(0);
+        cout << primero->dni;
 
         // Buscar el nombre del cliente en la lista de usuarios
         string nombreCliente = "No encontrado";
-        Nodo* nodoUsuario = listaDeUsuarios->cabeza;
-        while (nodoUsuario != nullptr) {
-            if (stoi(nodoUsuario->usuario.ID_Usuario) == primero->dni) {
+        Nodo *nodoUsuario = listaDeUsuarios->cabeza;
+        while (nodoUsuario != nullptr)
+        {
+            contador = 1;
+            if (stoi(nodoUsuario->usuario.ID_Usuario) == primero->dni)
+            {
                 nombreCliente = nodoUsuario->usuario.nombre + " " + nodoUsuario->usuario.apellidos;
                 break;
             }
             nodoUsuario = nodoUsuario->siguiente;
         }
-
-        cout << " - Nombre: " << nombreCliente;
-        cout << " - Libros: " << endl;
+        color(2);
+        cout << "           -            Nombre: ";
+        color(0);
+        cout << nombreCliente << endl;
 
         // Imprimir los libros asociados al cliente
-        NodoLibroSimple* libroActual = primero->libros.frente;
-        if (libroActual == nullptr) {
+
+        color(2);
+        gotoxy(25, 15);
+        cout << "ID ";
+        gotoxy(50, 15);
+        cout << "Titulo ";
+        gotoxy(80, 15);
+        cout << "Autor ";
+
+        NodoLibroSimple *libroActual = primero->libros.frente;
+        if (libroActual == nullptr)
+        {
+            gotoxy(20, 15 + contador);
             cout << "  Sin libros" << endl;
-        } else {
-            while (libroActual != nullptr) {
+        }
+        else
+        {
+            while (libroActual != nullptr)
+            {
                 int idLibro = libroActual->idLibro;
 
                 // Buscar detalles del libro en la lista de libros
                 string nombreLibro = "No encontrado", autor = "No encontrado";
-                nodoLibros* nodoLibro = listaDeLibros->cabeza;
-                while (nodoLibro != nullptr) {
-                    if (nodoLibro->libro.id == idLibro) {
+                nodoLibros *nodoLibro = listaDeLibros->cabeza;
+                while (nodoLibro != nullptr)
+                {
+                    if (nodoLibro->libro.id == idLibro)
+                    {
                         nombreLibro = nodoLibro->libro.nombre_Libro;
                         autor = nodoLibro->libro.Autor;
-        
+
                         break;
                     }
                     nodoLibro = nodoLibro->siguiente;
                 }
-
-                cout << "  - ID: " << idLibro << " | Título: " << nombreLibro << " | Autor: " << autor << endl;
-
+                gotoxy(25, 15 + contador);
+                cout << idLibro;
+                gotoxy(50, 15 + contador);
+                cout << nombreLibro;
+                gotoxy(80, 15 + contador);
+                cout << autor;
+                contador++;
                 libroActual = libroActual->siguiente;
             }
         }
@@ -1238,11 +1276,15 @@ void mostrarPrimeroColaClientesYEntregarLibro(ColaClientes* cola, Lista* listaDe
 
         // Preguntar si desea entregar el libro
         char opcion;
-        cout << "¿Desea entregar un libro? (s/n): ";
+        int aux = contador;
+        gotoxy(33, 25);
+        cout << "Desea entregar un libro? (s/n): ";
         cin >> opcion;
 
-        if (opcion == 's' || opcion == 'S') {
-            if (primero->libros.frente != nullptr) {
+        if (opcion == 's' || opcion == 'S')
+        {
+            if (primero->libros.frente != nullptr)
+            {
                 // Obtener y eliminar el primer libro
                 int idLibroEntregado = desencolarLibro(&primero->libros);
 
@@ -1250,26 +1292,42 @@ void mostrarPrimeroColaClientesYEntregarLibro(ColaClientes* cola, Lista* listaDe
                 actualizarCSV(nombreArchivo, primero->dni, idLibroEntregado);
 
                 // Mostrar mensaje de libro entregado
+                gotoxy(33, 23);
                 cout << "Libro con ID " << idLibroEntregado << " entregado." << endl;
+                getch();
             }
 
             // Verificar si ya no hay más libros
-            if (primero->libros.frente == nullptr) {
+            if (primero->libros.frente == nullptr)
+            {
+                gotoxy(33, 23);
+                color(4);
                 cout << "Pedido terminado para el cliente con DNI " << primero->dni << "." << endl;
-
+                getch();
                 // Eliminar al cliente de la cola
                 desencolarCliente(cola);
 
                 // Mostrar al siguiente cliente
-                if (cola->frente != nullptr) {
-                    cout << "Ahora se atenderá al siguiente cliente en la cola." << endl;
-                } else {
-                    cout << "No hay más clientes en la cola." << endl;
+                if (cola->frente != nullptr)
+                {
+                    gotoxy(33, 24);
+                    color(4);
+                    cout << "Ahora se atendera al siguiente cliente en la cola." << endl;
+                    getch();
+                }
+                else
+                {
+                    gotoxy(33, 24);
+                    color(4);
+                    cout << "No hay mas clientes en la cola." << endl;
                 }
             }
-        } else {
+        }
+        else
+        {
             // Salir si no desea entregar más libros
-            cout << "No se realizó ninguna entrega." << endl;
+            gotoxy(33, 23);
+            cout << "No se realizo ninguna entrega." << endl;
             break;
         }
     }
