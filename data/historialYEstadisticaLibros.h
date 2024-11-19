@@ -95,8 +95,6 @@ NodoPedidos *desencolarHistorial(colaHistorial &q)
 {
     if (q.adelante == nullptr)
     {
-        cout << "La cola de prioridad esta vacia" << endl;
-        system("pause>0");
         return NULL;
     }
 
@@ -238,8 +236,36 @@ void mostrarHistorialCliente(int dni)
 
     // Se crea una cola para el usuario ingresado
     colaHistorial historial = cargarHistorialxID("output/pedidos.csv", dni);
-
+    Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
     NodoPedidos *actual = desencolarHistorial(historial);
+    if (actual == NULL)
+    {
+        limpiarPantalla();
+        setConsoleBackground(White);
+        dibujarTitulo(27, 0, 2, letras);
+        estructura_menu2(16, 103, 10, 27);
+        gotoxy(44, 11);
+        color(2);
+        cout << "Historial de Pedidos de ";
+        color(0);
+        cout << devolverNombre(listaUsuarios, dni);
+        color(2);
+        gotoxy(20, 13);
+        cout << "ID";
+        gotoxy(26, 13);
+        cout << "Libro";
+        gotoxy(57, 13);
+        cout << "Estado";
+        gotoxy(75, 13);
+        cout << "Fecha de pedido";
+        color(0);
+        gotoxy(20, 15);
+        color(4);
+        cout << "No se encontraron pedidos para el usuario";
+        color(0);
+        pausa();
+        return;
+    }
 
     int contador = 0;
     int contadorEntregasTarde = 0;
@@ -250,7 +276,6 @@ void mostrarHistorialCliente(int dni)
     dibujarTitulo(27, 0, 2, letras);
     estructura_menu2(16, 103, 10, 27);
 
-    Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
     gotoxy(44, 11);
     color(2);
     cout << "Historial de Pedidos de ";
@@ -342,8 +367,6 @@ NodoEstadisticas *desencolar(colaPrioEstadisticas &q)
 {
     if (q.delante == nullptr)
     {
-        cout << "La cola de prioridad esta vacia" << endl;
-        system("pause>0");
         return NULL;
     }
 

@@ -7,19 +7,19 @@
 using namespace std;
 
 // Declaraciones previas
-void insertarFinalListaLibro(ListaLibros *lista, Libro *libro);
+void insertarLibrosFinal(ListaLibros *lista, Libro *libro);
 void guardar_CSV_Libros(ListaLibros *lista, string nombreArchivo);
 void adicionarCampo();
 void modificarLibro();
-void insertarLibro(ListaLibros &lista, Libro nuevoLibro);
 ListaLibros leerLibrosCSV(string nombreArchivo);
 bool mostrarLibroXid(ListaLibros &Libros, int id);
 void insertarArbolLibro(LibroNodoArbol *&raiz, Libro *libro);
-Libro *buscarLibroArbol(LibroNodoArbol *raiz, const string &nombreLibroBuscar, bool &busquedaExacta);
+void buscarLibroArbol(LibroNodoArbol *raiz, const string &nombreLibroBuscar, ListaLibros &resultados, bool &busquedaExacta);
 LibroNodoArbol *leerLibrosArbol(string nombreArchivo, bool userView);
 
+// --- FUNCIONES PARA LISTAS ENLAZADAS DE LIBROS ---
 // Inserta libros al final de una lista enlazada
-void insertarFinalListaLibro(ListaLibros *lista, Libro *libro)
+void insertarLibrosFinal(ListaLibros *lista, Libro *libro)
 {
     nodoLibros *nodoLibro = new nodoLibros(*libro);
 
@@ -140,7 +140,7 @@ void adicionarCampo()
         for (int i = 0; i < libro->stock; i++)
         {
             libro->id = contarFilasCSV("output/libros.csv") + contador;
-            insertarFinalListaLibro(listaLibros, libro);
+            insertarLibrosFinal(listaLibros, libro);
             contador++;
         }
 
@@ -348,27 +348,6 @@ void modificarLibro()
     system("pause>0");
 }
 
-// Insertar al final de la lista
-void insertarLibrosFinal(ListaLibros *lista, Libro *libro)
-{
-    nodoLibros *nodo = new nodoLibros(*libro);
-
-    if (lista->cabeza == nullptr)
-    {
-        lista->cabeza = nodo;
-    }
-    else
-    {
-        nodoLibros *puntero = lista->cabeza;
-        while (puntero->siguiente)
-        {
-            puntero = puntero->siguiente;
-        }
-        puntero->siguiente = nodo;
-    }
-    lista->longitud++;
-}
-
 void insertarNodoLibroAlFinal(ListaLibros *lista, nodoLibros *nodo)
 {
     // Verificar que el nodo no sea nullptr
@@ -450,15 +429,6 @@ void eliminarPrimerLibro(ListaLibros *lista)
 
     // Disminuir la longitud de la lista
     lista->longitud--;
-}
-
-// Insertar para crear la lista enlazada
-void insertarLibro(ListaLibros &lista, Libro nuevoLibro)
-{
-    nodoLibros *nuevoNodo = new nodoLibros(nuevoLibro);
-    nuevoNodo->siguiente = lista.cabeza;
-    lista.cabeza = nuevoNodo;
-    lista.longitud++;
 }
 
 ListaLibros leerLibrosCSV(string nombreArchivo)
@@ -620,6 +590,7 @@ bool mostrarLibroXid(ListaLibros &Libros, int id)
 }
 
 // -- FUNCIONES PARA VER CATÁLOGO DE LIBROS --
+
 // Insertar para crear la lista enlazada doble
 void insertarDobleLibro(ListaDobleLibros &lista, Libro nuevoLibro)
 {
@@ -854,16 +825,22 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
         }
         else if (opcion == 3 && userView) // Filtro
         {
-
+            // Creo un árbol con los libros para buscar por título
             LibroNodoArbol *arbol = leerLibrosArbol("output/libros.csv", true);
+            // Bool para saber si se encontró el libro exacto o son resultados similares
             bool busquedaExacta = false;
+            // Variable para guardar el titulo ingresado por el usuario
             string titulo;
             gotoxy(13, 27);
             color(2);
             cout << "Título del libro: ";
             color(0);
             getline(cin, titulo);
-            Libro *libroEncontrado = buscarLibroArbol(arbol, titulo, busquedaExacta);
+            // Lista enlazada para guardar los libros encontrados
+            ListaLibros resultados;
+            // Buscar el libro en el árbol
+            buscarLibroArbol(arbol, titulo, resultados, busquedaExacta);
+            // Libro *libroEncontrado = buscarLibroArbol(arbol, titulo, busquedaExacta);
 
             limpiarPantalla();
             setConsoleBackground(White);
@@ -881,10 +858,14 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
             if (busquedaExacta)
             {
                 cout << "Resultados para: ";
+                color(0);
+                cout << titulo;
             }
             else
             {
                 cout << "Resultados similares a: ";
+                color(0);
+                cout << titulo;
             }
 
             color(2);
@@ -900,43 +881,48 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
             cout << "Stock";
             color(0);
 
-            gotoxy(18 - resta, 17);
-            if (libroEncontrado->nombre_Libro.length() > 25)
+            // Mostrar los libros a partir de la posición actual
+            nodoLibros *temporal = resultados.cabeza;
+            while (temporal != nullptr)
             {
-                cout << libroEncontrado->nombre_Libro.substr(0, 22) + "...";
-            }
-            else
-            {
-                cout << libroEncontrado->nombre_Libro;
-            }
+                gotoxy(18 - resta, 17 + contador);
+                if (temporal->libro.nombre_Libro.length() > 25)
+                {
+                    cout << temporal->libro.nombre_Libro.substr(0, 22) + "...";
+                }
+                else
+                {
+                    cout << temporal->libro.nombre_Libro;
+                }
 
-            gotoxy(47, 17);
-            if (libroEncontrado->Autor.length() > 18)
-            {
-                cout << libroEncontrado->Autor.substr(0, 15) + "...";
-            }
-            else
-            {
-                cout << libroEncontrado->Autor;
-            }
+                gotoxy(47, 17 + contador);
+                if (temporal->libro.Autor.length() > 18)
+                {
+                    cout << temporal->libro.Autor.substr(0, 15) + "...";
+                }
+                else
+                {
+                    cout << temporal->libro.Autor;
+                }
 
-            gotoxy(71, 17);
-            if (libroEncontrado->Genero.length() > 17)
-            {
-                cout << libroEncontrado->Genero.substr(0, 14) + "...";
-            }
-            else
-            {
-                cout << libroEncontrado->Genero;
-            }
-            if (userView)
-            {
-                gotoxy(93, 17);
-                cout << libroEncontrado->Ano;
-                gotoxy(102, 17);
-                cout << libroEncontrado->stock;
-            }
+                gotoxy(71, 17 + contador);
+                if (temporal->libro.Genero.length() > 17)
+                {
+                    cout << temporal->libro.Genero.substr(0, 14) + "...";
+                }
+                else
+                {
+                    cout << temporal->libro.Genero;
+                }
 
+                gotoxy(93, 17 + contador);
+                cout << temporal->libro.Ano;
+                gotoxy(102, 17 + contador);
+                cout << temporal->libro.stock;
+
+                temporal = temporal->siguiente;
+                contador++;
+            }
             pausa();
         }
         else if (opcion != 0)
@@ -962,14 +948,14 @@ nodoLibros *buscarLibroPorID(ListaLibros &listaLibros, int idLibro)
     return nullptr; // Libro no encontrado
 }
 
-// Buscar libro por título
-nodoLibros *buscarLibroPorTitulo(ListaLibros &listaLibros, string tituloLibro)
+// Buscar libro por título y estado
+nodoLibros *buscarLibroPorTitulo(ListaLibros &listaLibros, string tituloLibro, string estado)
 {
     nodoLibros *actual = listaLibros.cabeza;
     while (actual != nullptr)
     {
         int distancia = distanciaLevenshtein(actual->libro.nombre_Libro, tituloLibro);
-        if (distancia < 4 && actual->libro.estado == "Disponible")
+        if (distancia < 4 && actual->libro.estado == estado)
         {
             return actual; // Libro encontrado
         }
@@ -978,21 +964,7 @@ nodoLibros *buscarLibroPorTitulo(ListaLibros &listaLibros, string tituloLibro)
     return nullptr; // Libro no encontrado
 }
 
-nodoLibros *buscarLibroPorTituloPedido(ListaLibros &listaLibros, string tituloLibro)
-{
-    nodoLibros *actual = listaLibros.cabeza;
-    while (actual != nullptr)
-    {
-        int distancia = distanciaLevenshtein(actual->libro.nombre_Libro, tituloLibro);
-        if (distancia < 4 && actual->libro.estado == "Pedido")
-        {
-            return actual; // Libro encontrado
-        }
-        actual = actual->siguiente;
-    }
-    return nullptr; // Libro no encontrado
-}
-
+// Función para guardar los datos de los libros en un archivo CSV
 void guardar_CSV_Libros_Sobreescribir(ListaLibros *lista, string nombreArchivo)
 {
     fstream archivo(nombreArchivo, fstream::out);
@@ -1039,6 +1011,7 @@ void guardar_CSV_Libros_Sobreescribir(ListaLibros *lista, string nombreArchivo)
 }
 
 // -- FUNCIONES PARA EL ÁRBOL DE LIBROS --
+
 // Función para insertar nodos en el arbol
 void insertarArbolLibro(LibroNodoArbol *&raiz, Libro *libro)
 {
@@ -1061,42 +1034,39 @@ void insertarArbolLibro(LibroNodoArbol *&raiz, Libro *libro)
 }
 
 // Función para buscar un libro en el árbol
-Libro *buscarLibroArbol(LibroNodoArbol *raiz, const string &nombreLibroBuscar, bool &busquedaExacta)
+void buscarLibroArbol(LibroNodoArbol *raiz, const string &nombreLibroBuscar, ListaLibros &resultados, bool &busquedaExacta)
 {
     if (raiz == nullptr)
     {
-        return nullptr;
+        return;
     }
 
     // Convertir ambos títulos a minúsculas
     string tituloNodo = convertirAMinuscula(raiz->libro.nombre_Libro);
     string tituloBuscar = convertirAMinuscula(nombreLibroBuscar);
 
-    // Buscar si el título ingresado es una subcadena del título del nodo
-    if(tituloNodo == tituloBuscar){
+    if (tituloNodo == tituloBuscar)
+    {
         busquedaExacta = true;
-        return &raiz->libro;
+        insertarLibrosFinal(&resultados, &raiz->libro);
+        return;
     }
 
+    // Buscar si el título ingresado es una subcadena del título del nodo
     if (tituloNodo.find(tituloBuscar) != string::npos)
     {
-        busquedaExacta = false;
-        return &raiz->libro;
+        insertarLibrosFinal(&resultados, &raiz->libro);
     }
 
     // Buscar en el subárbol izquierdo
-    if (tituloNodo > tituloBuscar)
-    {
-        return buscarLibroArbol(raiz->izquierda, nombreLibroBuscar, busquedaExacta);
-    }
-    else
-    {
-        // Buscar en el subárbol derecho
-        return buscarLibroArbol(raiz->derecha, nombreLibroBuscar, busquedaExacta);
-    }
+    buscarLibroArbol(raiz->izquierda, nombreLibroBuscar, resultados, busquedaExacta);
+
+    // Buscar en el subárbol derecho
+    buscarLibroArbol(raiz->derecha, nombreLibroBuscar, resultados, busquedaExacta);
 }
 
-LibroNodoArbol *leerLibrosArbol(string nombreArchivo, bool userView)    
+// Función para leer los libros de un archivo CSV y crear un árbol
+LibroNodoArbol *leerLibrosArbol(string nombreArchivo, bool userView)
 {
     LibroNodoArbol *arbol = nullptr;
     ifstream archivo(nombreArchivo);
@@ -1157,27 +1127,6 @@ LibroNodoArbol *leerLibrosArbol(string nombreArchivo, bool userView)
 
     archivo.close();
     return arbol;
-}
-
-string obtenerEstadoLibro(int estado)
-{
-    string str_estado;
-    switch (estado)
-    {
-    case 0:
-        str_estado = "Disponible";
-        break;
-    case 1:
-        str_estado = "Prestado";
-        break;
-    case 2:
-        str_estado = "Pedido";
-        break;
-    default:
-        str_estado = "Vendido";
-        break;
-    }
-    return str_estado;
 }
 
 void mostrarListaLibroSimple(ListaLibros listaMostrar)

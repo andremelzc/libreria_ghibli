@@ -36,7 +36,6 @@ void insertarFinalListaPedido(ListaPedidos *lista, Pedidos *pedido)
     }
     lista->longitud++;
 }
-
 // Insertar para crear la lista enlazada
 void insertarListaPedidos(ListaPedidos &lista, Pedidos nuevoPedido)
 {
@@ -266,8 +265,6 @@ void adicionarCampoPedido(int id_usuariologeado)
         cout << "Nombre del libro a solicitar préstamo: ";
         color(0);
         getline(cin, nombreLibro);
-
-        cin.ignore();
 
         ListaLibros libros = leerLibrosCSV("output/libros.csv");
         bool find = mostrarLibroXTitulo(libros, nombreLibro, pedido->ID_libro);
@@ -542,32 +539,30 @@ bool mostrarPedidosxdni(ListaPedidos &listaPedidos, string dni)
     NodoPedidos *actual = listaPedidos.head;
     ListaLibros listaLibros = leerLibrosCSV("output/libros.csv");
 
-    int contador = 0;
+    int contador = 1;
     int id_libro;
     bool usuarioEncontrado = false;
 
     Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
     Nodo *actualUsuario = buscarUsuarioPorDNI(listaUsuarios, dni);
 
-    gotoxy(47, 17);
-    color(2);
-    cout << "Pedidos de " << actualUsuario->usuario.nombre << " " << actualUsuario->usuario.apellidos;
-    gotoxy(18, 19);
+    gotoxy(27, 19);
     cout << "ID";
-    gotoxy(25, 19);
+    gotoxy(33, 19);
     cout << "Libro";
-    gotoxy(66, 19);
-    cout << "F. Pedido ";
-    gotoxy(90, 19);
+    gotoxy(67, 19);
     cout << "Estado ";
+    gotoxy(83, 19);
+    cout << "F. Pedido ";
+    
     color(0);
     while (actual != nullptr)
     {
         if (actual->pedido.ID_usuario == stoi(dni) && actual->pedido.estadoPedido == "PRESTADO" || actual->pedido.estadoPedido == "NO_DEVUELTO")
         {
-            gotoxy(18, 21 + contador);
+            gotoxy(27, 19 + contador);
             cout << actual->pedido.ID_pedido;
-            gotoxy(25, 21 + contador);
+            gotoxy(33, 19 + contador);
             cout << actual->pedido.ID_libro << ") ";
             nodoLibros *actualLibro = listaLibros.cabeza;
             while (actualLibro != nullptr)
@@ -586,9 +581,9 @@ bool mostrarPedidosxdni(ListaPedidos &listaPedidos, string dni)
                 }
                 actualLibro = actualLibro->siguiente;
             }
-            gotoxy(66, 21 + contador);
+            gotoxy(83, 19 + contador);
             cout << actual->pedido.fechaPedido.dia << "/" << actual->pedido.fechaPedido.mes << "/" << actual->pedido.fechaPedido.año;
-            gotoxy(90, 21 + contador);
+            gotoxy(67, 19 + contador);
             cout << actual->pedido.estadoPedido;
             usuarioEncontrado = true;
             contador++;
@@ -604,9 +599,9 @@ bool mostrarPedidosxdni(ListaPedidos &listaPedidos, string dni)
     }
     else
     {
-        gotoxy(27, 15);
+        gotoxy(27, 17);
         color(2);
-        cout << "Usuario encontrado!  ";
+        cout << "Usuario encontrado: "<<actualUsuario->usuario.nombre<<" "<<actualUsuario->usuario.apellidos;
     }
 
     pausa();
@@ -614,31 +609,6 @@ bool mostrarPedidosxdni(ListaPedidos &listaPedidos, string dni)
 }
 
 // -- FUNCIONES PARA DEVOLVER LIBROS --
-int calcularDiasEntreFechas(int anio1, int mes1, int dia1, int anio2, int mes2, int dia2)
-{
-    // Estructura tm para la primera fecha
-    tm fecha1 = {};
-    fecha1.tm_year = anio1 - 1900; // tm_year es años desde 1900
-    fecha1.tm_mon = mes1 - 1;      // tm_mon es de 0 a 11
-    fecha1.tm_mday = dia1;
-
-    // Estructura tm para la segunda fecha
-    tm fecha2 = {};
-    fecha2.tm_year = anio2 - 1900;
-    fecha2.tm_mon = mes2 - 1;
-    fecha2.tm_mday = dia2;
-
-    // Convertir las fechas a tiempo en segundos desde la época
-    time_t tiempo1 = mktime(&fecha1);
-    time_t tiempo2 = mktime(&fecha2);
-
-    // Calcular la diferencia en segundos y convertirla a días
-    double diferenciaSegundos = difftime(tiempo2, tiempo1);
-    int diferenciaDias = diferenciaSegundos / (60 * 60 * 24); // Convierte de segundos a días
-
-    return abs(diferenciaDias); // Valor absoluto de la diferencia en días
-}
-
 void registrarDevolucionLibro(int &mora)
 
 {
@@ -656,15 +626,21 @@ void registrarDevolucionLibro(int &mora)
         ejecutarGradienteDoble(150);
         estructura_menu2(16, 103, 11, 26);
         dibujarTitulo(27, 0, 2, letras);
-        gotoxy(44, 12);
+        gotoxy(46, 12);
         color(2);
         cout << "Registrar devolucion de libro";
         gotoxy(27, 14);
+        color(0);
+        cout << "Para registrar la devolución de un libro, por favor ingrese el";
+        gotoxy(27, 15);
+        cout << "DNI del usuario que desea devolver el libro.";
+        gotoxy(27, 16);
+        color(2);
         cout << "DNI del usuario: ";
         color(0);
         getline(cin, dni);
         color(2);
-        dibujarTextoPuntos(27, 15, "Buscando usuario");
+        dibujarTextoPuntos(27, 17, "Buscando usuario");
 
         usuarioEncontrado = mostrarPedidosxdni(listaPedidos, dni);
 
@@ -723,7 +699,7 @@ void registrarDevolucionLibro(int &mora)
                 actual->pedido.entregado.mes = tiempoLocal->tm_mon + 1;
                 actual->pedido.entregado.dia = tiempoLocal->tm_mday;
 
-                dias = calcularDiasEntreFechas(actual->pedido.fechaAdquisicion.año, actual->pedido.fechaAdquisicion.mes, actual->pedido.fechaAdquisicion.dia, actual->pedido.devolucion.año, actual->pedido.devolucion.mes, actual->pedido.devolucion.dia);
+                dias = calcularDiasEntreFechas(actual->pedido.entregado.año, actual->pedido.entregado.mes, actual->pedido.entregado.dia, actual->pedido.devolucion.año, actual->pedido.devolucion.mes, actual->pedido.devolucion.dia);
 
                 if (dias > 7)
                 {
@@ -803,6 +779,7 @@ void registrarDevolucionLibro(int &mora)
 }
 
 // -- FUNCIONES PARA ATENDER PRÉSTAMO DE LIBROS  (USANDO COLAS) --
+// Función que sirve para insertar un pedido en la cola de pedidos
 void encolarPrestamoPorPersona(ColaPedidos &colaPedidos, Pedidos pedido)
 {
     NodoPedidos *nuevoNodo = new NodoPedidos(pedido);
@@ -818,6 +795,7 @@ void encolarPrestamoPorPersona(ColaPedidos &colaPedidos, Pedidos pedido)
     }
 };
 
+// Función que sirve para desencolar un pedido de la cola de pedidos
 Pedidos desencolarPrestamo(ColaPedidos &colaPedidos)
 {
     if (colaPedidos.delante == nullptr)
@@ -843,6 +821,7 @@ Pedidos desencolarPrestamo(ColaPedidos &colaPedidos)
     return pedidoDesencolado;
 }
 
+// Hacer una cola por usuario
 ColaPedidos cargarColaPedidosUsuario(int idUsuario)
 {
     ColaPedidos colaPedidos;
@@ -897,6 +876,7 @@ ColaPedidos cargarColaPedidosUsuario(int idUsuario)
     return colaPedidos;
 }
 
+// Función para marcar un pedido como entregado (tmb se actualiza en el csv)
 void atenderPrestamo(ColaPedidos &colaPedidos)
 {
     if (colaPedidos.delante == nullptr)
@@ -947,6 +927,7 @@ void atenderPrestamo(ColaPedidos &colaPedidos)
     guardar_CSV_Libros_Sobreescribir(&listaLibros, "output/libros.csv");
 }
 
+// Función para mostrar la cola de pedidos de préstamo de un usuario
 void muestraColaPedidosPrestamo(ColaPedidos &colaPedidos, int x, int y, bool &pedidosPendientes)
 {
     NodoPedidos *actual = colaPedidos.delante;
@@ -993,6 +974,7 @@ void muestraColaPedidosPrestamo(ColaPedidos &colaPedidos, int x, int y, bool &pe
     }
 }
 
+// Función para atender los préstamos de un usuario
 void atenderPrestamoMenu()
 {
     gotoxy(50, 11);
@@ -1000,17 +982,19 @@ void atenderPrestamoMenu()
     cout << "Atendiendo Préstamos";
     color(0);
     gotoxy(27, 13);
-    cout << "Para atender los préstamos, ingrese el ID del usuario";
+    cout << "Para atender los préstamos, ingrese el DNI del usuario que";
     gotoxy(27, 14);
+    cout << "desea atender.";
+    gotoxy(27, 15);
     color(2);
-    cout << "ID del usuario: ";
+    cout << "DNI del usuario: ";
     color(0);
     int idUsuarioIngresado;
     cin >> idUsuarioIngresado;
     cin.ignore();
     color(2);
-    dibujarTextoPuntos(27, 16, "Cargando pedidos");
-    gotoxy(27, 16);
+    dibujarTextoPuntos(27, 17, "Cargando pedidos");
+    gotoxy(27, 17);
     cout << "Pedidos cargados con éxito";
     ColaPedidos colaPedidos = cargarColaPedidosUsuario(idUsuarioIngresado);
     if (colaPedidos.delante == nullptr)
@@ -1027,7 +1011,30 @@ void atenderPrestamoMenu()
         bool pedidosPendientes = true;
         do
         {
+            limpiarPantalla();
+            setConsoleBackground(White);
+            ejecutarGradienteDoble(150);
+            estructura_menu2(16, 103, 11, 26);
+            dibujarTitulo(27, 0, 2, letras);
+            gotoxy(50, 11);
+            color(2);
+            cout << "Atendiendo Préstamos";
+            color(0);
+            gotoxy(27, 13);
+            cout << "Para atender los préstamos, ingrese el DNI del usuario que";
+            gotoxy(27, 14);
+            cout << "desea atender.";
+            gotoxy(27, 15);
+            color(2);
+            cout << "DNI del usuario: " << idUsuarioIngresado;
             muestraColaPedidosPrestamo(colaPedidos, 27, 18, pedidosPendientes);
+            if (!pedidosPendientes)
+            {
+                gotoxy(27, 24);
+                color(4);
+                cout << "No hay pedidos pendientes para este usuario";
+                break;
+            }
             gotoxy(27, 24);
             color(2);
             cout << "¿Desea atender prestamo? (s/n): ";
@@ -1036,22 +1043,6 @@ void atenderPrestamoMenu()
             if (respuesta == "s" || respuesta == "S")
             {
                 atenderPrestamo(colaPedidos);
-                limpiarPantalla();
-                setConsoleBackground(White);
-                ejecutarGradienteDoble(150);
-                estructura_menu2(16, 103, 11, 26);
-                dibujarTitulo(27, 0, 2, letras);
-                gotoxy(44, 12);
-                color(2);
-                cout << "Atendiendo Préstamos";
-                color(0);
-                gotoxy(27, 13);
-                cout << "Para atender los préstamos, ingrese el ID del usuario";
-                gotoxy(27, 14);
-                color(2);
-                cout << "ID del usuario: " << idUsuarioIngresado;
-                gotoxy(27, 16);
-                cout << "Pedidos cargados con éxito";
             }
         } while (respuesta == "s" || respuesta == "S" || pedidosPendientes);
     }

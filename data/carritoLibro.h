@@ -318,7 +318,7 @@ void agregarCarrito(int id_usuario)
         getline(cin, nombreLibro);
 
         char desicion;
-        producto = buscarLibroPorTitulo(listalibros, nombreLibro); //*nodoLibros
+        producto = buscarLibroPorTitulo(listalibros, nombreLibro, "Disponible"); //*nodoLibros
         if (producto != nullptr)
         {
             // Si ingreso un Nombre Valido
@@ -760,7 +760,7 @@ void efectuarCompraCarrito(int id_usuario, bool &seguirComprando)
     getline(cin, nombre_libro_pedido);
 
     // Obtengo un Libro a partir del nombreDeLibro ingresado
-    libro_pedido = buscarLibroPorTituloPedido(listaLibrosGeneral, nombre_libro_pedido);
+    libro_pedido = buscarLibroPorTitulo(listaLibrosGeneral, nombre_libro_pedido, "Pedido");
 
     // Si ingreso un Nombre Valido obtendre un libro
     if (libro_pedido != nullptr)
@@ -1342,7 +1342,7 @@ void entregarCompra()
 
     // Leer usuarios y libros desde los archivos
     Lista listaDeUsuarios = leerUsuariosCSV("output/usuarios.csv");
-    ListaLibros listaDeLibros = leerLibrosCSV("output/Libros.csv");
+    ListaLibros listaDeLibros = leerLibrosCSV("output/libros.csv");
 
     // Mostrar al primer cliente y gestionar la entrega de libros
     mostrarPrimeroColaClientesYEntregarLibro(&colaClientes, &listaDeUsuarios, &listaDeLibros, "output/carrito.csv");
