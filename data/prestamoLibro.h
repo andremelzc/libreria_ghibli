@@ -14,6 +14,7 @@ using namespace std;
 bool verificarMembresiaYMax(Lista &Usuarios, int idUsuario);
 bool mostrarLibroXTitulo(ListaLibros &Libros, string tituloPedido, int &id);
 void modificarCantPrestada(int idUsuario);
+void cargarColaPedidosPrioridad();
 
 // -- FUNCIONES PARA LISTA ENLAZADA DE PEDIDOS --
 // Insertar al final para crear la lista enlazada
@@ -555,7 +556,7 @@ bool mostrarPedidosxdni(ListaPedidos &listaPedidos, string dni)
     cout << "Estado ";
     gotoxy(83, 19);
     cout << "F. Pedido ";
-    
+
     color(0);
     while (actual != nullptr)
     {
@@ -602,7 +603,7 @@ bool mostrarPedidosxdni(ListaPedidos &listaPedidos, string dni)
     {
         gotoxy(27, 17);
         color(2);
-        cout << "Usuario encontrado: "<<actualUsuario->usuario.nombre<<" "<<actualUsuario->usuario.apellidos;
+        cout << "Usuario encontrado: " << actualUsuario->usuario.nombre << " " << actualUsuario->usuario.apellidos;
     }
 
     pausa();
@@ -1049,47 +1050,177 @@ void atenderPrestamoMenu()
     }
 }
 
+void atenderPrestamoMenu2()
+{
+    gotoxy(50, 11);
+    color(2);
+    cout << "Atendiendo Préstamos";
+    color(0);
+    gotoxy(27, 13);
+    cout << "Para atender los préstamos, ingrese el DNI del usuario que";
+    gotoxy(27, 14);
+    cout << "desea atender.";
+    gotoxy(27, 15);
+    color(2);
+    cout << "DNI del usuario: ";
+    color(0);
+    int idUsuarioIngresado;
+    cin >> idUsuarioIngresado;
+    cin.ignore();
+    color(2);
+    dibujarTextoPuntos(27, 17, "Cargando pedidos");
+    gotoxy(27, 17);
+    cout << "Pedidos cargados con éxito";
+    ColaPedidos colaPedidos = cargarColaPedidosPrioridad();
+    if (colaPedidos.delante == nullptr)
+    {
+        gotoxy(27, 18);
+        color(4);
+        cout << "No hay pedidos pendientes para este usuario";
+        color(0);
+        pausa();
+    }
+    else
+    {
+        string respuesta = "s";
+        bool pedidosPendientes = true;
+        do
+        {
+            limpiarPantalla();
+            setConsoleBackground(White);
+            ejecutarGradienteDoble(150);
+            estructura_menu2(16, 103, 11, 26);
+            dibujarTitulo(27, 0, 2, letras);
+            gotoxy(50, 11);
+            color(2);
+            cout << "Atendiendo Préstamos";
+            color(0);
+            gotoxy(27, 13);
+            cout << "Para atender los préstamos, ingrese el DNI del usuario que";
+            gotoxy(27, 14);
+            cout << "desea atender.";
+            gotoxy(27, 15);
+            color(2);
+            cout << "DNI del usuario: " << idUsuarioIngresado;
+            muestraColaPedidosPrestamo(colaPedidos, 27, 18, pedidosPendientes);
+            if (!pedidosPendientes)
+            {
+                gotoxy(27, 24);
+                color(4);
+                cout << "No hay pedidos pendientes para este usuario";
+                break;
+            }
+            gotoxy(27, 24);
+            color(2);
+            cout << "¿Desea atender prestamo? (s/n): ";
+            color(0);
+            getline(cin, respuesta);
+            if (respuesta == "s" || respuesta == "S")
+            {
+                atenderPrestamo(colaPedidos);
+            }
+        } while (respuesta == "s" || respuesta == "S" || pedidosPendientes);
+    }
+}
+
 // Hacer una cola con todos los usuarios por prioridad
-/*void encolarPrestamoPorPrioridad(ColaPedidos &colaPedidos, Pedidos pedido) {
+void encolarPrestamoPorPrioridad(ColaPedidos &colaPedidos, Pedidos pedido)
+{
     NodoPedidos *nuevoNodo = new NodoPedidos(pedido);
 
     // Creamos una lista para luego buscar los usuarios en esta y obtener su fecha de membresia
     Lista usuarios = leerUsuariosCSV("output/usuarios.csv");
-    
+
     // Si la cola está vacía, insertamos el nuevo nodo al principio
-    if (colaPedidos.delante == nullptr) {
-        colaPedidos.delante = |nuevoNodo;
+    if (colaPedidos.delante == nullptr)
+    {
+        colaPedidos.delante = nuevoNodo;
         colaPedidos.atras = nuevoNodo;
-    } else {
+    }
+    else
+    {
         NodoPedidos *anterior = nullptr;
         NodoPedidos *actual = colaPedidos.delante;
-        Nodo *usuarioPedido = buscarUsuarioPorDNI(usuarios, to_string(actual->pedido.ID_usuario));
-        fecha fechaNodo = convertirFecha()
-        
+        Nodo *usuarioPedido = buscarUsuarioPorDNI(usuarios, to_string(pedido.ID_usuario));
+        Nodo *usuarioPedidodActual = buscarUsuarioPorDNI(usuarios, to_string(actual->pedido.ID_usuario));
+        fecha fechaNodo = convertirFecha(usuarioPedidodActual->usuario.fechaInicio);
+        fecha fechaUsuario = convertirFecha(usuarioPedido->usuario.membresia);
+
         // Buscar la posición de inserción según la prioridad (fechaMembresia)
-        while (actual != nullptr && actual->pedido.fechaMembresia <= pedido.fechaMembresia) {
+        while (actual != nullptr && fechaNodo <= fechaUsuario)
+        {
             anterior = actual;
             actual = actual->sgte;
         }
-        
+
         // Si es el primer nodo con mayor prioridad (más antiguo), insertamos al principio
-        if (anterior == nullptr) {
+        if (anterior == nullptr)
+        {
             nuevoNodo->sgte = colaPedidos.delante;
             colaPedidos.delante = nuevoNodo;
-        } else {
+        }
+        else
+        {
             // Inserta el nuevo nodo en el lugar correcto según la prioridad
             anterior->sgte = nuevoNodo;
             nuevoNodo->sgte = actual;
         }
-        
+
         // Si el nuevo nodo es el último, actualizamos el apuntador 'atras'
-        if (nuevoNodo->sgte == nullptr) {
+        if (nuevoNodo->sgte == nullptr)
+        {
             colaPedidos.atras = nuevoNodo;
         }
     }
-}*/
+}
 
+ColaPedidos cargarColaPedidosPrioridad()
+{
+    ColaPedidos colaPedidos;
 
-ColaPedidos cargarColaPedidosPrioridad(){
+    ifstream archivo("output/pedidos.csv");
+    string linea;
 
+    if (!archivo.is_open())
+    {
+        cerr << "Error al abrir el archivo 'output/pedidos.csv'" << endl;
+        return colaPedidos;
+    }
+
+    if (archivo.is_open())
+    {
+        // Leer el archivo línea por línea
+        while (getline(archivo, linea))
+        {
+            stringstream ss(linea);
+            string dato;
+
+            Pedidos pedido;
+            // El CSV tiene la siguiente estructura:
+            // ID_pedido, ID_usuario, ID_libro, estadoPedido, fechaPedido, fechaAdquisicion, fechaDevolucion, fechaEntregado
+            getline(ss, dato, ',');
+            pedido.ID_pedido = stoi(dato);
+            getline(ss, dato, ',');
+            pedido.ID_usuario = stoi(dato);
+            getline(ss, dato, ',');
+            pedido.ID_libro = stoi(dato);
+            getline(ss, pedido.estadoPedido, ',');
+            getline(ss, dato, ',');
+            pedido.fechaPedido = convertirFecha(dato);
+            getline(ss, dato, ',');
+            pedido.fechaAdquisicion = convertirFecha(dato);
+            getline(ss, dato, ',');
+            pedido.devolucion = convertirFecha(dato);
+            getline(ss, dato, ',');
+            pedido.entregado = convertirFecha(dato);
+
+            encolarPrestamoPorPrioridad(colaPedidos, pedido);
+        }
+        archivo.close();
+    }
+    else
+    {
+        cout << "No se pudo abrir el archivo 'output/pedidos.csv'" << endl;
+    }
+    return colaPedidos;
 }

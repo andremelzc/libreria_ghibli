@@ -9,6 +9,14 @@
 struct fecha
 {
   int dia, mes, año;  
+
+  bool operator<=(const fecha& other) const {
+        if (año < other.año) return true;
+        if (año > other.año) return false;
+        if (mes < other.mes) return true;
+        if (mes > other.mes) return false;
+        return dia <= other.dia;
+    }
 };
 
 // Usuarios
