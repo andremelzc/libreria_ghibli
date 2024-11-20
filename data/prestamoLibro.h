@@ -155,6 +155,7 @@ void guardar_CSV_PedidoReferencia(ListaPedidos &Lista, const string &nombreArchi
     // cout << "Datos guardados en " << nombreArchivo << endl;
 }
 
+// Leer los pedidos desde un archivo CSV
 ListaPedidos leerPedidosDesdeCSV(string nombreArchivo)
 {
     ListaPedidos lista;              // Crear una lista vacía

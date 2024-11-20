@@ -15,6 +15,8 @@
 
 using namespace std;
 
+// -- FUNCIONES PARA HISTORIAL DE PEDIDOS --
+// Encolamos un pedido en la cola de historial
 void encolarHistorial(NodoPedidos *pedido, colaHistorial &q)
 {
     if (q.adelante == nullptr)
@@ -28,7 +30,7 @@ void encolarHistorial(NodoPedidos *pedido, colaHistorial &q)
         q.atras = pedido;
     }
 }
-
+// Cargar el historial de pedidos a partir de un CSV de un usuario
 colaHistorial cargarHistorialxID(string nombreArchivo, int idUsuario)
 {
     string linea;
@@ -90,7 +92,7 @@ colaHistorial cargarHistorialxID(string nombreArchivo, int idUsuario)
     archivo.close();
     return historial;
 }
-
+// Desencolar un pedido del historial
 NodoPedidos *desencolarHistorial(colaHistorial &q)
 {
     if (q.adelante == nullptr)
@@ -108,7 +110,7 @@ NodoPedidos *desencolarHistorial(colaHistorial &q)
 
     return stat;
 }
-
+// Obtener el nombre de un usuario a partir de su ID
 string devolverNombre(Lista &Usuarios, int id)
 {
     Nodo *actual = Usuarios.cabeza;
@@ -124,7 +126,7 @@ string devolverNombre(Lista &Usuarios, int id)
 
     return "Nombre no encontrado";
 }
-
+// Obtener el nombre de un libro a partir de su ID
 string devolverLibroNombre(ListaLibros &Libros, int id)
 {
     nodoLibros *actual = Libros.cabeza;
@@ -139,7 +141,7 @@ string devolverLibroNombre(ListaLibros &Libros, int id)
     }
     return nullptr;
 }
-
+// Menú de mostrar historial
 void mostrarHistorial()
 {
     gotoxy(51, 11);
@@ -227,7 +229,7 @@ void mostrarHistorial()
     }
     pausa();
 }
-
+// Menú de mostrar historial de un cliente
 void mostrarHistorialCliente(int dni)
 {
     gotoxy(51, 11);
@@ -327,6 +329,8 @@ void mostrarHistorialCliente(int dni)
     pausa();
 }
 
+// -- FUNCIONES PARA ESTADISTICAS DE LIBROS --
+// Encolar una estadística en la cola de estadísticas
 void encolarEstadistica(NodoEstadisticas *stat, colaPrioEstadisticas &q)
 {
 
@@ -362,7 +366,7 @@ void encolarEstadistica(NodoEstadisticas *stat, colaPrioEstadisticas &q)
         }
     }
 }
-
+// Desencolar una estadística de la cola de estadísticas
 NodoEstadisticas *desencolar(colaPrioEstadisticas &q)
 {
     if (q.delante == nullptr)
@@ -380,7 +384,7 @@ NodoEstadisticas *desencolar(colaPrioEstadisticas &q)
 
     return stat;
 }
-
+// Cargar las estadísticas de libros a partir de un CSV 
 colaPrioEstadisticas cargarEstadisticaCSV(string nombreArchivo)
 {
     fstream archivo(nombreArchivo);
