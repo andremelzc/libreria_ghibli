@@ -1048,3 +1048,48 @@ void atenderPrestamoMenu()
         } while (respuesta == "s" || respuesta == "S" || pedidosPendientes);
     }
 }
+
+// Hacer una cola con todos los usuarios por prioridad
+/*void encolarPrestamoPorPrioridad(ColaPedidos &colaPedidos, Pedidos pedido) {
+    NodoPedidos *nuevoNodo = new NodoPedidos(pedido);
+
+    // Creamos una lista para luego buscar los usuarios en esta y obtener su fecha de membresia
+    Lista usuarios = leerUsuariosCSV("output/usuarios.csv");
+    
+    // Si la cola está vacía, insertamos el nuevo nodo al principio
+    if (colaPedidos.delante == nullptr) {
+        colaPedidos.delante = |nuevoNodo;
+        colaPedidos.atras = nuevoNodo;
+    } else {
+        NodoPedidos *anterior = nullptr;
+        NodoPedidos *actual = colaPedidos.delante;
+        Nodo *usuarioPedido = buscarUsuarioPorDNI(usuarios, to_string(actual->pedido.ID_usuario));
+        fecha fechaNodo = convertirFecha()
+        
+        // Buscar la posición de inserción según la prioridad (fechaMembresia)
+        while (actual != nullptr && actual->pedido.fechaMembresia <= pedido.fechaMembresia) {
+            anterior = actual;
+            actual = actual->sgte;
+        }
+        
+        // Si es el primer nodo con mayor prioridad (más antiguo), insertamos al principio
+        if (anterior == nullptr) {
+            nuevoNodo->sgte = colaPedidos.delante;
+            colaPedidos.delante = nuevoNodo;
+        } else {
+            // Inserta el nuevo nodo en el lugar correcto según la prioridad
+            anterior->sgte = nuevoNodo;
+            nuevoNodo->sgte = actual;
+        }
+        
+        // Si el nuevo nodo es el último, actualizamos el apuntador 'atras'
+        if (nuevoNodo->sgte == nullptr) {
+            colaPedidos.atras = nuevoNodo;
+        }
+    }
+}*/
+
+
+ColaPedidos cargarColaPedidosPrioridad(){
+
+}

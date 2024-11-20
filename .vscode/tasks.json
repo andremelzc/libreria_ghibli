@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build and run",
+            "label": "build",
             "type": "shell",
             "command": "C:/msys64/ucrt64/bin/g++.exe",
             "args": [
@@ -11,21 +11,29 @@
                 "-o",
                 "\"${fileDirname}/${fileBasenameNoExtension}.exe\""
             ],
-            "group": "build",
-            "problemMatcher": [
-                "$gcc"
-            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"],
             "detail": "Compiling C++ program using g++ from MSYS2"
         },
         {
-            "label": "run executable",
+            "label": "run executable in system terminal",
             "type": "shell",
-            "command": "\"${fileDirname}/${fileBasenameNoExtension}.exe\"",
+            "command": "cmd",
+            "args": [
+                "/c",
+                "start",
+                "\"\"",
+                "\"C:\\libreria_ghibli\\${fileBasenameNoExtension}.exe\""
+            ],
             "group": {
                 "kind": "test",
                 "isDefault": true
             },
-            "problemMatcher": []
+            "problemMatcher": [],
+            "detail": "Run the compiled executable in the system terminal"
         },
         {
             "type": "cppbuild",
@@ -41,9 +49,7 @@
             "options": {
                 "cwd": "${fileDirname}"
             },
-            "problemMatcher": [
-                "$gcc"
-            ],
+            "problemMatcher": ["$gcc"],
             "group": {
                 "kind": "build",
                 "isDefault": true
