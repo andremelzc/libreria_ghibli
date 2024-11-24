@@ -1,24 +1,24 @@
- 1 ,Circe                                      ,Madeline Miller        ,2018 ,Fantasia                ,30 ,Comprado
- 2 ,Circe                                      ,Madeline Miller        ,2018 ,Fantasia                ,30 ,Comprado
- 3 ,Circe                                      ,Madeline Miller        ,2018 ,Fantasia                ,30 ,Comprado
- 4 ,Circe                                      ,Madeline Miller        ,2018 ,Fantasia                ,30 ,Solicitado
- 5 ,El infinito en un junco                    ,Maria Duenas           ,2019 ,Narrativa contemporanea ,19 ,Disponible
- 6 ,La chica del tren                          ,Paula Hawkins          ,2015 ,Thriller psicologico    ,50 ,Comprado
- 7 ,La chica del tren                          ,Paula Hawkins          ,2015 ,Thriller psicologico    ,50 ,Disponible
- 8 ,Las chicas del cable                       ,Carmen de Icaza        ,2019 ,Romance historico       ,18 ,Disponible
- 9 ,El tiempo entre costuras                   ,Maria Duenas           ,2013 ,Novela historica        ,23 ,Disponible
-10 ,El odio que das                            ,Angie Thomas           ,2017 ,Young adult             ,16 ,Disponible
-11 ,Normal People                              ,Sally Rooney           ,2018 ,Romance contemporaneo   ,20 ,Disponible
-12 ,Una historia de la literatura en 10 libros ,Julio Cesar Perez      ,2020 ,Ensayo                  ,15 ,Disponible
-13 ,El susurro de la ola del mar               ,Maria Oruna            ,2021 ,Thriller                ,17 ,Disponible
-14 ,El lector                                  ,Bernhard Schlink       ,1995 ,Novela contemporanea    ,19 ,Disponible
-15 ,Las hijas del capitan                      ,Maria Duenas           ,2018 ,Novela historica        ,25 ,Disponible
-16 ,Las hijas del capitan                      ,Maria Duenas           ,2018 ,Novela historica        ,25 ,Disponible
-17 ,Los hombres que no amaban a las mujeres    ,Stieg Larsson          ,2005 ,Thriller                ,22 ,Disponible
-18 ,Cien anos de soledad                       ,Gabriel Garcia Marquez ,1967 ,Realismo magico         ,21 ,Solicitado
-19 ,Harry Potter y la cámara secreta           ,J.K. Rowling           ,1998 ,Fantasia                ,20 ,Disponible
-20 ,El nombre del viento                       ,Patrick Rothfuss       ,2007 ,Fantasia                ,23 ,Disponible
-21 ,El nombre del viento                       ,Patrick Rothfuss       ,2007 ,Fantasia                ,23 ,Disponible
-22 ,Orgullo y prejuicio                        ,Jane Austen            ,1813 ,Romance clasico         ,18 ,Disponible
-23 ,Orgullo y prejuicio                        ,Jane Austen            ,1813 ,Romance clasico         ,18 ,Disponible
-24 ,Harry Potter y la piedra filosofal         ,J.K. Rowling           ,1997 ,Fantasia                ,20 ,Disponible
+1,Circe,Madeline Miller,2018,Fantasia,30,Comprado
+2,Circe,Madeline Miller,2018,Fantasia,30,Comprado
+3,Circe,Madeline Miller,2018,Fantasia,30,Disponible
+4,Circe,Madeline Miller,2018,Fantasia,30,Disponible
+5,El infinito en un junco,Maria Duenas,2019,Narrativa contemporanea,19,Disponible
+6,La chica del tren,Paula Hawkins,2015,Thriller psicologico,50,Disponible
+7,La chica del tren,Paula Hawkins,2015,Thriller psicologico,50,Comprado
+8,Las chicas del cable,Carmen de Icaza,2019,Romance historico,18,Disponible
+9,El tiempo entre costuras,Maria Duenas,2013,Novela historica,23,Disponible
+10,El odio que das,Angie Thomas,2017,Young adult,16,Disponible
+11,Normal People,Sally Rooney,2018,Romance contemporaneo,20,Disponible
+12,Una historia de la literatura en 10 libros,Julio Cesar Perez,2020,Ensayo,15,Disponible
+13,El susurro de la ola del mar,Maria Oruna,2021,Thriller,17,Disponible
+14,El lector,Bernhard Schlink,1995,Novela contemporanea,19,Disponible
+15,Las hijas del capitan,Maria Duenas,2018,Novela historica,25,Disponible
+16,Las hijas del capitan,Maria Duenas,2018,Novela historica,25,Disponible
+17,Los hombres que no amaban a las mujeres,Stieg Larsson,2005,Thriller,22,Disponible
+18,Cien anos de soledad,Gabriel Garcia Marquez,1967,Realismo magico,21,Disponible
+19,Harry Potter y la cámara secreta,J.K. Rowling,1998,Fantasia,20,Disponible
+20,El nombre del viento,Patrick Rothfuss,2007,Fantasia,23,Disponible
+21,El nombre del viento,Patrick Rothfuss,2007,Fantasia,23,Disponible
+22,Orgullo y prejuicio,Jane Austen,1813,Romance clasico,18,Disponible
+23,Orgullo y prejuicio,Jane Austen,1813,Romance clasico,18,Disponible
+24,Harry Potter y la piedra filosofal,J.K. Rowling,1997,Fantasia,20,Disponible

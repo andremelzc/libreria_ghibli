@@ -268,7 +268,7 @@ void dibujarPresionaTecla(int x, int y)
 // Función para pausar
 void pausa()
 {
-    system("pause>0");
+    getch();
 }
 
 // Función para limpiar la pantalla

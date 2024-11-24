@@ -271,6 +271,7 @@ int calcularDiasEntreFechas(int anio1, int mes1, int dia1, int anio2, int mes2, 
 {
     // Estructura tm para la primera fecha
     tm fecha1 = {};
+    pausa();
     fecha1.tm_year = anio1 - 1900; // tm_year es años desde 1900
     fecha1.tm_mon = mes1 - 1;      // tm_mon es de 0 a 11
     fecha1.tm_mday = dia1;

@@ -923,7 +923,7 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
                 temporal = temporal->siguiente;
                 contador++;
             }
-            pausa();
+            getch();
         }
         else if (opcion != 0)
         {
