@@ -1,9 +1,21 @@
+#pragma once
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string.h>
 #include <filesystem>
 #include <ctime> /*Para registrar la fecha */
+#include <string.h>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <windows.h>
+#include <cstdio>
+#include <iostream>
+#include <stdexcept>
+#include <conio.h>
+#include <locale>
+#include <ctime>
 using namespace std;
 
 // Declaraciones previas
@@ -70,7 +82,8 @@ void guardar_CSV_Libros(ListaLibros *lista, string nombreArchivo)
                 << libro.Ano << ","
                 << libro.Genero << ","
                 << libro.precio << ","
-                << libro.estado << "\n";
+                << libro.StockInventario << ","
+                << libro.StockActual << "\n";
 
         actual = actual->siguiente;
     }
@@ -103,52 +116,149 @@ void adicionarCampo()
         gotoxy(52, 12);
         color(2);
         cout << "Registro de libros";
-        color(0);
-        gotoxy(36, 14);
-        color(2);
-        cout << "Nombre del libro: ";
-        color(0);
-        getline(cin, libro->nombre_Libro);
-        gotoxy(36, 15);
-        color(2);
-        cout << "Nombre del autor: ";
-        color(0);
-        getline(cin, libro->Autor);
-        gotoxy(36, 16);
-        color(2);
-        cout << "Año de publicacion: ";
-        color(0);
-        cin >> libro->Ano;
-        cin.ignore();
-        gotoxy(36, 17);
+
+        // Ingremos nombre del libro
+        bool nombreCorrecto = false;
+        do
+        {
+            gotoxy(27, 14);
+            color(2);
+            cout << "Nombre del libro: ";
+            color(0);
+            getline(cin, libro->nombre_Libro);
+            if (libro->nombre_Libro.length() > 0)
+            {
+                nombreCorrecto = true;
+            }
+            else
+            {
+                gotoxy(27, 15);
+                color(4);
+                cout << "Ingrese un nombre válido";
+                pausa();
+                limpiarArea(27, 14, 50, 1);
+                limpiarArea(27, 15, 50, 1);
+            }
+        } while (!nombreCorrecto);
+
+        // Ingresamos autor
+        bool autorCorrecto = false;
+        do
+        {
+            gotoxy(27, 15);
+            color(2);
+            cout << "Nombre del autor: ";
+            color(0);
+            getline(cin, libro->Autor);
+            if (libro->Autor.length() > 0)
+            {
+                autorCorrecto = true;
+            }
+            else
+            {
+                gotoxy(27, 16);
+                color(4);
+                cout << "Ingrese un autor válido";
+                pausa();
+                limpiarArea(27, 15, 50, 1);
+                limpiarArea(27, 16, 50, 1);
+            }
+        } while (!autorCorrecto);
+
+        // Ingresamos año de publicación
+        bool anoCorrecto = false;
+        do
+        {
+            gotoxy(27, 16);
+            color(2);
+            cout << "Año de publicación: ";
+            color(0);
+            cin >> libro->Ano;
+            cin.ignore();
+            if (libro->Ano > 0 && libro->Ano <= 2024)
+            {
+                anoCorrecto = true;
+            }
+            else
+            {
+                gotoxy(27, 17);
+                color(4);
+                cout << "Ingrese un año válido";
+                pausa();
+                limpiarArea(27, 16, 50, 1);
+                limpiarArea(27, 17, 50, 1);
+            }
+        } while (!anoCorrecto);
+
+        // Ingresamos género
+
+        gotoxy(27, 17);
         color(2);
         cout << "Genero: ";
         color(0);
         getline(cin, libro->Genero);
-        gotoxy(36, 18);
-        color(2);
-        cout << "Stock ingresado: ";
-        color(0);
-        cin >> libro->stock;
-        gotoxy(36, 19);
-        color(2);
-        cout << "Precio (S/): ";
-        color(0);
-        cin >> libro->precio;
-        cin.ignore();
 
-        for (int i = 0; i < libro->stock; i++)
+        // Ingresamos stock ingresado
+        bool stockCorrecto = false;
+        do
         {
-            libro->id = contarFilasCSV("output/libros.csv") + contador;
-            insertarLibrosFinal(listaLibros, libro);
-            contador++;
-        }
+            gotoxy(27, 18);
+            color(2);
+            cout << "Stock ingresado: ";
+            color(0);
+            cin >> libro->StockInventario;
+            cin.ignore();
 
-        dibujarTextoPuntos(36, 21, "Registrando libro(s)");
-        gotoxy(36, 21);
+            if (libro->StockInventario > 0)
+            {
+                break;
+            }
+            else
+            {
+                gotoxy(27, 19);
+                color(4);
+                cout << "Ingrese un stock válido";
+                pausa();
+                limpiarArea(27, 18, 50, 1);
+                limpiarArea(27, 19, 50, 1);
+            }
+        } while (!stockCorrecto);
+        libro->StockActual = libro->StockInventario;
+
+        // Ingresamos precio
+        bool precioCorrecto = false;
+        do
+        {
+            gotoxy(27, 19);
+            color(2);
+            cout << "Precio (S/): ";
+            color(0);
+            cin >> libro->precio;
+            cin.ignore();
+
+            if (libro->precio > 0)
+            {
+                precioCorrecto = true;
+            }
+            else
+            {
+                gotoxy(27, 20);
+                color(4);
+                cout << "Ingrese un precio válido";
+                pausa();
+                limpiarArea(27, 19, 50, 1);
+                limpiarArea(27, 20, 50, 1);
+            }
+        } while (!precioCorrecto);
+
+        insertarLibrosFinal(listaLibros, libro);
+        contador++;
+
+        dibujarTextoPuntos(27, 21, "Registrando libro(s)");
+        gotoxy(27, 21);
         cout << "Libro(s) registrado con exito!";
 
-        gotoxy(36, 24);
+        gotoxy(27, 24);
         color(2);
         cout << "Desea registrar otro(s) libro(s)? (s/n): ";
         color(0);
@@ -457,7 +567,7 @@ ListaLibros leerLibrosCSV(string nombreArchivo)
             Libro libro;
 
             // Suponiendo que el CSV tiene los campos en el siguiente orden (para mostrar catálogo):
-            // Nombre, Autor, Año, Género, Stock, precio, estado
+            // id, Nombre, Autor, Año, Género, precio, stock inventario, stock actual 
             getline(ss, dato, ',');
             libro.id = stoi(dato); // Convertir a entero
             getline(ss, libro.nombre_Libro, ',');
@@ -467,8 +577,10 @@ ListaLibros leerLibrosCSV(string nombreArchivo)
             getline(ss, libro.Genero, ',');
             getline(ss, dato, ',');
             libro.precio = stoi(dato);
-            libro.stock = contarTituloLibro("output/libros.csv", libro.nombre_Libro);
-            getline(ss, libro.estado, ',');
+            getline(ss, dato, ',');
+            libro.StockInventario = stoi(dato);
+            getline(ss, dato, ',');
+            libro.StockActual = stoi(dato);
 
             // Insertar el libro en la lista enlazada
             insertarLibrosFinal(&listaDeLibros, &libro);

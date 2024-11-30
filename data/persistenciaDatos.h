@@ -64,7 +64,7 @@ struct Libro
     float precio;
     string estado;
     int stock;
-    int Stock_Inventario, StockActual;
+    int StockInventario, StockActual;
 };
 
 struct nodoLibros
@@ -105,6 +105,7 @@ struct LibroNodoArbol
     LibroNodoArbol *derecha;
     LibroNodoArbol(Libro libro1) : libro(libro1), izquierda(nullptr), derecha(nullptr) {}
 };
+
 
 // Pedidos (libros)
 struct Pedidos{

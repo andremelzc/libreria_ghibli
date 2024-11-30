@@ -306,6 +306,19 @@ bool esSoloLetras(const string &s)
     return true;
 }
 
+// Funcion para verificar si una cadena contiene solo numeros
+bool esSoloNumeros(const string &s)
+{
+    for (char c : s)
+    {
+        if (!isdigit(c))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 // Función para verificar si el correo electrónico es válido
 bool esCorreoValido(const string &correo)
 {
