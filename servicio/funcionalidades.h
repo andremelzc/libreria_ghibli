@@ -292,3 +292,36 @@ int calcularDiasEntreFechas(int anio1, int mes1, int dia1, int anio2, int mes2, 
 
     return abs(diferenciaDias); // Valor absoluto de la diferencia en días
 }
+
+// Función para verificar si una cadena contiene solo letras y espacios
+bool esSoloLetras(const string &s)
+{
+    for (char c : s)
+    {
+        if (!isalpha(c) && c != ' ')
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Función para verificar si el correo electrónico es válido
+bool esCorreoValido(const string &correo)
+{
+    // Verificar si el correo contiene un solo '@'
+    size_t posArroba = correo.find('@');
+    if (posArroba == string::npos || correo.find('@', posArroba + 1) != string::npos)
+    {
+        return false;
+    }
+
+    // Verificar si el correo contiene un punto después de la arroba
+    size_t posPunto = correo.find('.', posArroba);
+    if (posPunto == string::npos)
+    {
+        return false;
+    }
+
+    return true;
+}
