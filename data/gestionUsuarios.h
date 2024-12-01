@@ -17,6 +17,7 @@ using namespace std;
 void insertarFinal(Lista *lista, Usuario *usuario);
 Lista leerUsuariosCSV(string nombreArchivo);
 void guardar_CSV(Lista *lista, string nombreArchivo);
+bool verificarMembresia(Lista &Usuarios, int idUsuario);
 
 // Registrar usuario (vista administrador)
 void gestionUsuarios_registrarUsuario()
@@ -1070,51 +1071,89 @@ void activarMembresi()
         string respuesta;
         if (actual->usuario.ID_Usuario == dni)
         {
-            gotoxy(36, 16);
+            gotoxy(27, 16);
             color(2);
             cout << "Usuario encontrado: ";
             color(0);
             cout << actual->usuario.nombre << " " << actual->usuario.apellidos << endl;
-            gotoxy(36, 17);
+
+            Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv"); // cargando lista de usuarios
+            if (verificarMembresia(listaUsuarios, stoi(dni)))
+            {
+                gotoxy(27, 17);
+                color(4);
+                cout << "El usuario ya tiene una membresia activa";
+                pausa();
+                return;
+            }
+
+            gotoxy(27, 17);
             color(2);
-            cout << "Desea activar la membresia? (s/n): ";
+            cout << "Se tienen los siguientes tipos de membresías: ";
+            color(0);
+            gotoxy(27, 18);
+            cout << "1. Estandar - S/ 15.00";
+            gotoxy(27, 19);
+            cout << "2. Premium - S/ 30.00";
+            gotoxy(27, 20);
+            cout << "3. VIP - S/ 50.00";
+            gotoxy(27, 21);
+            color(2);
+            cout << "Membresia que desea el cliente (0: salir): ";
             color(0);
             fflush(stdin);
             getline(cin, respuesta);
-            cout << respuesta;
-            if (respuesta == "s" || respuesta == "S")
+            if (respuesta == "0")
             {
-                string fecha;
-                actual->usuario.membresia = "ACTIVA";
-                time_t t = time(0);
-                tm *localTime = localtime(&t);
-                // Fecha de inicio
-                string diaStr = to_string(localTime->tm_mday);
-                string mesStr = to_string(localTime->tm_mon + 1);
-                string añoStr = to_string(localTime->tm_year + 1900);
-                fecha = diaStr + "/" + mesStr + "/" + añoStr;
-                actual->usuario.fechaInicio = fecha;
-                // Fecha de fin
-                añoStr = to_string(localTime->tm_year + 1901);
-                fecha = diaStr + "/" + mesStr + "/" + añoStr;
-                actual->usuario.fechaFinal = fecha;
-                color(2);
-                dibujarTextoPuntos(36, 19, "Activando membresia");
-                gotoxy(36, 19);
-                cout << "Membresia activada correctamente!";
+                gotoxy(27, 23);
+                color(4);
+                cout << "Operación cancelada";
+                return;
+            }
+            else if (respuesta == "1")
+            {
+                actual->usuario.membresia = "ESTANDAR";
+            }
+            else if (respuesta == "2")
+            {
+                actual->usuario.membresia = "PREMIUM";
+            }
+            else if (respuesta == "3")
+            {
+                actual->usuario.membresia = "VIP";
             }
             else
             {
-                gotoxy(36, 19);
-                cout << "Membresia no activada";
+                gotoxy(27, 23);
+                color(4);
+                cout << "Opción inválida";
+                return;
             }
+
+            string fecha;
+            time_t t = time(0);
+            tm *localTime = localtime(&t);
+            // Fecha de inicio
+            string diaStr = to_string(localTime->tm_mday);
+            string mesStr = to_string(localTime->tm_mon + 1);
+            string añoStr = to_string(localTime->tm_year + 1900);
+            fecha = diaStr + "/" + mesStr + "/" + añoStr;
+            actual->usuario.fechaInicio = fecha;
+            // Fecha de fin
+            añoStr = to_string(localTime->tm_year + 1901);
+            fecha = diaStr + "/" + mesStr + "/" + añoStr;
+            actual->usuario.fechaFinal = fecha;
+            color(2);
+            dibujarTextoPuntos(36, 23, "Activando membresia");
+            gotoxy(36, 23);
+            cout << "Membresia activada correctamente!";
         }
         actual = actual->siguiente;
     }
     limpiarCSV("output/usuarios.csv");
     guardar_CSV(&listaUsuarios, "output/usuarios.csv");
 
-    system("pause>0");
+    pausa();
 }
 
 // Insertar para crear la lista enlazada
@@ -1295,7 +1334,7 @@ bool mostrarUsuarioXDNI(Lista &listaUsuarios, const string &dni)
 }
 
 // Función para buscar un usuario por DNI
-Nodo *buscarUsuarioPorDNI(Lista &listaUsuarios, const string &dni)
+Nodo *buscarUsuarioPorDNI(Lista &listaUsuarios, string &dni)
 {
     Nodo *actual = listaUsuarios.cabeza;
     while (actual != nullptr)

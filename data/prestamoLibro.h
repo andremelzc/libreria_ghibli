@@ -4,6 +4,7 @@
 #include <sstream>
 #include <string.h>
 #include <locale>
+#include <string>
 #include <ctime>
 #include <filesystem>
 #include "..\menu\gotoxy.h"
@@ -11,11 +12,12 @@
 using namespace std;
 
 // Declaraciones de funciones
-bool verificarMaxLibros(Lista &Usuarios, int id);
+bool verificarMaxLibros(string membresia, int librosPrestados, int &maxLibros);
 bool verificarMembresia(Lista &Usuarios, int idUsuario);
 bool mostrarLibroXTitulo(ListaLibros &Libros, string tituloPedido, int &id);
 void modificarCantPrestada(int idUsuario);
-//void encolarPrestamoPorPrioridad(ColaPedidos &colaPedidos, Pedidos pedido);
+bool mostrarLibroXidCopy(ListaLibros &Libros, int id);
+// void encolarPrestamoPorPrioridad(ColaPedidos &colaPedidos, Pedidos pedido);
 
 // -- FUNCIONES PARA LISTA ENLAZADA DE PEDIDOS --
 // Insertar al final para crear la lista enlazada
@@ -236,6 +238,8 @@ void adicionarCampoPedido(int id_usuariologeado)
     int i = 1;
     time_t now = time(0);
     tm *localTime = localtime(&now);
+    int maxLibros = 0;
+
     do
     {
         limpiarPantalla();
@@ -252,18 +256,9 @@ void adicionarCampoPedido(int id_usuariologeado)
 
         Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv"); // cargando lista de usuarios
 
-        if(verificarMaxLibros(listaUsuarios, id_usuariologeado)){
-            gotoxy(27, 13);
-            color(4);
-            cout << "Usuario no habilitado para solicitar préstamo";
-            color(0);
-            gotoxy(27, 14);
-            cout << "Causa: Ya tiene 3 libros prestados";
-            pausa();
-            break;
-        }
-
-        if(!(verificarMembresia(listaUsuarios, id_usuariologeado))){
+        // Verificar si el usuario tiene una membresia activa
+        if (!(verificarMembresia(listaUsuarios, id_usuariologeado)))
+        {
             gotoxy(27, 13);
             color(4);
             cout << "Usuario no habilitado para solicitar préstamo";
@@ -274,16 +269,64 @@ void adicionarCampoPedido(int id_usuariologeado)
             break;
         }
 
-        string nombreLibro;
+        // Verificar si el usuario ha alcanzado el máximo de libros prestados, y si no, asiganamos el  máximo
+        std::string id_usuario_str = std::to_string(id_usuariologeado);
+        Nodo *usuario = buscarUsuarioPorDNI(listaUsuarios, id_usuario_str);
+
+        if(verificarMaxLibros(usuario->usuario.membresia, usuario->usuario.librosPrestados, maxLibros))
+        {
+            gotoxy(27, 13);
+            color(4);
+            cout << "Usuario no habilitado para solicitar préstamo";
+            color(0);
+            gotoxy(27, 14);
+            cout << "Causa: Máximo de libros prestados alcanzado";
+            pausa();
+            break;
+        }
+
+        maxLibros = maxLibros - usuario->usuario.librosPrestados;
+
+        // Búsqueda del libro por id
         gotoxy(27, 13);
         color(2);
         cout << "ID del libro a solicitar préstamo: ";
         color(0);
-        getline(cin, nombreLibro);
+        cin >> pedido->ID_libro;
+        cin.ignore();
+
+        // Verificar si el libro ya fue prestado por el usuario
+        ListaPedidos pedidos = leerPedidosDesdeCSV("output/pedidos.csv");
+        NodoPedidos *actual = pedidos.head;
+        bool prestado = false;
+        while (actual != nullptr)
+        {
+            if (actual->pedido.ID_usuario == id_usuariologeado && actual->pedido.ID_libro == pedido->ID_libro)
+            {
+                prestado = true;
+                break;
+            }
+            actual = actual->sgte;
+        }
+
+        if (prestado)
+        {
+            gotoxy(27, 14);
+            color(4);
+            cout << "Usuario no habilitado para solicitar este libro";
+            color(0);
+            gotoxy(27, 15);
+            cout << "Causa: El libro ya ha sido prestado o solicitado anteriormente";
+            gotoxy(27, 16);
+            cout << "y todavía no ha sido devuelto";
+            pausa();
+            continue;
+        }
 
         ListaLibros libros = leerLibrosCSV("output/libros.csv");
-        bool find = mostrarLibroXTitulo(libros, nombreLibro, pedido->ID_libro);
+        bool find = mostrarLibroXidCopy(libros, pedido->ID_libro);
 
+        // Si es que el libro ingresado existe
         if (find)
         {
             char check;
@@ -299,13 +342,13 @@ void adicionarCampoPedido(int id_usuariologeado)
             gotoxy(27, 22);
             cout << "Préstamo solicitado con éxito!";
 
-            // Marcar el libro como solicitado
+            // Reducimos el stock del libro
             nodoLibros *actual = libros.cabeza;
             while (actual != nullptr)
             {
                 if (actual->libro.id == pedido->ID_libro)
                 {
-                    actual->libro.estado = "Solicitado";
+                    actual->libro.StockActual--;
                     break;
                 }
                 actual = actual->siguiente;
@@ -319,6 +362,7 @@ void adicionarCampoPedido(int id_usuariologeado)
                 continue;
             }
         }
+        // Si el libro no existe
         else
         {
             gotoxy(27, 18);
@@ -350,11 +394,15 @@ void adicionarCampoPedido(int id_usuariologeado)
         pedido->ID_recepcionistaEntrega = -1;
         pedido->ID_recepcionistaRecibe = -1;
 
+        // Modificar la cantidad de libros prestados al usuario
+        modificarCantPrestada(pedido->ID_usuario);
+
         insertarFinalListaPedido(listaPedido, pedido);
 
-        // agregar aqui la actualizacion de la cantidad de libros prestado ojo me puedo guiar de la funcion actualizar membresia usuario que tiene un parecido
-        // usamos esta funcion para aumentar en 1 la cantidad prestada
-        modificarCantPrestada(pedido->ID_usuario); //------------- quitar de aqui y mandar a cuando se acepte el pedido
+        if(maxLibros == 0)
+        {
+            break;
+        }
 
         gotoxy(27, 24);
         color(2);
@@ -476,26 +524,32 @@ bool mostrarLibroXTitulo(ListaLibros &Libros, string tituloPedido, int &id)
     return false; // Retorna false si no encontró el libro
 }
 
-bool verificarMaxLibros(Lista &Usuarios, int id)
-{ // verifica que tengas membresia activa y menos de 4 libros sin devolver
-    bool find = false;
-    Nodo *actual = Usuarios.cabeza;
-
-    cout << endl;
-    while (actual != nullptr)
+bool verificarMaxLibros(string membresia, int librosPrestados, int &maxLibros)
+{
+    if (membresia == "ESTANDAR")
     {
-        int id_lista_usuario = stoi(actual->usuario.ID_Usuario);
-        if (id_lista_usuario == id)
+        maxLibros = 1;
+        if (librosPrestados == 1)
         {
-            if (actual->usuario.librosPrestados = 3)
-            {
-                find = true;
-                return true;
-            }
+            return true;
         }
-        actual = actual->siguiente;
     }
-
+    else if (membresia == "PREMIUM")
+    {
+        maxLibros = 3;
+        if (librosPrestados == 3)
+        {
+            return true;
+        }
+    }
+    else if (membresia == "VIP")
+    {
+        maxLibros = 5;
+        if (librosPrestados == 5)
+        {
+            return true;
+        }
+    }
     return false;
 }
 
@@ -510,7 +564,7 @@ bool verificarMembresia(Lista &Usuarios, int id)
         int id_lista_usuario = stoi(actual->usuario.ID_Usuario);
         if (id_lista_usuario == id)
         {
-            if (actual->usuario.membresia == "ACTIVA")
+            if (actual->usuario.membresia != "INACTIVA")
             {
                 find = true;
                 return true;
@@ -521,6 +575,7 @@ bool verificarMembresia(Lista &Usuarios, int id)
 
     return false;
 }
+
 
 void modificarCantPrestada(int idUsuario)
 {
@@ -1088,4 +1143,3 @@ void atenderPrestamoMenu()
         } while (respuesta == "s" || respuesta == "S" || pedidosPendientes);
     }
 }
-

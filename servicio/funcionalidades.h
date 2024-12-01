@@ -338,3 +338,11 @@ bool esCorreoValido(const string &correo)
 
     return true;
 }
+
+// Funcion para convertir un int a string
+string intToString(int num)
+{
+    stringstream ss;
+    ss << num;
+    return ss.str();
+}
