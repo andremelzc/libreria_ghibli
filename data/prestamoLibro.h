@@ -631,11 +631,20 @@ void mostrarPedidos(ListaPedidos &listaPedidos)
 
 bool mostrarPedidosxdni(ListaPedidos &listaPedidos, string dni)
 {
+    // Verificar si el DNI es válido (solo números y no vacío)
+    if (dni.empty() || !all_of(dni.begin(), dni.end(), ::isdigit))
+    {
+        gotoxy(40, 21);
+        color(4);
+        cout << "DNI inválido. Asegúrese de ingresar solo números.";
+        color(0);
+        return false;
+    }
+
     NodoPedidos *actual = listaPedidos.head;
     ListaLibros listaLibros = leerLibrosCSV("output/libros.csv");
 
     int contador = 1;
-    int id_libro;
     bool usuarioEncontrado = false;
 
     Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
@@ -653,7 +662,9 @@ bool mostrarPedidosxdni(ListaPedidos &listaPedidos, string dni)
     color(0);
     while (actual != nullptr)
     {
-        if (actual->pedido.ID_usuario == stoi(dni) && actual->pedido.estadoPedido == "PRESTADO" || actual->pedido.estadoPedido == "NO_DEVUELTO")
+        // Convertir DNI a entero para comparación
+        if (actual->pedido.ID_usuario == stoi(dni) &&
+            (actual->pedido.estadoPedido == "PRESTADO" || actual->pedido.estadoPedido == "NO_DEVUELTO"))
         {
             gotoxy(27, 19 + contador);
             cout << actual->pedido.ID_pedido;
@@ -685,22 +696,31 @@ bool mostrarPedidosxdni(ListaPedidos &listaPedidos, string dni)
         }
         actual = actual->sgte;
     }
-    if (usuarioEncontrado == false)
+
+    if (!usuarioEncontrado)
     {
         gotoxy(40, 21);
         color(4);
         cout << "Usuario no tiene libros prestados.";
         color(0);
     }
-    else
+    else if (actualUsuario)
     {
         gotoxy(27, 17);
         color(2);
         cout << "Usuario encontrado: " << actualUsuario->usuario.nombre << " " << actualUsuario->usuario.apellidos;
     }
+    else
+    {
+        gotoxy(27, 17);
+        color(4);
+        cout << "No se pudo encontrar el usuario en la base de datos.";
+        color(0);
+    }
 
     return usuarioEncontrado;
 }
+
 
 // -- FUNCIONES PARA DEVOLVER LIBROS --
 void registrarDevolucionLibro(int &mora, int idRecepcionista)
@@ -735,6 +755,8 @@ void registrarDevolucionLibro(int &mora, int idRecepcionista)
         
         // Leer el DNI del usuario por si ingresó un escape
         getline(cin, dni);
+        cout<<"             "<<dni;
+
 
         color(2);
         dibujarTextoPuntos(27, 17, "Buscando usuario");
@@ -743,12 +765,13 @@ void registrarDevolucionLibro(int &mora, int idRecepcionista)
 
         if (!usuarioEncontrado)
         {
-            gotoxy(27, 15);
+            gotoxy(27, 17);
             color(4);
             cout << "Usuario no encontrado";
-            gotoxy(40, 16);
+            gotoxy(40, 18);
             cout << "Desea buscar otro usuario (s/n): ";
             string respuesta;
+            color(0);
             getline(cin, respuesta);
             if (respuesta[0] == 'n' || respuesta[0] == 'N')
             {

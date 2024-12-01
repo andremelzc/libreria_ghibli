@@ -985,7 +985,8 @@ void guardar_CSV_Libros_Sobreescribir(ListaLibros *lista, string nombreArchivo)
                 << libro.Ano << ","
                 << libro.Genero << ","
                 << libro.precio << ","
-                << libro.estado << "\n";
+                << libro.StockInventario << ","
+                << libro.StockActual << "\n";
 
         actual = actual->siguiente;
     }
