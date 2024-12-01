@@ -346,3 +346,24 @@ string intToString(int num)
     ss << num;
     return ss.str();
 }
+
+// Detectaar si se presiona el escape
+bool leerInputEscape(string &input) {
+    input.clear();
+    while (true) {
+        int ch = _getch();
+        if (ch == 27) { // 27 es el código ASCII para ESC
+            return false; // Indica que se canceló la entrada
+        } else if (ch == '\r') { // ENTER
+            return true; // Entrada completada
+        } else if (ch == '\b') { // BACKSPACE
+            if (!input.empty()) {
+                input.pop_back();
+                // Mover el cursor atrás, imprimir espacio y mover nuevamente
+            }
+        } else {
+            input += static_cast<char>(ch);
+            std::cout << static_cast<char>(ch);
+        }
+    }
+}

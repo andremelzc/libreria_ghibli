@@ -273,7 +273,7 @@ void adicionarCampoPedido(int id_usuariologeado)
         std::string id_usuario_str = std::to_string(id_usuariologeado);
         Nodo *usuario = buscarUsuarioPorDNI(listaUsuarios, id_usuario_str);
 
-        if(verificarMaxLibros(usuario->usuario.membresia, usuario->usuario.librosPrestados, maxLibros))
+        if (verificarMaxLibros(usuario->usuario.membresia, usuario->usuario.librosPrestados, maxLibros))
         {
             gotoxy(27, 13);
             color(4);
@@ -399,7 +399,7 @@ void adicionarCampoPedido(int id_usuariologeado)
 
         insertarFinalListaPedido(listaPedido, pedido);
 
-        if(maxLibros == 0)
+        if (maxLibros == 0)
         {
             break;
         }
@@ -576,7 +576,6 @@ bool verificarMembresia(Lista &Usuarios, int id)
     return false;
 }
 
-
 void modificarCantPrestada(int idUsuario)
 {
     Lista listaUsuarios;
@@ -700,12 +699,11 @@ bool mostrarPedidosxdni(ListaPedidos &listaPedidos, string dni)
         cout << "Usuario encontrado: " << actualUsuario->usuario.nombre << " " << actualUsuario->usuario.apellidos;
     }
 
-    pausa();
     return usuarioEncontrado;
 }
 
 // -- FUNCIONES PARA DEVOLVER LIBROS --
-void registrarDevolucionLibro(int &mora)
+void registrarDevolucionLibro(int &mora, int idRecepcionista)
 
 {
     string dni;
@@ -734,7 +732,10 @@ void registrarDevolucionLibro(int &mora)
         color(2);
         cout << "DNI del usuario: ";
         color(0);
+        
+        // Leer el DNI del usuario por si ingresó un escape
         getline(cin, dni);
+
         color(2);
         dibujarTextoPuntos(27, 17, "Buscando usuario");
 
@@ -762,6 +763,7 @@ void registrarDevolucionLibro(int &mora)
         color(2);
         cout << "ID del libro a devolver: ";
         color(0);
+        // Leer el ID del libro por si ingresó un escape
         getline(cin, id_libro);
 
         NodoPedidos *actual = listaPedidos.head;
@@ -770,6 +772,7 @@ void registrarDevolucionLibro(int &mora)
         {
             if (actual->pedido.ID_usuario == stoi(dni) && actual->pedido.ID_libro == stoi(id_libro) && (actual->pedido.estadoPedido == "PRESTADO" || actual->pedido.estadoPedido == "NO_DEVUELTO"))
             {
+                // Modificamos datos del libros.csv
                 idLibroEncontrado = true;
                 ListaLibros listaLibros = leerLibrosCSV("output/libros.csv");
                 nodoLibros *actualLibro = listaLibros.cabeza;
@@ -777,7 +780,7 @@ void registrarDevolucionLibro(int &mora)
                 {
                     if (actualLibro->libro.id == stoi(id_libro))
                     {
-                        actualLibro->libro.estado = "Disponible";
+                        actualLibro->libro.StockActual++;
                         nombreLibroDevuelto = actualLibro->libro.nombre_Libro;
                         break;
                     }
@@ -794,13 +797,24 @@ void registrarDevolucionLibro(int &mora)
                 actual->pedido.entregado.año = tiempoLocal->tm_year + 1900;
                 actual->pedido.entregado.mes = tiempoLocal->tm_mon + 1;
                 actual->pedido.entregado.dia = tiempoLocal->tm_mday;
+                actual->pedido.ID_recepcionistaRecibe=idRecepcionista;
 
                 dias = calcularDiasEntreFechas(actual->pedido.entregado.año, actual->pedido.entregado.mes, actual->pedido.entregado.dia, actual->pedido.devolucion.año, actual->pedido.devolucion.mes, actual->pedido.devolucion.dia);
-
+                
                 if (dias > 7)
                 {
                     mora = 3 * (dias - 7);
                     actual->pedido.estadoPedido = "DEVUELTO_TARDE";
+
+                    // Registramos la mora en ganancias
+                    ListaGanancias listaGanancias;
+                    Ganancia ganancia;
+                    ganancia.id_usuario = stoi(dni);
+                    ganancia.monto = mora;
+                    ganancia.fecha = fechaAString(actual->pedido.entregado);
+                    ganancia.origen = "MORA";
+                    insertarFinalGanancias(&listaGanancias, &ganancia);
+                    guardarGananciasCSV(&listaGanancias, "output/ganancias.csv");
                 }
                 else
                 {
@@ -973,7 +987,7 @@ ColaPedidos cargarColaPedidosUsuario(int idUsuario)
 }
 
 // Función para marcar un pedido como entregado (tmb se actualiza en el csv)
-void atenderPrestamo(ColaPedidos &colaPedidos)
+void atenderPrestamo(ColaPedidos &colaPedidos, int idRecepcionista)
 {
     if (colaPedidos.delante == nullptr)
     {
@@ -997,6 +1011,9 @@ void atenderPrestamo(ColaPedidos &colaPedidos)
             // Actualizar la fecha de adquisición
             actual->pedido.fechaAdquisicion = obtenerFechaActual();
             actual->pedido.devolucion = sumarDiasAFecha(obtenerFechaActual(), 7);
+            actual->pedido.ID_recepcionistaEntrega = idRecepcionista;
+            actual->pedido.evaluacion = -1;
+            actual->pedido.ID_recepcionistaRecibe = -1;
             break;
         }
         actual = actual->sgte;
@@ -1010,7 +1027,7 @@ void atenderPrestamo(ColaPedidos &colaPedidos)
         if (actualLibro->libro.id == pedido.ID_libro)
         {
             // Actualizar el estado del libro
-            actualLibro->libro.estado = "Prestado";
+            actualLibro->libro.StockActual--;
             break;
         }
         actualLibro = actualLibro->siguiente;
@@ -1019,8 +1036,6 @@ void atenderPrestamo(ColaPedidos &colaPedidos)
     // Modificamos los csv
     limpiarCSV("output/pedidos.csv");
     guardar_CSV_PedidoReferencia(listaPedidos, "output/pedidos.csv");
-    limpiarCSV("output/libros.csv");
-    guardar_CSV_Libros_Sobreescribir(&listaLibros, "output/libros.csv");
 }
 
 // Función para mostrar la cola de pedidos de préstamo de un usuario
@@ -1071,7 +1086,7 @@ void muestraColaPedidosPrestamo(ColaPedidos &colaPedidos, int x, int y, bool &pe
 }
 
 // Función para atender los préstamos de un usuario
-void atenderPrestamoMenu()
+void atenderPrestamoMenu(int idRecepcionista)
 {
     gotoxy(50, 11);
     color(2);
@@ -1084,15 +1099,22 @@ void atenderPrestamoMenu()
     gotoxy(27, 15);
     color(2);
     cout << "DNI del usuario: ";
+
     color(0);
-    int idUsuarioIngresado;
-    cin >> idUsuarioIngresado;
+    string idUsuarioIngresado;
+
+    // Leeemos el DNI del usuario por si ingresa un ESCAPE
+    if (!leerInputEscape(idUsuarioIngresado))
+    {
+        return;
+    }
     cin.ignore();
+
     color(2);
     dibujarTextoPuntos(27, 17, "Cargando pedidos");
     gotoxy(27, 17);
     cout << "Pedidos cargados con éxito";
-    ColaPedidos colaPedidos = cargarColaPedidosUsuario(idUsuarioIngresado);
+    ColaPedidos colaPedidos = cargarColaPedidosUsuario(stoi(idUsuarioIngresado));
     if (colaPedidos.delante == nullptr)
     {
         gotoxy(27, 18);
@@ -1135,10 +1157,16 @@ void atenderPrestamoMenu()
             color(2);
             cout << "¿Desea atender prestamo? (s/n): ";
             color(0);
-            getline(cin, respuesta);
+
+            // Leemos la respuesta por si ingresó un ESCAPE
+            if (!leerInputEscape(respuesta))
+            {
+                return;
+            }
+
             if (respuesta == "s" || respuesta == "S")
             {
-                atenderPrestamo(colaPedidos);
+                atenderPrestamo(colaPedidos, idRecepcionista);
             }
         } while (respuesta == "s" || respuesta == "S" || pedidosPendientes);
     }
