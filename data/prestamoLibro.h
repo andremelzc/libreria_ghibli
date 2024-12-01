@@ -244,7 +244,7 @@ void adicionarCampoPedido(int id_usuariologeado)
     {
         limpiarPantalla();
         setConsoleBackground(White);
-        dibujarTitulo(27, 0, 2, letras);
+        dibujarTitulo(24, 0, 2, letras);
         estructura_menu2(16, 103, 10, 27);
         Pedidos *pedido = new Pedidos();
         pedido->ID_pedido = contarFilasCSV("output/pedidos.csv") + i;
@@ -739,7 +739,7 @@ void registrarDevolucionLibro(int &mora, int idRecepcionista)
         setConsoleBackground(White);
         ejecutarGradienteDoble(150);
         estructura_menu2(16, 103, 11, 26);
-        dibujarTitulo(27, 0, 2, letras);
+        dibujarTitulo(24, 0, 2, letras);
         gotoxy(46, 12);
         color(2);
         cout << "Registrar devolucion de libro";
@@ -870,7 +870,7 @@ void registrarDevolucionLibro(int &mora, int idRecepcionista)
             setConsoleBackground(White);
             ejecutarGradienteDoble(150);
             estructura_menu2(16, 103, 11, 26);
-            dibujarTitulo(27, 0, 2, letras);
+            dibujarTitulo(24, 0, 2, letras);
             gotoxy(44, 12);
             color(2);
             cout << "Registrar devolucion de libro";
@@ -1156,7 +1156,7 @@ void atenderPrestamoMenu(int idRecepcionista)
             setConsoleBackground(White);
             ejecutarGradienteDoble(150);
             estructura_menu2(16, 103, 11, 26);
-            dibujarTitulo(27, 0, 2, letras);
+            dibujarTitulo(24, 0, 2, letras);
             gotoxy(50, 11);
             color(2);
             cout << "Atendiendo Préstamos";

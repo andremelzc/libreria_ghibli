@@ -68,7 +68,7 @@ void mostrarPilaLaptops(PilaLaptops *pila)
 {
     limpiarPantalla();
     setConsoleBackground(White);
-    dibujarTitulo(27, 0, 2, letras);
+    dibujarTitulo(24, 0, 2, letras);
     estructura_menu2(16, 103, 10, 27);
     
     Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
@@ -177,7 +177,7 @@ void gestionLaptops_registrarLaptop()
     {
         limpiarPantalla();
         setConsoleBackground(White);
-        dibujarTitulo(27, 0, 2, letras);
+        dibujarTitulo(24, 0, 2, letras);
         estructura_menu2(16, 103, 10, 27);
         Laptop *laptop = new Laptop();
 
@@ -308,7 +308,7 @@ void prestarLaptop(PilaLaptops *pila)
 {
     limpiarPantalla();
     setConsoleBackground(White);
-    dibujarTitulo(27, 0, 2, letras);
+    dibujarTitulo(24, 0, 2, letras);
     estructura_menu2(16, 103, 10, 27);
 
     mostrarPilaLaptops(pila);
@@ -402,7 +402,7 @@ void devolverLaptop(PilaLaptops *pila)
 {
     limpiarPantalla();
     setConsoleBackground(White);
-    dibujarTitulo(27, 0, 2, letras);
+    dibujarTitulo(24, 0, 2, letras);
     estructura_menu2(16, 103, 10, 27);
 
     mostrarPilaLaptops(pila);

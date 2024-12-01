@@ -109,7 +109,7 @@ void adicionarCampo()
     {
         limpiarPantalla();
         setConsoleBackground(White);
-        dibujarTitulo(27, 0, 2, letras);
+        dibujarTitulo(24, 0, 2, letras);
         estructura_menu2(16, 103, 10, 27);
         Libro *libro = new Libro();
         libro->estado = "Disponible";
@@ -278,7 +278,7 @@ void modificarLibro()
     int opcion;
     limpiarPantalla();
     setConsoleBackground(White);
-    dibujarTitulo(27, 0, 2, letras);
+    dibujarTitulo(24, 0, 2, letras);
     estructura_menu2(16, 103, 10, 27);
     color(2);
     gotoxy(52, 12);
@@ -314,7 +314,7 @@ void modificarLibro()
 
             limpiarPantalla();
             setConsoleBackground(White);
-            dibujarTitulo(27, 0, 2, letras);
+            dibujarTitulo(24, 0, 2, letras);
             estructura_menu2(16, 103, 10, 27);
             color(2);
             gotoxy(52, 12);
@@ -710,7 +710,7 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
     {
         limpiarPantalla();
         setConsoleBackground(White);
-        dibujarTitulo(27, 0, 2, letras);
+        dibujarTitulo(24, 0, 2, letras);
         estructura_menu2(5, 114, 10, 28);
 
         int contador = 0; // Contador para mostrar los libros de 10 en 10
@@ -829,7 +829,7 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
 
             limpiarPantalla();
             setConsoleBackground(White);
-            dibujarTitulo(27, 0, 2, letras);
+            dibujarTitulo(24, 0, 2, letras);
             estructura_menu2(5, 114, 10, 28);
 
             int contador = 0; // Contador para mostrar los libros de 10 en 10
