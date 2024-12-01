@@ -15,6 +15,8 @@
 
 using namespace std;
 
+// -- FUNCIONES PARA HISTORIAL DE PEDIDOS --
+// Encolamos un pedido en la cola de historial
 void encolarHistorial(NodoPedidos *pedido, colaHistorial &q)
 {
     if (q.adelante == nullptr)
@@ -28,7 +30,7 @@ void encolarHistorial(NodoPedidos *pedido, colaHistorial &q)
         q.atras = pedido;
     }
 }
-
+// Cargar el historial de pedidos a partir de un CSV de un usuario
 colaHistorial cargarHistorialxID(string nombreArchivo, int idUsuario)
 {
     string linea;
@@ -90,13 +92,11 @@ colaHistorial cargarHistorialxID(string nombreArchivo, int idUsuario)
     archivo.close();
     return historial;
 }
-
+// Desencolar un pedido del historial
 NodoPedidos *desencolarHistorial(colaHistorial &q)
 {
     if (q.adelante == nullptr)
     {
-        cout << "La cola de prioridad esta vacia" << endl;
-        system("pause>0");
         return NULL;
     }
 
@@ -110,7 +110,7 @@ NodoPedidos *desencolarHistorial(colaHistorial &q)
 
     return stat;
 }
-
+// Obtener el nombre de un usuario a partir de su ID
 string devolverNombre(Lista &Usuarios, int id)
 {
     Nodo *actual = Usuarios.cabeza;
@@ -126,7 +126,7 @@ string devolverNombre(Lista &Usuarios, int id)
 
     return "Nombre no encontrado";
 }
-
+// Obtener el nombre de un libro a partir de su ID
 string devolverLibroNombre(ListaLibros &Libros, int id)
 {
     nodoLibros *actual = Libros.cabeza;
@@ -141,7 +141,7 @@ string devolverLibroNombre(ListaLibros &Libros, int id)
     }
     return nullptr;
 }
-
+// Menú de mostrar historial
 void mostrarHistorial()
 {
     gotoxy(51, 11);
@@ -229,7 +229,7 @@ void mostrarHistorial()
     }
     pausa();
 }
-
+// Menú de mostrar historial de un cliente
 void mostrarHistorialCliente(int dni)
 {
     gotoxy(51, 11);
@@ -238,8 +238,36 @@ void mostrarHistorialCliente(int dni)
 
     // Se crea una cola para el usuario ingresado
     colaHistorial historial = cargarHistorialxID("output/pedidos.csv", dni);
-
+    Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
     NodoPedidos *actual = desencolarHistorial(historial);
+    if (actual == NULL)
+    {
+        limpiarPantalla();
+        setConsoleBackground(White);
+        dibujarTitulo(27, 0, 2, letras);
+        estructura_menu2(16, 103, 10, 27);
+        gotoxy(44, 11);
+        color(2);
+        cout << "Historial de Pedidos de ";
+        color(0);
+        cout << devolverNombre(listaUsuarios, dni);
+        color(2);
+        gotoxy(20, 13);
+        cout << "ID";
+        gotoxy(26, 13);
+        cout << "Libro";
+        gotoxy(57, 13);
+        cout << "Estado";
+        gotoxy(75, 13);
+        cout << "Fecha de pedido";
+        color(0);
+        gotoxy(20, 15);
+        color(4);
+        cout << "No se encontraron pedidos para el usuario";
+        color(0);
+        pausa();
+        return;
+    }
 
     int contador = 0;
     int contadorEntregasTarde = 0;
@@ -250,7 +278,6 @@ void mostrarHistorialCliente(int dni)
     dibujarTitulo(27, 0, 2, letras);
     estructura_menu2(16, 103, 10, 27);
 
-    Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
     gotoxy(44, 11);
     color(2);
     cout << "Historial de Pedidos de ";
@@ -341,6 +368,8 @@ ListaStrings cargarNombreLibrosCSV()
     return listaLibros;
 }
 
+// -- FUNCIONES PARA ESTADISTICAS DE LIBROS --
+// Encolar una estadística en la cola de estadísticas
 void encolarEstadistica(NodoEstadisticas *stat, colaPrioEstadisticas &q)
 {
 
@@ -376,13 +405,11 @@ void encolarEstadistica(NodoEstadisticas *stat, colaPrioEstadisticas &q)
         }
     }
 }
-
+// Desencolar una estadística de la cola de estadísticas
 NodoEstadisticas *desencolar(colaPrioEstadisticas &q)
 {
     if (q.delante == nullptr)
     {
-        cout << "La cola de prioridad esta vacia" << endl;
-        system("pause>0");
         return NULL;
     }
 
@@ -396,7 +423,7 @@ NodoEstadisticas *desencolar(colaPrioEstadisticas &q)
 
     return stat;
 }
-
+// Cargar las estadísticas de libros a partir de un CSV 
 colaPrioEstadisticas cargarEstadisticaCSV(string nombreArchivo)
 {
     /*

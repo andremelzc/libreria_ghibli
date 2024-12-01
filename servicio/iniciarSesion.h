@@ -25,17 +25,40 @@ void inicioSesion(int &tipo, bool &sesion, int &id)
     setTextColor(2);
     cout << "Inicio de sesion";
     gotoxy(36, 14);
+    // Ingresamos usuario
     cout << "Usuario: ";
     setTextColor(0);
     getline(cin, nombre);
     gotoxy(36, 15);
     setTextColor(2);
+    // Ingresamos contraseña
     cout << "Contraseña: ";
     setTextColor(0);
-    getline(cin, contra);
+    // Captura de contraseña con asteriscos
+    char caracter;
+    caracter = getch(); // Espera a que el usuario presione una tecla
+    contra = "";
+
+    while (caracter != 13) // 13 es el código ASCII para Enter
+    {
+        if (caracter == 8) // 8 es el código ASCII para Backspace
+        {
+            if (contra.size() > 0)
+            {
+                contra.pop_back();
+                cout << "\b \b";
+            }
+        }
+        else
+        {
+            contra.push_back(caracter);
+            cout << "*";
+        }
+        caracter = getch();
+    }
 
     sesion = verificacionInicioSesion(nombre, contra, tipo, id);
-    
+
     if (sesion)
     {
         gotoxy(36, 17);

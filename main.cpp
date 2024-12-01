@@ -26,5 +26,6 @@ int main()
     estructura_menu2(16, 103, 11, 26);
     menu_opcionesPrincipal();
 
+
     return 0;
 }

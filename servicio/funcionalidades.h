@@ -243,6 +243,7 @@ fecha obtenerFechaActual()
 }
 
 fecha sumarDiasAFecha(fecha fechaOriginal, int diasASumar) {
+
     tm ltm = {};
     ltm.tm_mday = fechaOriginal.dia;
     ltm.tm_mon = fechaOriginal.mes - 1; // Meses comienzan desde 0
@@ -264,4 +265,105 @@ fecha sumarDiasAFecha(fecha fechaOriginal, int diasASumar) {
     nuevaFecha.año = ltm.tm_year + 1900;
 
     return nuevaFecha;
+}
+
+int calcularDiasEntreFechas(int anio1, int mes1, int dia1, int anio2, int mes2, int dia2)
+{
+    // Estructura tm para la primera fecha
+    tm fecha1 = {};
+    pausa();
+    fecha1.tm_year = anio1 - 1900; // tm_year es años desde 1900
+    fecha1.tm_mon = mes1 - 1;      // tm_mon es de 0 a 11
+    fecha1.tm_mday = dia1;
+
+    // Estructura tm para la segunda fecha
+    tm fecha2 = {};
+    fecha2.tm_year = anio2 - 1900;
+    fecha2.tm_mon = mes2 - 1;
+    fecha2.tm_mday = dia2;
+
+    // Convertir las fechas a tiempo en segundos desde la época
+    time_t tiempo1 = mktime(&fecha1);
+    time_t tiempo2 = mktime(&fecha2);
+
+    // Calcular la diferencia en segundos y convertirla a días
+    double diferenciaSegundos = difftime(tiempo2, tiempo1);
+    int diferenciaDias = diferenciaSegundos / (60 * 60 * 24); // Convierte de segundos a días
+
+    return abs(diferenciaDias); // Valor absoluto de la diferencia en días
+}
+
+// Función para verificar si una cadena contiene solo letras y espacios
+bool esSoloLetras(const string &s)
+{
+    for (char c : s)
+    {
+        if (!isalpha(c) && c != ' ')
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Funcion para verificar si una cadena contiene solo numeros
+bool esSoloNumeros(const string &s)
+{
+    for (char c : s)
+    {
+        if (!isdigit(c))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Función para verificar si el correo electrónico es válido
+bool esCorreoValido(const string &correo)
+{
+    // Verificar si el correo contiene un solo '@'
+    size_t posArroba = correo.find('@');
+    if (posArroba == string::npos || correo.find('@', posArroba + 1) != string::npos)
+    {
+        return false;
+    }
+
+    // Verificar si el correo contiene un punto después de la arroba
+    size_t posPunto = correo.find('.', posArroba);
+    if (posPunto == string::npos)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+// Funcion para convertir un int a string
+string intToString(int num)
+{
+    stringstream ss;
+    ss << num;
+    return ss.str();
+}
+
+// Detectaar si se presiona el escape
+bool leerInputEscape(string &input) {
+    input.clear();
+    while (true) {
+        int ch = _getch();
+        if (ch == 27) { // 27 es el código ASCII para ESC
+            return false; // Indica que se canceló la entrada
+        } else if (ch == '\r') { // ENTER
+            return true; // Entrada completada
+        } else if (ch == '\b') { // BACKSPACE
+            if (!input.empty()) {
+                input.pop_back();
+                // Mover el cursor atrás, imprimir espacio y mover nuevamente
+            }
+        } else {
+            input += static_cast<char>(ch);
+            std::cout << static_cast<char>(ch);
+        }
+    }
 }

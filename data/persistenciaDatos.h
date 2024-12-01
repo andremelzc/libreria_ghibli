@@ -9,6 +9,14 @@
 struct fecha
 {
   int dia, mes, año;  
+
+  bool operator<=(const fecha& other) const {
+        if (año < other.año) return true;
+        if (año > other.año) return false;
+        if (mes < other.mes) return true;
+        if (mes > other.mes) return false;
+        return dia <= other.dia;
+    }
 };
 
 // Usuarios
@@ -29,6 +37,7 @@ struct Usuario
     string fechaInicio;  // fecha de inicio de membresia
     string fechaFinal;   // fecha de fin de membresia
     int librosPrestados; // Máximo 3 por cliente
+    int numeroCastigos; // Número de castigos
 };
 
 struct Nodo
@@ -56,7 +65,7 @@ struct Libro
     float precio;
     string estado;
     int stock;
-    int Stock_Inventario, StockActual;
+    int StockInventario, StockActual;
 };
 
 struct nodoLibros
@@ -98,11 +107,14 @@ struct LibroNodoArbol
     LibroNodoArbol(Libro libro1) : libro(libro1), izquierda(nullptr), derecha(nullptr) {}
 };
 
+
 // Pedidos (libros)
 struct Pedidos{
     int ID_pedido,ID_libro,ID_usuario;
     string estadoPedido; //SOLICITADO, PRESTADO, NO_DEVUELTO, DEVUELTO, DEVUELTO_TARDE
     fecha fechaPedido, fechaAdquisicion, devolucion, entregado;
+    int ID_recepcionistaEntrega, ID_recepcionistaRecibe;
+    int evaluacion;
 };
 
 struct NodoPedidos{
@@ -210,4 +222,59 @@ struct ListaStrings{
     NodoStrings *cabeza;
     int longitud;
     ListaStrings(): cabeza(nullptr), longitud(0){};
+};
+
+struct NodoLibroSimple {
+    int idLibro;                // ID del libro
+    NodoLibroSimple* siguiente; // Puntero al siguiente nodo
+};
+
+// Cola de libros
+struct ColaLibros {
+    NodoLibroSimple* frente;    // Frente de la cola
+    NodoLibroSimple* final;     // Final de la cola
+
+    // Constructor
+    ColaLibros() : frente(nullptr), final(nullptr) {}
+
+
+};
+
+// Nodo para la cola de clientes
+struct NodoCliente {
+    int dni;                // DNI del cliente
+    ColaLibros libros;      // Cola de libros asociados
+    NodoCliente* siguiente; // Puntero al siguiente nodo
+};
+
+// Cola de clientes
+struct ColaClientes {
+    NodoCliente* frente;    // Frente de la cola
+    NodoCliente* final;     // Final de la cola
+
+    // Constructor
+    ColaClientes() : frente(nullptr), final(nullptr) {}
+
+
+};
+
+// Ganancia
+struct Ganancia{
+    int id_usuario;
+    string origen;
+    float monto;
+    string fecha;
+};
+
+struct NodoGanancia{
+    Ganancia ganancia;
+    NodoGanancia *sgte;
+    NodoGanancia(Ganancia ganancia1): ganancia(ganancia1), sgte(nullptr) {}; 
+    NodoGanancia(): sgte(nullptr) {}; 
+};
+
+struct ListaGanancias{
+    int longitud;
+    NodoGanancia *head;
+    ListaGanancias(): head(nullptr), longitud(0) {}; 
 };

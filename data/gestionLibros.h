@@ -1,25 +1,37 @@
+#pragma once
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string.h>
 #include <filesystem>
 #include <ctime> /*Para registrar la fecha */
+#include <string.h>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <windows.h>
+#include <cstdio>
+#include <iostream>
+#include <stdexcept>
+#include <conio.h>
+#include <locale>
+#include <ctime>
 using namespace std;
 
 // Declaraciones previas
-void insertarFinalListaLibro(ListaLibros *lista, Libro *libro);
+void insertarLibrosFinal(ListaLibros *lista, Libro *libro);
 void guardar_CSV_Libros(ListaLibros *lista, string nombreArchivo);
 void adicionarCampo();
 void modificarLibro();
-void insertarLibro(ListaLibros &lista, Libro nuevoLibro);
 ListaLibros leerLibrosCSV(string nombreArchivo);
 bool mostrarLibroXid(ListaLibros &Libros, int id);
 void insertarArbolLibro(LibroNodoArbol *&raiz, Libro *libro);
-Libro *buscarLibroArbol(LibroNodoArbol *raiz, const string &nombreLibroBuscar, bool &busquedaExacta);
+void buscarLibroArbol(LibroNodoArbol *raiz, const string &nombreLibroBuscar, ListaLibros &resultados, bool &busquedaExacta);
 LibroNodoArbol *leerLibrosArbol(string nombreArchivo, bool userView);
 
+// --- FUNCIONES PARA LISTAS ENLAZADAS DE LIBROS ---
 // Inserta libros al final de una lista enlazada
-void insertarFinalListaLibro(ListaLibros *lista, Libro *libro)
+void insertarLibrosFinal(ListaLibros *lista, Libro *libro)
 {
     nodoLibros *nodoLibro = new nodoLibros(*libro);
 
@@ -70,7 +82,8 @@ void guardar_CSV_Libros(ListaLibros *lista, string nombreArchivo)
                 << libro.Ano << ","
                 << libro.Genero << ","
                 << libro.precio << ","
-                << libro.estado << "\n";
+                << libro.StockInventario << ","
+                << libro.StockActual << "\n";
 
         actual = actual->siguiente;
     }
@@ -103,52 +116,149 @@ void adicionarCampo()
         gotoxy(52, 12);
         color(2);
         cout << "Registro de libros";
-        color(0);
-        gotoxy(36, 14);
-        color(2);
-        cout << "Nombre del libro: ";
-        color(0);
-        getline(cin, libro->nombre_Libro);
-        gotoxy(36, 15);
-        color(2);
-        cout << "Nombre del autor: ";
-        color(0);
-        getline(cin, libro->Autor);
-        gotoxy(36, 16);
-        color(2);
-        cout << "Año de publicacion: ";
-        color(0);
-        cin >> libro->Ano;
-        cin.ignore();
-        gotoxy(36, 17);
+
+        // Ingremos nombre del libro
+        bool nombreCorrecto = false;
+        do
+        {
+            gotoxy(27, 14);
+            color(2);
+            cout << "Nombre del libro: ";
+            color(0);
+            getline(cin, libro->nombre_Libro);
+            if (libro->nombre_Libro.length() > 0)
+            {
+                nombreCorrecto = true;
+            }
+            else
+            {
+                gotoxy(27, 15);
+                color(4);
+                cout << "Ingrese un nombre válido";
+                pausa();
+                limpiarArea(27, 14, 50, 1);
+                limpiarArea(27, 15, 50, 1);
+            }
+        } while (!nombreCorrecto);
+
+        // Ingresamos autor
+        bool autorCorrecto = false;
+        do
+        {
+            gotoxy(27, 15);
+            color(2);
+            cout << "Nombre del autor: ";
+            color(0);
+            getline(cin, libro->Autor);
+            if (libro->Autor.length() > 0)
+            {
+                autorCorrecto = true;
+            }
+            else
+            {
+                gotoxy(27, 16);
+                color(4);
+                cout << "Ingrese un autor válido";
+                pausa();
+                limpiarArea(27, 15, 50, 1);
+                limpiarArea(27, 16, 50, 1);
+            }
+        } while (!autorCorrecto);
+
+        // Ingresamos año de publicación
+        bool anoCorrecto = false;
+        do
+        {
+            gotoxy(27, 16);
+            color(2);
+            cout << "Año de publicación: ";
+            color(0);
+            cin >> libro->Ano;
+            cin.ignore();
+            if (libro->Ano > 0 && libro->Ano <= 2024)
+            {
+                anoCorrecto = true;
+            }
+            else
+            {
+                gotoxy(27, 17);
+                color(4);
+                cout << "Ingrese un año válido";
+                pausa();
+                limpiarArea(27, 16, 50, 1);
+                limpiarArea(27, 17, 50, 1);
+            }
+        } while (!anoCorrecto);
+
+        // Ingresamos género
+
+        gotoxy(27, 17);
         color(2);
         cout << "Genero: ";
         color(0);
         getline(cin, libro->Genero);
-        gotoxy(36, 18);
-        color(2);
-        cout << "Stock ingresado: ";
-        color(0);
-        cin >> libro->stock;
-        gotoxy(36, 19);
-        color(2);
-        cout << "Precio (S/): ";
-        color(0);
-        cin >> libro->precio;
-        cin.ignore();
 
-        for (int i = 0; i < libro->stock; i++)
+        // Ingresamos stock ingresado
+        bool stockCorrecto = false;
+        do
         {
-            libro->id = contarFilasCSV("output/libros.csv") + contador;
-            insertarFinalListaLibro(listaLibros, libro);
-            contador++;
-        }
+            gotoxy(27, 18);
+            color(2);
+            cout << "Stock ingresado: ";
+            color(0);
+            cin >> libro->StockInventario;
+            cin.ignore();
 
-        dibujarTextoPuntos(36, 21, "Registrando libro(s)");
-        gotoxy(36, 21);
+            if (libro->StockInventario > 0)
+            {
+                break;
+            }
+            else
+            {
+                gotoxy(27, 19);
+                color(4);
+                cout << "Ingrese un stock válido";
+                pausa();
+                limpiarArea(27, 18, 50, 1);
+                limpiarArea(27, 19, 50, 1);
+            }
+        } while (!stockCorrecto);
+        libro->StockActual = libro->StockInventario;
+
+        // Ingresamos precio
+        bool precioCorrecto = false;
+        do
+        {
+            gotoxy(27, 19);
+            color(2);
+            cout << "Precio (S/): ";
+            color(0);
+            cin >> libro->precio;
+            cin.ignore();
+
+            if (libro->precio > 0)
+            {
+                precioCorrecto = true;
+            }
+            else
+            {
+                gotoxy(27, 20);
+                color(4);
+                cout << "Ingrese un precio válido";
+                pausa();
+                limpiarArea(27, 19, 50, 1);
+                limpiarArea(27, 20, 50, 1);
+            }
+        } while (!precioCorrecto);
+
+        insertarLibrosFinal(listaLibros, libro);
+        contador++;
+
+        dibujarTextoPuntos(27, 21, "Registrando libro(s)");
+        gotoxy(27, 21);
         cout << "Libro(s) registrado con exito!";
 
-        gotoxy(36, 24);
+        gotoxy(27, 24);
         color(2);
         cout << "Desea registrar otro(s) libro(s)? (s/n): ";
         color(0);
@@ -348,27 +458,6 @@ void modificarLibro()
     system("pause>0");
 }
 
-// Insertar al final de la lista
-void insertarLibrosFinal(ListaLibros *lista, Libro *libro)
-{
-    nodoLibros *nodo = new nodoLibros(*libro);
-
-    if (lista->cabeza == nullptr)
-    {
-        lista->cabeza = nodo;
-    }
-    else
-    {
-        nodoLibros *puntero = lista->cabeza;
-        while (puntero->siguiente)
-        {
-            puntero = puntero->siguiente;
-        }
-        puntero->siguiente = nodo;
-    }
-    lista->longitud++;
-}
-
 void insertarNodoLibroAlFinal(ListaLibros *lista, nodoLibros *nodo)
 {
     // Verificar que el nodo no sea nullptr
@@ -402,33 +491,6 @@ void insertarNodoLibroAlFinal(ListaLibros *lista, nodoLibros *nodo)
     lista->longitud++;
 }
 
-// Creada para ser Usada en AgregarCarrito en CarritoLibro.h
-void modificarEstadoLibro(ListaLibros *listaDeLibros, int idLibro_Modificar, string estadoNuevo)
-{
-    nodoLibros *actual = listaDeLibros->cabeza; // Asumiendo que la lista tiene un puntero a su nodo cabeza
-    if (actual != nullptr)
-    {
-        // Recorrer la lista enlazada
-        while (actual != nullptr)
-        {
-            // Verificar si el ID del libro actual coincide con el ID proporcionado
-            if (actual->libro.id == idLibro_Modificar)
-            {
-                // Modificar el estado del libro
-                actual->libro.estado = estadoNuevo;
-                // cout << "Estado del libro con ID " << idLibro_Modificar << " actualizado a: " << estadoNuevo << endl;
-                return; // Salir de la función una vez modificado
-            }
-            actual = actual->siguiente; // Pasar al siguiente nodo
-        }
-    }
-    else
-    {
-        // Si el libro no se encuentra, mostrar un mensaje
-        cout << "No se encontró un libro con el ID " << idLibro_Modificar << " en la lista." << endl;
-    }
-}
-
 // Creada para poder ser Usada en Lista LibroEspecifico en CarritoLibro.h
 void eliminarPrimerLibro(ListaLibros *lista)
 {
@@ -450,15 +512,6 @@ void eliminarPrimerLibro(ListaLibros *lista)
 
     // Disminuir la longitud de la lista
     lista->longitud--;
-}
-
-// Insertar para crear la lista enlazada
-void insertarLibro(ListaLibros &lista, Libro nuevoLibro)
-{
-    nodoLibros *nuevoNodo = new nodoLibros(nuevoLibro);
-    nuevoNodo->siguiente = lista.cabeza;
-    lista.cabeza = nuevoNodo;
-    lista.longitud++;
 }
 
 ListaLibros leerLibrosCSV(string nombreArchivo)
@@ -487,7 +540,7 @@ ListaLibros leerLibrosCSV(string nombreArchivo)
             Libro libro;
 
             // Suponiendo que el CSV tiene los campos en el siguiente orden (para mostrar catálogo):
-            // Nombre, Autor, Año, Género, Stock, precio, estado
+            // id, Nombre, Autor, Año, Género, precio, stock inventario, stock actual
             getline(ss, dato, ',');
             libro.id = stoi(dato); // Convertir a entero
             getline(ss, libro.nombre_Libro, ',');
@@ -497,66 +550,13 @@ ListaLibros leerLibrosCSV(string nombreArchivo)
             getline(ss, libro.Genero, ',');
             getline(ss, dato, ',');
             libro.precio = stoi(dato);
-            libro.stock = contarTituloLibro("output/libros.csv", libro.nombre_Libro);
-            getline(ss, libro.estado, ',');
+            getline(ss, dato, ',');
+            libro.StockInventario = stoi(dato);
+            getline(ss, dato, ',');
+            libro.StockActual = stoi(dato);
 
             // Insertar el libro en la lista enlazada
             insertarLibrosFinal(&listaDeLibros, &libro);
-        }
-        archivo.close();
-    }
-    else
-    {
-        cout << "No se pudo abrir el archivo " << nombreArchivo << endl;
-    }
-    return listaDeLibros;
-}
-
-ListaLibros leerLibrosCSV_ObtenerStockLibroEspecifico(string nombreArchivo, string nLibro)
-{
-    ListaLibros listaDeLibros;
-    listaDeLibros.longitud = 0;
-    ifstream archivo(nombreArchivo);
-    string linea;
-
-    if (!archivo.is_open())
-    {
-        cout << "No se pudo abrir el archivo. " << nombreArchivo << endl;
-        perror("Error al abrir el archivo");
-        system("PAUSE");
-        return listaDeLibros;
-    }
-
-    if (archivo.is_open())
-    {
-        // Leer el archivo línea por línea
-        while (getline(archivo, linea))
-        {
-            stringstream ss(linea);
-            string dato;
-
-            Libro libro;
-
-            // Suponiendo que el CSV tiene los campos en el siguiente orden (para mostrar catálogo):
-            // Nombre, Autor, Año, Género, Stock, precio, estado
-            getline(ss, dato, ',');
-            libro.id = stoi(dato); // Convertir a entero
-            getline(ss, libro.nombre_Libro, ',');
-            getline(ss, libro.Autor, ',');
-            getline(ss, dato, ',');
-            libro.Ano = stoi(dato);
-            getline(ss, libro.Genero, ',');
-            getline(ss, dato, ',');
-            libro.precio = stoi(dato);
-            // libro.stock = contarTituloLibro("output/libros.csv", libro.nombre_Libro);
-            libro.stock = 1;
-            getline(ss, libro.estado, ',');
-            // Quiero una Lista solo con los Libros que he pedido
-            if (libro.nombre_Libro == nLibro && libro.estado == "Disponible")
-            {
-                // Insertar el libro en la lista enlazada
-                insertarLibrosFinal(&listaDeLibros, &libro);
-            }
         }
         archivo.close();
     }
@@ -620,6 +620,7 @@ bool mostrarLibroXid(ListaLibros &Libros, int id)
 }
 
 // -- FUNCIONES PARA VER CATÁLOGO DE LIBROS --
+
 // Insertar para crear la lista enlazada doble
 void insertarDobleLibro(ListaDobleLibros &lista, Libro nuevoLibro)
 {
@@ -664,28 +665,20 @@ ListaDobleLibros leerLibrosDoblesCSV(string nombreArchivo, bool userView)
             Libro libro;
 
             // Suponiendo que el CSV tiene los campos en el siguiente orden (para mostrar catálogo):
-            // Nombre, Autor, Año, Género, Stock, precio, estado
+            // ID, Nombre, Autor, Año, Género, Stock, precio, estado
             getline(ss, dato, ',');
             libro.id = stoi(dato); // Convertir a entero
             getline(ss, libro.nombre_Libro, ',');
-            if (userView)
-            {
-                if (tituloGuardado("output/libros.csv", libro.id, libro.nombre_Libro))
-                {
-                    continue;
-                }
-            }
             getline(ss, libro.Autor, ',');
             getline(ss, dato, ',');
             libro.Ano = stoi(dato);
             getline(ss, libro.Genero, ',');
             getline(ss, dato, ',');
-            if (userView)
-            {
-                libro.stock = contarTituloLibro("output/libros.csv", libro.nombre_Libro);
-            }
             libro.precio = stoi(dato);
-            getline(ss, libro.estado, ',');
+            getline(ss, dato, ',');
+            libro.StockInventario = stoi(dato);
+            getline(ss, dato, ',');
+            libro.StockActual = stoi(dato);
 
             // Insertar el libro en la lista enlazada
             insertarDobleLibro(listaLibros, libro);
@@ -713,53 +706,31 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
     nodoDobleLibros *actual = lista.cabeza;
     int opcion = -1; // Variable para las opciones del menú (Salir, página anterior, página siguiente)
 
-    int resta = 0;
-
-    if (userView)
-    {
-        resta = 5;
-    }
-    else
-    {
-        resta = 0;
-    }
-
     while (opcion != 0) // 0 significa salir
     {
         limpiarPantalla();
         setConsoleBackground(White);
         dibujarTitulo(27, 0, 2, letras);
-        estructura_menu2(8, 111, 10, 27);
+        estructura_menu2(5, 114, 10, 28);
 
         int contador = 0; // Contador para mostrar los libros de 10 en 10
 
         gotoxy(50, 11);
         color(2);
         cout << "Catálogo de libros";
-        if (!userView)
-        {
-            gotoxy(13, 13);
-            cout << "ID";
-        }
 
-        gotoxy(18 - resta, 13);
+        gotoxy(10, 13);
+        cout << "ID";
+        gotoxy(16, 13);
         cout << "Nombre";
-        gotoxy(47, 13);
+        gotoxy(50, 13);
         cout << "Autor";
-        gotoxy(71, 13);
+        gotoxy(74, 13);
         cout << "Género";
-        if (userView)
-        {
-            gotoxy(93, 13);
-            cout << "Año";
-            gotoxy(102, 13);
-            cout << "Stock";
-        }
-        else
-        {
-            gotoxy(93, 13);
-            cout << "Estado";
-        }
+        gotoxy(96, 13);
+        cout << "Año";
+        gotoxy(105, 13);
+        cout << "Stock";
 
         color(0);
 
@@ -767,13 +738,11 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
         nodoDobleLibros *temporal = actual; // Se usa un puntero temporal para mostrar los libros
         while (temporal != nullptr && contador < 10)
         {
-            if (!userView)
-            {
-                gotoxy(13, 15 + contador);
-                cout << temporal->libro.id;
-            }
 
-            gotoxy(18 - resta, 15 + contador);
+            gotoxy(10, 15 + contador);
+            cout << temporal->libro.id;
+
+            gotoxy(16, 15 + contador);
             if (temporal->libro.nombre_Libro.length() > 25)
             {
                 cout << temporal->libro.nombre_Libro.substr(0, 22) + "...";
@@ -783,7 +752,7 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
                 cout << temporal->libro.nombre_Libro;
             }
 
-            gotoxy(47, 15 + contador);
+            gotoxy(50, 15 + contador);
             if (temporal->libro.Autor.length() > 18)
             {
                 cout << temporal->libro.Autor.substr(0, 15) + "...";
@@ -793,7 +762,7 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
                 cout << temporal->libro.Autor;
             }
 
-            gotoxy(71, 15 + contador);
+            gotoxy(74, 15 + contador);
             if (temporal->libro.Genero.length() > 17)
             {
                 cout << temporal->libro.Genero.substr(0, 14) + "...";
@@ -802,34 +771,21 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
             {
                 cout << temporal->libro.Genero;
             }
-            if (userView)
-            {
-                gotoxy(93, 15 + contador);
-                cout << temporal->libro.Ano;
-                gotoxy(102, 15 + contador);
-                cout << temporal->libro.stock;
-            }
-            else
-            {
-                gotoxy(93, 15 + contador);
-                cout << temporal->libro.estado;
-            }
+
+            gotoxy(96, 15 + contador);
+            cout << temporal->libro.Ano;
+            gotoxy(105, 15 + contador);
+            cout << temporal->libro.StockActual;
 
             temporal = temporal->siguiente;
             contador++;
         }
 
         // Mostrar el menú de navegación al final de la lista
-        gotoxy(13, 26);
+        gotoxy(10, 26);
         color(2);
-        if (userView)
-        {
-            cout << "Opciones: (0 = salir, 1 = anterior, 2 = siguiente, 3 = buscar por título): ";
-        }
-        else
-        {
-            cout << "Opciones: (0 = salir, 1 = anterior, 2 = siguiente): ";
-        }
+
+        cout << "Opciones: (0 = salir, 1 = anterior, 2 = siguiente, 3 = buscar por título): ";
 
         color(0);
         cin >> opcion;
@@ -854,21 +810,27 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
         }
         else if (opcion == 3 && userView) // Filtro
         {
-
+            // Creo un árbol con los libros para buscar por título
             LibroNodoArbol *arbol = leerLibrosArbol("output/libros.csv", true);
+            // Bool para saber si se encontró el libro exacto o son resultados similares
             bool busquedaExacta = false;
+            // Variable para guardar el titulo ingresado por el usuario
             string titulo;
-            gotoxy(13, 27);
+            gotoxy(10, 27);
             color(2);
             cout << "Título del libro: ";
             color(0);
             getline(cin, titulo);
-            Libro *libroEncontrado = buscarLibroArbol(arbol, titulo, busquedaExacta);
+            // Lista enlazada para guardar los libros encontrados
+            ListaLibros resultados;
+            // Buscar el libro en el árbol
+            buscarLibroArbol(arbol, titulo, resultados, busquedaExacta);
+            // Libro *libroEncontrado = buscarLibroArbol(arbol, titulo, busquedaExacta);
 
             limpiarPantalla();
             setConsoleBackground(White);
             dibujarTitulo(27, 0, 2, letras);
-            estructura_menu2(8, 111, 10, 27);
+            estructura_menu2(5, 114, 10, 28);
 
             int contador = 0; // Contador para mostrar los libros de 10 en 10
 
@@ -876,68 +838,82 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
             color(2);
             cout << "Catálogo de libros";
 
-            gotoxy(13, 13);
+            gotoxy(10, 13);
             color(2);
             if (busquedaExacta)
             {
                 cout << "Resultados para: ";
+                color(0);
+                cout << titulo;
             }
             else
             {
                 cout << "Resultados similares a: ";
+                color(0);
+                cout << titulo;
             }
 
             color(2);
-            gotoxy(18 - resta, 15);
+            gotoxy(10, 15);
+            cout << "ID";
+            gotoxy(16, 15);
             cout << "Nombre";
-            gotoxy(47, 15);
+            gotoxy(50, 15);
             cout << "Autor";
-            gotoxy(71, 15);
+            gotoxy(74, 15);
             cout << "Género";
-            gotoxy(93, 15);
+            gotoxy(96, 15);
             cout << "Año";
-            gotoxy(102, 15);
+            gotoxy(105, 15);
             cout << "Stock";
             color(0);
 
-            gotoxy(18 - resta, 17);
-            if (libroEncontrado->nombre_Libro.length() > 25)
+            // Mostrar los libros a partir de la posición actual
+            nodoLibros *temporal = resultados.cabeza;
+            while (temporal != nullptr)
             {
-                cout << libroEncontrado->nombre_Libro.substr(0, 22) + "...";
-            }
-            else
-            {
-                cout << libroEncontrado->nombre_Libro;
-            }
+                gotoxy(10, 17 + contador);
+                cout << temporal->libro.id;
 
-            gotoxy(47, 17);
-            if (libroEncontrado->Autor.length() > 18)
-            {
-                cout << libroEncontrado->Autor.substr(0, 15) + "...";
-            }
-            else
-            {
-                cout << libroEncontrado->Autor;
-            }
+                gotoxy(16, 17 + contador);
+                if (temporal->libro.nombre_Libro.length() > 25)
+                {
+                    cout << temporal->libro.nombre_Libro.substr(0, 22) + "...";
+                }
+                else
+                {
+                    cout << temporal->libro.nombre_Libro;
+                }
 
-            gotoxy(71, 17);
-            if (libroEncontrado->Genero.length() > 17)
-            {
-                cout << libroEncontrado->Genero.substr(0, 14) + "...";
-            }
-            else
-            {
-                cout << libroEncontrado->Genero;
-            }
-            if (userView)
-            {
-                gotoxy(93, 17);
-                cout << libroEncontrado->Ano;
-                gotoxy(102, 17);
-                cout << libroEncontrado->stock;
-            }
+                gotoxy(50, 17 + contador);
+                if (temporal->libro.Autor.length() > 18)
+                {
+                    cout << temporal->libro.Autor.substr(0, 15) + "...";
+                }
+                else
+                {
+                    cout << temporal->libro.Autor;
+                }
 
-            pausa();
+                gotoxy(74, 17 + contador);
+                if (temporal->libro.Genero.length() > 17)
+                {
+                    cout << temporal->libro.Genero.substr(0, 14) + "...";
+                }
+                else
+                {
+                    cout << temporal->libro.Genero;
+                }
+
+                gotoxy(96, 17 + contador);
+                cout << temporal->libro.Ano;
+                gotoxy(105, 17 + contador);
+                cout << temporal->libro.StockActual;
+
+                temporal = temporal->siguiente;
+                contador++;
+            }
+            getch();
         }
         else if (opcion != 0)
         {
@@ -962,14 +938,14 @@ nodoLibros *buscarLibroPorID(ListaLibros &listaLibros, int idLibro)
     return nullptr; // Libro no encontrado
 }
 
-// Buscar libro por título
-nodoLibros *buscarLibroPorTitulo(ListaLibros &listaLibros, string tituloLibro)
+// Buscar libro por título y estado
+nodoLibros *buscarLibroPorTitulo(ListaLibros &listaLibros, string tituloLibro, string estado)
 {
     nodoLibros *actual = listaLibros.cabeza;
     while (actual != nullptr)
     {
         int distancia = distanciaLevenshtein(actual->libro.nombre_Libro, tituloLibro);
-        if (distancia < 4 && actual->libro.estado == "Disponible")
+        if (distancia < 4 && actual->libro.estado == estado)
         {
             return actual; // Libro encontrado
         }
@@ -978,21 +954,7 @@ nodoLibros *buscarLibroPorTitulo(ListaLibros &listaLibros, string tituloLibro)
     return nullptr; // Libro no encontrado
 }
 
-nodoLibros *buscarLibroPorTituloPedido(ListaLibros &listaLibros, string tituloLibro)
-{
-    nodoLibros *actual = listaLibros.cabeza;
-    while (actual != nullptr)
-    {
-        int distancia = distanciaLevenshtein(actual->libro.nombre_Libro, tituloLibro);
-        if (distancia < 4 && actual->libro.estado == "Pedido")
-        {
-            return actual; // Libro encontrado
-        }
-        actual = actual->siguiente;
-    }
-    return nullptr; // Libro no encontrado
-}
-
+// Función para guardar los datos de los libros en un archivo CSV
 void guardar_CSV_Libros_Sobreescribir(ListaLibros *lista, string nombreArchivo)
 {
     fstream archivo(nombreArchivo, fstream::out);
@@ -1023,7 +985,8 @@ void guardar_CSV_Libros_Sobreescribir(ListaLibros *lista, string nombreArchivo)
                 << libro.Ano << ","
                 << libro.Genero << ","
                 << libro.precio << ","
-                << libro.estado << "\n";
+                << libro.StockInventario << ","
+                << libro.StockActual << "\n";
 
         actual = actual->siguiente;
     }
@@ -1039,6 +1002,7 @@ void guardar_CSV_Libros_Sobreescribir(ListaLibros *lista, string nombreArchivo)
 }
 
 // -- FUNCIONES PARA EL ÁRBOL DE LIBROS --
+
 // Función para insertar nodos en el arbol
 void insertarArbolLibro(LibroNodoArbol *&raiz, Libro *libro)
 {
@@ -1061,42 +1025,39 @@ void insertarArbolLibro(LibroNodoArbol *&raiz, Libro *libro)
 }
 
 // Función para buscar un libro en el árbol
-Libro *buscarLibroArbol(LibroNodoArbol *raiz, const string &nombreLibroBuscar, bool &busquedaExacta)
+void buscarLibroArbol(LibroNodoArbol *raiz, const string &nombreLibroBuscar, ListaLibros &resultados, bool &busquedaExacta)
 {
     if (raiz == nullptr)
     {
-        return nullptr;
+        return;
     }
 
     // Convertir ambos títulos a minúsculas
     string tituloNodo = convertirAMinuscula(raiz->libro.nombre_Libro);
     string tituloBuscar = convertirAMinuscula(nombreLibroBuscar);
 
-    // Buscar si el título ingresado es una subcadena del título del nodo
-    if(tituloNodo == tituloBuscar){
+    if (tituloNodo == tituloBuscar)
+    {
         busquedaExacta = true;
-        return &raiz->libro;
+        insertarLibrosFinal(&resultados, &raiz->libro);
+        return;
     }
 
+    // Buscar si el título ingresado es una subcadena del título del nodo
     if (tituloNodo.find(tituloBuscar) != string::npos)
     {
-        busquedaExacta = false;
-        return &raiz->libro;
+        insertarLibrosFinal(&resultados, &raiz->libro);
     }
 
     // Buscar en el subárbol izquierdo
-    if (tituloNodo > tituloBuscar)
-    {
-        return buscarLibroArbol(raiz->izquierda, nombreLibroBuscar, busquedaExacta);
-    }
-    else
-    {
-        // Buscar en el subárbol derecho
-        return buscarLibroArbol(raiz->derecha, nombreLibroBuscar, busquedaExacta);
-    }
+    buscarLibroArbol(raiz->izquierda, nombreLibroBuscar, resultados, busquedaExacta);
+
+    // Buscar en el subárbol derecho
+    buscarLibroArbol(raiz->derecha, nombreLibroBuscar, resultados, busquedaExacta);
 }
 
-LibroNodoArbol *leerLibrosArbol(string nombreArchivo, bool userView)    
+// Función para leer los libros de un archivo CSV y crear un árbol
+LibroNodoArbol *leerLibrosArbol(string nombreArchivo, bool userView)
 {
     LibroNodoArbol *arbol = nullptr;
     ifstream archivo(nombreArchivo);
@@ -1119,33 +1080,22 @@ LibroNodoArbol *leerLibrosArbol(string nombreArchivo, bool userView)
         Libro libro;
 
         // Suponiendo que el CSV tiene los campos en el siguiente orden (para mostrar catálogo):
-        // Nombre, Autor, Año, Género, Stock, precio, estado
+        // ID, Nombre, Autor, Año, Género, precio, stock inventario, stock actual
         try
         {
             getline(ss, dato, ',');
             libro.id = stoi(dato); // Convertir a entero
-
             getline(ss, libro.nombre_Libro, ',');
-            if (userView && tituloGuardado("output/libros.csv", libro.id, libro.nombre_Libro))
-            {
-                continue;
-            }
-
             getline(ss, libro.Autor, ',');
-
             getline(ss, dato, ',');
             libro.Ano = stoi(dato);
-
             getline(ss, libro.Genero, ',');
-
             getline(ss, dato, ',');
-            if (userView)
-            {
-                libro.stock = contarTituloLibro("output/libros.csv", libro.nombre_Libro);
-            }
-
             libro.precio = stoi(dato);
-            getline(ss, libro.estado, ',');
+            getline(ss, dato, ',');
+            libro.StockInventario = stoi(dato);
+            getline(ss, dato, ',');
+            libro.StockActual = stoi(dato);
 
             // Insertar el libro en el árbol
             insertarArbolLibro(arbol, &libro);
@@ -1157,42 +1107,4 @@ LibroNodoArbol *leerLibrosArbol(string nombreArchivo, bool userView)
 
     archivo.close();
     return arbol;
-}
-
-string obtenerEstadoLibro(int estado)
-{
-    string str_estado;
-    switch (estado)
-    {
-    case 0:
-        str_estado = "Disponible";
-        break;
-    case 1:
-        str_estado = "Prestado";
-        break;
-    case 2:
-        str_estado = "Pedido";
-        break;
-    default:
-        str_estado = "Vendido";
-        break;
-    }
-    return str_estado;
-}
-
-void mostrarListaLibroSimple(ListaLibros listaMostrar)
-{
-    if (listaMostrar.cabeza == NULL)
-    {
-        cout << "Lista de Libros Vacia" << endl;
-    }
-    if (listaMostrar.cabeza != NULL)
-    {
-        while (listaMostrar.cabeza != NULL)
-        {
-            cout << "Libro: " << listaMostrar.cabeza->libro.nombre_Libro << endl;
-
-            listaMostrar.cabeza = listaMostrar.cabeza->siguiente;
-        }
-    }
 }

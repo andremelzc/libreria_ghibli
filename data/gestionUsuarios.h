@@ -10,6 +10,7 @@
 #include <conio.h>
 #include <locale>
 #include <ctime>
+#include "..\data\ganancias.h"
 
 using namespace std;
 
@@ -17,97 +18,348 @@ using namespace std;
 void insertarFinal(Lista *lista, Usuario *usuario);
 Lista leerUsuariosCSV(string nombreArchivo);
 void guardar_CSV(Lista *lista, string nombreArchivo);
+bool verificarMembresia(Lista &Usuarios, int idUsuario);
 
 // Registrar usuario (vista administrador)
 void gestionUsuarios_registrarUsuario()
 {
     Lista *lista = new Lista();
     char respuesta[10];
+
+    limpiarPantalla();
+    setConsoleBackground(White);
+    dibujarTitulo(27, 0, 2, letras);
+    estructura_menu2(16, 103, 10, 27);
+
+    Usuario *usuario = new Usuario();
+    usuario->estadoUsuario = 1;
+    gotoxy(51, 12);
+    color(2);
+    cout << "Registro de usuario";
+    color(0);
+    usuario->tipo = 0;
+    fflush(stdin);
+
+    // Ingresamos tipo de usuario
+    bool tipoValido = false;
     do
     {
-        limpiarPantalla();
-        setConsoleBackground(White);
-        dibujarTitulo(27, 0, 2, letras);
-        estructura_menu2(16, 103, 10, 27);
-        Usuario *usuario = new Usuario();
-        usuario->estadoUsuario = 1;
-        gotoxy(51, 12);
+        gotoxy(27, 14);
         color(2);
-        cout << "Registro de usuario";
-        color(0);
-        gotoxy(36, 14);
-        color(2);
-        cout << "Tipo del usuario (2, 1 o 0): ";
+        cout << "Tipo de usuario (0: cliente, 1: recepcionista): ";
         color(0);
         cin >> usuario->tipo;
-        gotoxy(36, 15);
+        cin.ignore();
+
+        if (usuario->tipo != 0 && usuario->tipo != 1)
+        {
+            gotoxy(27, 15);
+            color(4);
+            cout << "Ingrese un tipo de usuario válido (0 o 1)";
+            pausa();
+            limpiarArea(60, 14, 50, 1);
+            limpiarArea(27, 15, 70, 1);
+            continue;
+        }
+        else
+        {
+            tipoValido = true;
+        }
+    } while (!tipoValido);
+
+    // Ingresamos DNI
+    bool dniValido = false;
+    do
+    {
+        gotoxy(27, 15);
         color(2);
         cout << "DNI: ";
         color(0);
-        cin.ignore();
         getline(cin, usuario->ID_Usuario);
-        gotoxy(36, 16);
+
+        try
+        {
+            stoi(usuario->ID_Usuario);
+        }
+        catch (const std::invalid_argument &e)
+        {
+            gotoxy(27, 16);
+            color(4);
+            cout << "El DNI debe ser un número";
+            pausa();
+            limpiarArea(31, 15, 20, 1);
+            limpiarArea(27, 16, 50, 1);
+            continue;
+        }
+
+        if (usuario->ID_Usuario.length() != 8)
+        {
+            gotoxy(27, 15);
+            color(4);
+            cout << "El DNI debe tener 8 digitos";
+            pausa();
+            limpiarArea(31, 15, 20, 1);
+            limpiarArea(27, 16, 50, 1);
+            continue;
+        }
+        else
+        {
+            dniValido = true;
+        }
+    } while (!dniValido);
+
+    // Ingresamos nombre de usuario
+    bool usuarioValido = false;
+    do
+    {
+        gotoxy(27, 16);
+        fflush(stdin);
         color(2);
         cout << "Nombre de usuario: ";
         color(0);
         getline(cin, usuario->usuario);
-        gotoxy(36, 17);
+
+        if (usuario->usuario.length() < 6 || usuario->usuario.length() > 15)
+        {
+            gotoxy(27, 17);
+            color(4);
+            cout << "El nombre de usuario debe tener al menos 4 caracteres y máximo 15";
+            pausa();
+            limpiarArea(45, 16, 50, 1);
+            limpiarArea(27, 17, 70, 1);
+            continue;
+        }
+        else
+        {
+            usuarioValido = true;
+        }
+    } while (!usuarioValido);
+
+    // Ingresamos contraseña
+    bool contrasenaValida = false;
+    do
+    {
+        gotoxy(27, 17);
+        fflush(stdin);
         color(2);
         cout << "Contrasena: ";
         color(0);
         getline(cin, usuario->contrasena);
-        gotoxy(36, 18);
+
+        if (usuario->contrasena.length() < 6 || usuario->contrasena.length() > 15)
+        {
+            gotoxy(27, 18);
+            color(4);
+            cout << "La contraseña debe tener al menos 6 caracteres y máximo 15";
+            pausa();
+            limpiarArea(40, 17, 50, 1);
+            limpiarArea(27, 18, 70, 1);
+            continue;
+        }
+        else
+        {
+            contrasenaValida = true;
+        }
+    } while (!contrasenaValida);
+
+    // Ingresamos nombres
+    bool nombreValido = false;
+    do
+    {
+        gotoxy(27, 18);
+        fflush(stdin);
         color(2);
         cout << "Nombres: ";
         color(0);
         getline(cin, usuario->nombre);
-        gotoxy(36, 19);
+
+        if (esSoloLetras(usuario->nombre) == false)
+        {
+            gotoxy(27, 19);
+            color(4);
+            cout << "Ingrese nombres válidos";
+            pausa();
+            limpiarArea(36, 18, 65, 1);
+            limpiarArea(27, 19, 70, 1);
+            continue;
+        }
+        else
+
+            if (usuario->nombre.length() < 3 || usuario->nombre.length() > 30)
+        {
+            gotoxy(27, 19);
+            color(4);
+            cout << "Ingrese nombres válido";
+            pausa();
+            limpiarArea(36, 18, 65, 1);
+            limpiarArea(27, 19, 70, 1);
+            continue;
+        }
+        else
+        {
+            nombreValido = true;
+        }
+    } while (!nombreValido);
+
+    // Ingresamos apellidos
+    bool apellidosValidos = false;
+    do
+    {
+        gotoxy(27, 19);
+        fflush(stdin);
         color(2);
         cout << "Apellidos: ";
         color(0);
         getline(cin, usuario->apellidos);
-        gotoxy(36, 20);
+
+        if (esSoloLetras(usuario->apellidos) == false)
+        {
+            gotoxy(27, 20);
+            color(4);
+            cout << "Ingrese apellidos válido";
+            pausa();
+            limpiarArea(36, 19, 65, 1);
+            limpiarArea(27, 20, 70, 1);
+            continue;
+        }
+        else
+
+            if (usuario->apellidos.length() < 3 || usuario->apellidos.length() > 30)
+        {
+            gotoxy(27, 19);
+            color(4);
+            cout << "Ingrese apellidos válido";
+            pausa();
+            limpiarArea(36, 19, 65, 1);
+            limpiarArea(27, 20, 70, 1);
+            continue;
+        }
+        else
+        {
+            apellidosValidos = true;
+        }
+    } while (!apellidosValidos);
+
+    // Ingresamos género
+    bool generoValido = false;
+    do
+    {
+        gotoxy(27, 20);
+        fflush(stdin);
         color(2);
         cout << "Sexo (F = femenino o M = masculino): ";
         color(0);
         cin >> usuario->genero;
-        gotoxy(36, 21);
+        // Lo pasamos a mayúsculas
+        usuario->genero = toupper(usuario->genero);
+
+        if (usuario->genero != 'F' && usuario->genero != 'M')
+        {
+            gotoxy(27, 21);
+            color(4);
+            cout << "Ingrese un género válido (F o M)";
+            pausa();
+            limpiarArea(47, 20, 50, 1);
+            limpiarArea(27, 21, 70, 1);
+            continue;
+        }
+        else
+        {
+            generoValido = true;
+        }
+    } while (!generoValido);
+
+    // Ingresamos correo electrónico
+    bool correoValido = false;
+    do
+    {
+        gotoxy(27, 21);
+        fflush(stdin);
         color(2);
         cout << "Correo electronico: ";
         color(0);
         cin.ignore();
         getline(cin, usuario->correoElectronico);
-        gotoxy(36, 22);
+
+        if (esCorreoValido(usuario->correoElectronico) == false)
+        {
+            gotoxy(27, 22);
+            color(4);
+            cout << "Ingrese un correo válido";
+            pausa();
+            limpiarArea(45, 21, 50, 1);
+            limpiarArea(27, 22, 70, 1);
+            continue;
+        }
+        else
+        {
+            correoValido = true;
+        }
+    } while (!correoValido);
+
+    // Ingresamos número de teléfono
+    bool telefonoValido = false;
+    do
+    {
+        gotoxy(27, 22);
+        fflush(stdin);
         color(2);
         cout << "Número celular (9 digitos): ";
         color(0);
         getline(cin, usuario->telefono);
 
-        if (usuario->tipo == 0)
+        try
         {
-            usuario->membresia = "INACTIVA";
+            stoi(usuario->telefono);
+        }
+        catch (const std::invalid_argument &e)
+        {
+            gotoxy(27, 23);
+            color(4);
+            cout << "Ingrese un número de teléfono válido";
+            pausa();
+            limpiarArea(45, 22, 50, 1);
+            limpiarArea(27, 23, 70, 1);
+            continue;
+        }
+
+        if (usuario->telefono.length() != 9)
+        {
+            gotoxy(27, 23);
+            color(4);
+            cout << "Ingrese un número de teléfono válido";
+            pausa();
+            limpiarArea(45, 22, 50, 1);
+            limpiarArea(27, 23, 70, 1);
+            continue;
         }
         else
         {
-            usuario->membresia = "ACTIVA";
+            telefonoValido = true;
         }
+    } while (!telefonoValido);
 
-        usuario->fechaInicio = "00/00/0000";
-        usuario->fechaFinal = "00/00/0000";
-        usuario->librosPrestados = 0;
+    if (usuario->tipo == 0)
+    {
+        usuario->membresia = "INACTIVA";
+    }
+    else
+    {
+        usuario->membresia = "ACTIVA";
+    }
 
-        insertarFinal(lista, usuario);
-        color(2);
-        dibujarTextoPuntos(36, 24, "Registrando usuario");
-        gotoxy(36, 24);
-        cout << "Usuario registrado con exito!";
-        gotoxy(36, 26);
-        cout << "Desea registrar otro usuario? (s/n): ";
-        color(0);
-        cin >> respuesta;
-        cin.ignore();
+    usuario->fechaInicio = "00/00/0000";
+    usuario->fechaFinal = "00/00/0000";
+    usuario->librosPrestados = 0;
+    usuario->numeroCastigos = 0;
 
-    } while (respuesta[0] == 's' || respuesta[0] == 'S');
+    insertarFinal(lista, usuario);
+
+    color(2);
+    dibujarTextoPuntos(27, 24, "Registrando usuario");
+    gotoxy(36, 24);
+    cout << "Usuario registrado con exito!";
+    pausa();
 
     guardar_CSV(lista, "output/usuarios.csv");
 }
@@ -122,6 +374,7 @@ void menuInicio_registrarUsuario()
     setConsoleBackground(White);
     dibujarTitulo(27, 0, 2, letras);
     estructura_menu2(16, 103, 10, 27);
+
     Usuario *usuario = new Usuario();
     usuario->estadoUsuario = 1;
     gotoxy(51, 12);
@@ -130,53 +383,297 @@ void menuInicio_registrarUsuario()
     color(0);
     usuario->tipo = 0;
     fflush(stdin);
-    gotoxy(36, 14);
-    color(2);
-    cout << "DNI: ";
-    color(0);
-    getline(cin, usuario->ID_Usuario);
-    gotoxy(36, 15);
-    fflush(stdin);
-    color(2);
-    cout << "Nombre de usuario: ";
-    color(0);
-    getline(cin, usuario->usuario);
-    gotoxy(36, 16);
-    color(2);
-    cout << "Contrasena: ";
-    color(0);
-    getline(cin, usuario->contrasena);
-    gotoxy(36, 17);
-    color(2);
-    cout << "Nombres: ";
-    color(0);
-    getline(cin, usuario->nombre);
-    gotoxy(36, 18);
-    color(2);
-    cout << "Apellidos: ";
-    color(0);
-    getline(cin, usuario->apellidos);
-    gotoxy(36, 19);
-    color(2);
-    cout << "Sexo (F = femenino o M = masculino): ";
-    color(0);
-    cin >> usuario->genero;
-    gotoxy(36, 20);
-    color(2);
-    cout << "Correo electronico: ";
-    color(0);
-    cin.ignore();
-    getline(cin, usuario->correoElectronico);
-    gotoxy(36, 21);
-    color(2);
-    cout << "Número celular (9 digitos): ";
-    color(0);
-    getline(cin, usuario->telefono);
+
+    // Ingresamos DNI
+    bool dniValido = false;
+    do
+    {
+        gotoxy(27, 14);
+        color(2);
+        cout << "DNI: ";
+        color(0);
+        getline(cin, usuario->ID_Usuario);
+
+        try
+        {
+            stoi(usuario->ID_Usuario);
+        }
+        catch (const std::invalid_argument &e)
+        {
+            gotoxy(27, 15);
+            color(4);
+            cout << "El DNI debe ser un número";
+            pausa();
+            limpiarArea(31, 14, 20, 1);
+            limpiarArea(27, 15, 50, 1);
+            continue;
+        }
+
+        if (usuario->ID_Usuario.length() != 8)
+        {
+            gotoxy(27, 15);
+            color(4);
+            cout << "El DNI debe tener 8 digitos";
+            pausa();
+            limpiarArea(31, 14, 20, 1);
+            limpiarArea(27, 15, 50, 1);
+            continue;
+        }
+        else
+        {
+            dniValido = true;
+        }
+    } while (!dniValido);
+
+    // Ingresamos nombre de usuario
+    bool usuarioValido = false;
+    do
+    {
+        gotoxy(27, 15);
+        fflush(stdin);
+        color(2);
+        cout << "Nombre de usuario: ";
+        color(0);
+        getline(cin, usuario->usuario);
+
+        if (usuario->usuario.length() < 6 || usuario->usuario.length() > 15)
+        {
+            gotoxy(27, 16);
+            color(4);
+            cout << "El nombre de usuario debe tener al menos 4 caracteres y máximo 15";
+            pausa();
+            limpiarArea(45, 15, 50, 1);
+            limpiarArea(27, 16, 70, 1);
+            continue;
+        }
+        else
+        {
+            usuarioValido = true;
+        }
+    } while (!usuarioValido);
+
+    // Ingresamos contraseña
+    bool contrasenaValida = false;
+    do
+    {
+        gotoxy(27, 16);
+        fflush(stdin);
+        color(2);
+        cout << "Contrasena: ";
+        color(0);
+        getline(cin, usuario->contrasena);
+
+        if (usuario->contrasena.length() < 6 || usuario->contrasena.length() > 15)
+        {
+            gotoxy(27, 17);
+            color(4);
+            cout << "La contraseña debe tener al menos 6 caracteres y máximo 15";
+            pausa();
+            limpiarArea(40, 16, 50, 1);
+            limpiarArea(27, 17, 70, 1);
+            continue;
+        }
+        else
+        {
+            contrasenaValida = true;
+        }
+    } while (!contrasenaValida);
+
+    // Ingresamos nombres
+    bool nombreValido = false;
+    do
+    {
+        gotoxy(27, 17);
+        fflush(stdin);
+        color(2);
+        cout << "Nombres: ";
+        color(0);
+        getline(cin, usuario->nombre);
+
+        if (esSoloLetras(usuario->nombre) == false)
+        {
+            gotoxy(27, 18);
+            color(4);
+            cout << "Ingrese nombres válidos";
+            pausa();
+            limpiarArea(36, 17, 65, 1);
+            limpiarArea(27, 18, 70, 1);
+            continue;
+        }
+        else
+
+            if (usuario->nombre.length() < 3 || usuario->nombre.length() > 30)
+        {
+            gotoxy(27, 18);
+            color(4);
+            cout << "Ingrese nombres válido";
+            pausa();
+            limpiarArea(36, 17, 65, 1);
+            limpiarArea(27, 18, 70, 1);
+            continue;
+        }
+        else
+        {
+            nombreValido = true;
+        }
+    } while (!nombreValido);
+
+    // Ingresamos apellidos
+    bool apellidosValidos = false;
+    do
+    {
+        gotoxy(27, 18);
+        fflush(stdin);
+        color(2);
+        cout << "Apellidos: ";
+        color(0);
+        getline(cin, usuario->apellidos);
+
+        if (esSoloLetras(usuario->apellidos) == false)
+        {
+            gotoxy(27, 19);
+            color(4);
+            cout << "Ingrese apellidos válido";
+            pausa();
+            limpiarArea(36, 18, 65, 1);
+            limpiarArea(27, 19, 70, 1);
+            continue;
+        }
+        else
+
+            if (usuario->apellidos.length() < 3 || usuario->apellidos.length() > 30)
+        {
+            gotoxy(27, 19);
+            color(4);
+            cout << "Ingrese apellidos válido";
+            pausa();
+            limpiarArea(36, 18, 65, 1);
+            limpiarArea(27, 19, 70, 1);
+            continue;
+        }
+        else
+        {
+            apellidosValidos = true;
+        }
+    } while (!apellidosValidos);
+
+    // Ingresamos género
+    bool generoValido = false;
+    do
+    {
+        gotoxy(27, 19);
+        fflush(stdin);
+        color(2);
+        cout << "Sexo (F = femenino o M = masculino): ";
+        color(0);
+        cin >> usuario->genero;
+        // Lo pasamos a mayúsculas
+        usuario->genero = toupper(usuario->genero);
+
+        if (usuario->genero != 'F' && usuario->genero != 'M')
+        {
+            gotoxy(27, 20);
+            color(4);
+            cout << "Ingrese un género válido (F o M)";
+            pausa();
+            limpiarArea(47, 19, 50, 1);
+            limpiarArea(27, 20, 70, 1);
+            continue;
+        }
+        else
+        {
+            generoValido = true;
+        }
+    } while (!generoValido);
+
+    // Ingresamos correo electrónico
+    bool correoValido = false;
+    do
+    {
+        gotoxy(27, 20);
+        fflush(stdin);
+        color(2);
+        cout << "Correo electronico: ";
+        color(0);
+        cin.ignore();
+        getline(cin, usuario->correoElectronico);
+
+        if (esCorreoValido(usuario->correoElectronico) == false)
+        {
+            gotoxy(27, 21);
+            color(4);
+            cout << "Ingrese un correo válido";
+            pausa();
+            limpiarArea(45, 20, 50, 1);
+            limpiarArea(27, 21, 70, 1);
+            continue;
+        }
+        else
+        {
+            correoValido = true;
+        }
+    } while (!correoValido);
+
+    // Ingresamos número de teléfono
+    bool telefonoValido = false;
+    do
+    {
+        gotoxy(27, 21);
+        fflush(stdin);
+        color(2);
+        cout << "Número celular (9 digitos): ";
+        color(0);
+        getline(cin, usuario->telefono);
+
+        try
+        {
+            stoi(usuario->telefono);
+        }
+        catch (const std::invalid_argument &e)
+        {
+            gotoxy(27, 22);
+            color(4);
+            cout << "Ingrese un número de teléfono válido";
+            pausa();
+            limpiarArea(45, 21, 50, 1);
+            limpiarArea(27, 22, 70, 1);
+            continue;
+        }
+
+        if (usuario->telefono.length() != 9)
+        {
+            gotoxy(27, 22);
+            color(4);
+            cout << "Ingrese un número de teléfono válido";
+            pausa();
+            limpiarArea(45, 21, 50, 1);
+            limpiarArea(27, 22, 70, 1);
+            continue;
+        }
+        else
+        {
+            telefonoValido = true;
+        }
+    } while (!telefonoValido);
+
+    if (usuario->tipo == 0)
+    {
+        usuario->membresia = "INACTIVA";
+    }
+    else
+    {
+        usuario->membresia = "ACTIVA";
+    }
+
+    usuario->fechaInicio = "00/00/0000";
+    usuario->fechaFinal = "00/00/0000";
+    usuario->librosPrestados = 0;
+    usuario->numeroCastigos = 0;
 
     insertarFinal(lista, usuario);
 
     color(2);
-    dibujarTextoPuntos(36, 24, "Registrando usuario");
+    dibujarTextoPuntos(27, 24, "Registrando usuario");
     gotoxy(36, 24);
     cout << "Usuario registrado con exito!";
     pausa();
@@ -232,8 +729,8 @@ void guardar_CSV(Lista *lista, string nombreArchivo)
         // system("PAUSE");
         Usuario usuario = actual->usuario;
 
-        archivo << usuario.estadoUsuario << "," << usuario.tipo << "," << usuario.ID_Usuario << "," << usuario.usuario << "," << usuario.contrasena << "," << usuario.nombre << "," << usuario.apellidos << "," << usuario.genero << ","
-                << usuario.correoElectronico << "," << usuario.telefono << "," << usuario.membresia << "," << usuario.librosPrestados << "," << usuario.fechaInicio << "," << usuario.fechaFinal << "\n";
+        archivo << usuario.estadoUsuario << "," << usuario.tipo << "," << usuario.ID_Usuario << "," << usuario.usuario << "," << usuario.contrasena << "," << usuario.nombre << "," << usuario.apellidos << "," << usuario.genero << "," << usuario.correoElectronico << "," << usuario.telefono << "," << usuario.membresia << "," << usuario.librosPrestados << ","
+                << usuario.fechaInicio << "," << usuario.fechaFinal << "," << usuario.numeroCastigos << "\n";
 
         actual = actual->siguiente;
     }
@@ -553,6 +1050,9 @@ void activarMembresi()
 {
     string dni;
 
+    // Inicializamos par guardarlo en ganancias.csv
+    Ganancia ganancia;
+
     limpiarPantalla();
     setConsoleBackground(White);
     dibujarTitulo(27, 0, 2, letras);
@@ -575,51 +1075,102 @@ void activarMembresi()
         string respuesta;
         if (actual->usuario.ID_Usuario == dni)
         {
-            gotoxy(36, 16);
+            gotoxy(27, 16);
             color(2);
             cout << "Usuario encontrado: ";
             color(0);
             cout << actual->usuario.nombre << " " << actual->usuario.apellidos << endl;
-            gotoxy(36, 17);
+
+            Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv"); // cargando lista de usuarios
+            if (verificarMembresia(listaUsuarios, stoi(dni)))
+            {
+                gotoxy(27, 17);
+                color(4);
+                cout << "El usuario ya tiene una membresia activa";
+                pausa();
+                return;
+            }
+            gotoxy(27, 17);
             color(2);
-            cout << "Desea activar la membresia? (s/n): ";
+            cout << "Se tienen los siguientes tipos de membresías: ";
+            color(0);
+            gotoxy(27, 18);
+            cout << "1. Estandar - S/ 15.00";
+            gotoxy(27, 19);
+            cout << "2. Premium - S/ 30.00";
+            gotoxy(27, 20);
+            cout << "3. VIP - S/ 50.00";
+            gotoxy(27, 21);
+            color(2);
+            cout << "Membresia que desea el cliente (0: salir): ";
             color(0);
             fflush(stdin);
             getline(cin, respuesta);
-            cout << respuesta;
-            if (respuesta == "s" || respuesta == "S")
+            if (respuesta == "0")
             {
-                string fecha;
-                actual->usuario.membresia = "ACTIVA";
-                time_t t = time(0);
-                tm *localTime = localtime(&t);
-                // Fecha de inicio
-                string diaStr = to_string(localTime->tm_mday);
-                string mesStr = to_string(localTime->tm_mon + 1);
-                string añoStr = to_string(localTime->tm_year + 1900);
-                fecha = diaStr + "/" + mesStr + "/" + añoStr;
-                actual->usuario.fechaInicio = fecha;
-                // Fecha de fin
-                añoStr = to_string(localTime->tm_year + 1901);
-                fecha = diaStr + "/" + mesStr + "/" + añoStr;
-                actual->usuario.fechaFinal = fecha;
-                color(2);
-                dibujarTextoPuntos(36, 19, "Activando membresia");
-                gotoxy(36, 19);
-                cout << "Membresia activada correctamente!";
+                gotoxy(27, 23);
+                color(4);
+                cout << "Operación cancelada";
+                return;
+            }
+            else if (respuesta == "1")
+            {
+                actual->usuario.membresia = "ESTANDAR";
+                ganancia.monto = 15.00;
+                ganancia.origen = "MEMBRESIA ESTANDAR";
+            }
+            else if (respuesta == "2")
+            {
+                actual->usuario.membresia = "PREMIUM";
+                ganancia.monto = 30.00;
+                ganancia.origen = "MEMBRESIA PREMIUM";
+            }
+            else if (respuesta == "3")
+            {
+                actual->usuario.membresia = "VIP";
+                ganancia.monto = 50.00;
+                ganancia.origen = "MEMBRESIA VIP";
             }
             else
             {
-                gotoxy(36, 19);
-                cout << "Membresia no activada";
+                gotoxy(27, 23);
+                color(4);
+                cout << "Opción inválida";
+                return;
             }
+
+            string fecha;
+            time_t t = time(0);
+            tm *localTime = localtime(&t);
+            // Fecha de inicio
+            string diaStr = to_string(localTime->tm_mday);
+            string mesStr = to_string(localTime->tm_mon + 1);
+            string añoStr = to_string(localTime->tm_year + 1900);
+            fecha = diaStr + "/" + mesStr + "/" + añoStr;
+            actual->usuario.fechaInicio = fecha;
+            // Fecha de fin
+            añoStr = to_string(localTime->tm_year + 1901);
+            fecha = diaStr + "/" + mesStr + "/" + añoStr;
+            actual->usuario.fechaFinal = fecha;
+            color(2);
+            dibujarTextoPuntos(36, 23, "Activando membresia");
+            gotoxy(36, 23);
+            cout << "Membresia activada correctamente!";
+
+            // LLenamos los otros datos
+            ganancia.id_usuario = stoi(dni);
+            ganancia.fecha = fecha;
+            ListaGanancias listaGanancias;
+            insertarFinalGanancias(&listaGanancias, &ganancia);
+            guardarGananciasCSV(&listaGanancias, "output/ganancias.csv");
+
         }
         actual = actual->siguiente;
     }
     limpiarCSV("output/usuarios.csv");
     guardar_CSV(&listaUsuarios, "output/usuarios.csv");
 
-    system("pause>0");
+    pausa();
 }
 
 // Insertar para crear la lista enlazada
@@ -684,6 +1235,9 @@ Lista leerUsuariosCSV(string nombreArchivo)
 
             getline(ss, usuario.fechaInicio, ',');
             getline(ss, usuario.fechaFinal, ',');
+
+            getline(ss, dato, ',');
+            usuario.numeroCastigos = stoi(dato); // Convertir a entero
 
             // Insertar el usuario en la lista enlazada
             insertarFinal(&listaDeUsuarios, &usuario);
@@ -797,7 +1351,7 @@ bool mostrarUsuarioXDNI(Lista &listaUsuarios, const string &dni)
 }
 
 // Función para buscar un usuario por DNI
-Nodo *buscarUsuarioPorDNI(Lista &listaUsuarios, const string &dni)
+Nodo *buscarUsuarioPorDNI(Lista &listaUsuarios, string &dni)
 {
     Nodo *actual = listaUsuarios.cabeza;
     while (actual != nullptr)

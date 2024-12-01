@@ -9,6 +9,7 @@
 #include "../data/prestamoLibro.h"
 #include "../data/carritoLibro.h"
 #include "../data/historialYEstadisticaLibros.h"
+#include "../data/ganancias.h"
 
 // Menu de opciones inicial
 vector<string> opcionesMenuPrincipal = {"Ver catalogo",
@@ -27,6 +28,10 @@ void menu_opcionesGestionUsuarios();
 void menu_opcionesGestionPedidos();
 void menu_opcionesGestionLaptops();
 void menu_opcionesPedido();
+void menu_opcionesGestionLibros();   // Declaración previa
+void menu_opcionesGestionUsuarios(); // Declaración previa
+void menu_opcionesGestionPedidos();  // Declaración previa
+void menu_opcionesGestionLaptops();  // Declaración previa
 
 // Para cuando se inicie sesión
 int id_usuariolog = 0;
@@ -133,11 +138,6 @@ vector<string> opcionesMenuAdministrador = {"Gestionar libros",
                                             "Ver estadisticas",
                                             "Cerrar sesion"};
 int numAdmin = opcionesMenuAdministrador.size();
-
-void menu_opcionesGestionLibros();   // Declaración previa
-void menu_opcionesGestionUsuarios(); // Declaración previa
-void menu_opcionesGestionPedidos();  // Declaración previa
-void menu_opcionesGestionLaptops();  // Declaración previa
 
 void menu_opcionesAdministrador()
 {
@@ -464,6 +464,94 @@ void menu_opcionesGestionPedidos()
   }
 }
 
+// Menu de opciones de gestionar laptops (Administrador)
+vector<string> opcionesMenuGestionLaptops = {"Visualizar Pila de Laptops",
+                                             "Agregar Laptop",
+                                             "Eliminar Laptop",
+                                             "Restaurar Laptop",
+                                             "Salir"};
+int numGestionLaptops = opcionesMenuGestionLaptops.size();
+
+void menu_opcionesGestionLaptops()
+{
+  bool repeat = true;
+  int opt = 1;
+  while (repeat)
+  {
+    limpiarPantalla();
+    setConsoleBackground(White);
+    dibujarTitulo(27, 0, 2, letras);
+    estructura_menu2(16, 103, 10, 27);
+    // Imprimir las opciones
+    for (int i = 0; i < numGestionLaptops; i++)
+    {
+      color(0);
+      if (i == opt - 1)
+      {
+        color(2);
+        gotoxy(46, 16 + i);
+        cout << "=>   ";
+        gotoxy(48, 16 + i);
+        cout << opcionesMenuGestionLaptops[i] << endl;
+      }
+      else
+      {
+        gotoxy(53, 16 + i);
+        cout << "   " << opcionesMenuGestionLaptops[i] << endl;
+      }
+    }
+    // Capturamos la entrada de usuario
+    int input = _getch();
+    PilaLaptops *pila = new PilaLaptops();
+    leerLaptopsCSV(pila, "output/laptops.csv");
+    switch (input)
+    {
+    // Aumentar o disminuir la opcion en la que estamos
+    case 72: // Flecha arriba
+      opt = (opt == 1) ? numGestionLaptops : --opt;
+      break;
+    case 80: // Flecha abajo
+      opt = (opt == numGestionLaptops) ? 1 : ++opt;
+      break;
+    // Ejecutar una de las opciones del menu
+    case 13:
+
+      // Variable para verificar si se ha cambiado el estado de alguna laptop
+      bool laptopRestaurada = false;
+      switch (opt)
+      {
+      case 1:
+      {
+        // 1. Visualizar Pila de Laptops
+        mostrarPilaLaptops(pila);
+        getch();
+        break;
+      }
+      case 2:
+        // 2. Agregar Laptop
+        gestionLaptops_registrarLaptop();
+        getch();
+        break;
+      case 3:
+        // 3. Eliminar Laptop
+        marcarLaptopFueraDeServicio(pila);
+        break;
+      case 4:
+        // 4. Restaurar Laptop
+        restaurarLaptop(pila);
+        break;
+      case 5:
+        // 5. Salir
+        repeat = false;
+        system("CLS");
+        break;
+      default:
+        cout << "Estas fuera del rango\n";
+      }
+    }
+  }
+}
+
 // Menu de opciones de recepcionista
 vector<string> opcionesMenuRecepcionista = {"Gestionar pedido de libro",
                                             "Gestionar pedido de laptop",
@@ -632,14 +720,11 @@ void menu_opcionesLaptop()
   }
 }
 
-// Menu de opciones de cliente
+// Menu de opciones de cliente (Recepcionista)
 vector<string> opcionesMenuCliente = {
     "Ver catalogo",
     "Realizar pedido",
     "Ver historial de pedidos",
-    "Agregar al Carrito",
-    "Ver Carrito",
-    "Efectuar Compra",
     "Cerrar sesion",
 };
 int numCliente = opcionesMenuCliente.size();
@@ -708,110 +793,6 @@ void menu_opcionesCliente()
         mostrarHistorialCliente(id_usuariolog);
         break;
       case 4:
-        // 4."Agregar al Carrito", Miguel
-        system("CLS");
-        agregarCarrito(id_usuariolog);
-        break;
-      case 5:
-        // 5."Ver Carrito del Usuario", Miguel
-        system("CLS");
-        mostrarCarritoUsu(id_usuariolog, 0); // Agregado No Pagado
-        getch();
-        break;
-      case 6:
-        // 6."Efectuar Compra",Miguel
-        menu_CompraCarrito(id_usuariolog);
-        break;
-      case 7:
-        repeat = false;
-        system("CLS");
-        break;
-
-      default:
-        cout << "Estas fuera del rango\n";
-      }
-    }
-  }
-}
-
-// Menu de opciones de gestionar laptops (Administrador)
-vector<string> opcionesMenuGestionLaptops = {"Visualizar Pila de Laptops",
-                                             "Agregar Laptop",
-                                             "Eliminar Laptop",
-                                             "Restaurar Laptop",
-                                             "Salir"};
-int numGestionLaptops = opcionesMenuGestionLaptops.size();
-
-void menu_opcionesGestionLaptops()
-{
-  bool repeat = true;
-  int opt = 1;
-  while (repeat)
-  {
-    limpiarPantalla();
-    setConsoleBackground(White);
-    dibujarTitulo(27, 0, 2, letras);
-    estructura_menu2(16, 103, 10, 27);
-    // Imprimir las opciones
-    for (int i = 0; i < numGestionLaptops; i++)
-    {
-      color(0);
-      if (i == opt - 1)
-      {
-        color(2);
-        gotoxy(46, 16 + i);
-        cout << "=>   ";
-        gotoxy(48, 16 + i);
-        cout << opcionesMenuGestionLaptops[i] << endl;
-      }
-      else
-      {
-        gotoxy(53, 16 + i);
-        cout << "   " << opcionesMenuGestionLaptops[i] << endl;
-      }
-    }
-    // Capturamos la entrada de usuario
-    int input = _getch();
-    PilaLaptops *pila = new PilaLaptops();
-    leerLaptopsCSV(pila, "output/laptops.csv");
-    switch (input)
-    {
-    // Aumentar o disminuir la opcion en la que estamos
-    case 72: // Flecha arriba
-      opt = (opt == 1) ? numGestionLaptops : --opt;
-      break;
-    case 80: // Flecha abajo
-      opt = (opt == numGestionLaptops) ? 1 : ++opt;
-      break;
-    // Ejecutar una de las opciones del menu
-    case 13:
-
-      // Variable para verificar si se ha cambiado el estado de alguna laptop
-      bool laptopRestaurada = false;
-      switch (opt)
-      {
-      case 1:
-      {
-        // 1. Visualizar Pila de Laptops
-        mostrarPilaLaptops(pila);
-        getch();
-        break;
-      }
-      case 2:
-        // 2. Agregar Laptop
-        gestionLaptops_registrarLaptop();
-        getch();
-        break;
-      case 3:
-        // 3. Eliminar Laptop
-        marcarLaptopFueraDeServicio(pila);
-        break;
-      case 4:
-        // 4. Restaurar Laptop
-        restaurarLaptop(pila);
-        break;
-      case 5:
-        // 5. Salir
         repeat = false;
         system("CLS");
         break;
@@ -821,13 +802,13 @@ void menu_opcionesGestionLaptops()
     }
   }
 }
+
 
 // Menu de opciones de gestionar pedidos de libros (Recepcionista)
 vector<string> opcionesMenuGestionPedidosLibros = {"Atender pedido",
                                                    "Registrar devolucion de libro",
                                                    "Ver pedidos de cliente",
                                                    "Retroceder"};
-
 int numGestionPedidosLibros = opcionesMenuGestionPedidosLibros.size();
 
 void menu_opcionesPedido()
@@ -880,14 +861,14 @@ void menu_opcionesPedido()
         setConsoleBackground(White);
         dibujarTitulo(27, 0, 2, letras);
         estructura_menu2(16, 103, 10, 27);
-        atenderPrestamoMenu();
+        atenderPrestamoMenu(id_usuariolog);
         getch();
         break;
       }
       case 2:
         // 2. Registrar devolucion de libro
         system("CLS");
-        registrarDevolucionLibro(mora);
+        registrarDevolucionLibro(mora, id_usuariolog);
         getch();
         break;
       case 3:
@@ -899,7 +880,7 @@ void menu_opcionesPedido()
         mostrarHistorial();
         break;
       case 4:
-        // 4. Salir
+        // 5. Salir
         repeat = false;
         system("CLS");
         break;
