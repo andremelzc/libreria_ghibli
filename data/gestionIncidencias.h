@@ -12,9 +12,9 @@
 
 using namespace std;
 
-void insertarFinalGanancias(ListaGanancias *lista, Ganancia *ganancia)
+void insertarFinalIncidencias(ListaIncidencias *lista, Incidencia *incidencia)
 {
-    NodoGanancia *nodo = new NodoGanancia(*ganancia);
+    NodoIncidencia *nodo = new NodoIncidencia(*incidencia);
 
     if (lista->head == nullptr)
     {
@@ -22,7 +22,7 @@ void insertarFinalGanancias(ListaGanancias *lista, Ganancia *ganancia)
     }
     else
     {
-        NodoGanancia *puntero = lista->head;
+        NodoIncidencia *puntero = lista->head;
         while (puntero->sgte)
         {
             puntero = puntero->sgte;
@@ -32,11 +32,11 @@ void insertarFinalGanancias(ListaGanancias *lista, Ganancia *ganancia)
     lista->longitud++;
 }
 
-ListaGanancias cargarCSVtoGanancias(string nombreArchivo)
+ListaIncidencias cargarCSVtoIncidencias(string nombreArchivo)
 {
     ifstream archivo(nombreArchivo);
     string linea;
-    ListaGanancias lista;
+    ListaIncidencias lista;
     lista.head = nullptr;
     lista.longitud = 0;
 
@@ -50,31 +50,28 @@ ListaGanancias cargarCSVtoGanancias(string nombreArchivo)
     {
         stringstream ss(linea);
         string dato;
-        Ganancia ganancia;
+        Incidencia incidencia;
 
         getline(ss, dato, ',');
-        ganancia.id_usuario = stoi(dato);
-        getline(ss, ganancia.origen, ',');
+        incidencia.id_incidencia = stoi(dato);
         getline(ss, dato, ',');
-        ganancia.monto = stof(dato);
-        getline(ss, ganancia.fecha, ',');
+        incidencia.id_recepcionista = stoi(dato);
+        getline(ss, dato, ',');
+        incidencia.id_usuario = stoi(dato);
+        getline(ss, incidencia.tipo, ',');
+        getline(ss, incidencia.descripcion, ',');
+        getline(ss, incidencia.fecha, ',');
 
-        insertarFinalGanancias(&lista, &ganancia);
+        insertarFinalIncidencias(&lista, &incidencia);
     }
 
     archivo.close();
     return lista;
 }
 
-void guardarGananciasCSV(ListaGanancias *lista, string nombreArchivo)
+void guardarCSVIncidencias(ListaIncidencias *lista, string nombreArchivo)
 {
-    fstream archivo(nombreArchivo, fstream::out | fstream::app);
-
-    if (!filesystem::exists("output"))
-    {
-        cerr << "Error: El directorio 'output' no existe." << endl;
-        return;
-    }
+    ofstream archivo(nombreArchivo);
 
     if (!archivo.is_open())
     {
@@ -82,22 +79,15 @@ void guardarGananciasCSV(ListaGanancias *lista, string nombreArchivo)
         return;
     }
 
-    NodoGanancia *actual = lista->head;
-    while (actual != nullptr)
+    NodoIncidencia *puntero = lista->head;
+    while (puntero)
     {
-        Ganancia ganancia = actual->ganancia;
-        archivo << ganancia.id_usuario << ","
-                << ganancia.origen << ","
-                << ganancia.monto << ","
-                << ganancia.fecha << "\n";
-
-        actual = actual->sgte;
-    }
-
-    if (archivo.fail())
-    {
-        cerr << "Error: Fallo al escribir en el archivo." << endl;
-        return;
+        archivo << puntero->incidencia.id_incidencia << ","
+                << puntero->incidencia.id_recepcionista << ","
+                << puntero->incidencia.id_usuario << ","
+                << puntero->incidencia.tipo << ","
+                << puntero->incidencia.descripcion << ","
+                << puntero->incidencia.fecha << endl;
     }
 
     archivo.close();

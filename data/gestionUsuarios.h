@@ -10,7 +10,6 @@
 #include <conio.h>
 #include <locale>
 #include <ctime>
-#include "..\data\ganancias.h"
 
 using namespace std;
 

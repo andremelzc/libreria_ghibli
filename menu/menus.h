@@ -1,6 +1,7 @@
 #pragma once
 #include "../data/persistenciaDatos.h"
 #include "../servicio/funcionalidades.h"
+#include "../data/ganancias.h"
 #include "../data/gestionUsuarios.h"
 #include "gotoxy.h"
 #include "../data/gestionLibros.h"
@@ -9,7 +10,6 @@
 #include "../data/prestamoLibro.h"
 #include "../data/carritoLibro.h"
 #include "../data/historialYEstadisticaLibros.h"
-#include "../data/ganancias.h"
 #include "../data/gestionIncidencias.h"
 
 // Menu de opciones inicial
