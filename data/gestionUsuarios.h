@@ -10,6 +10,7 @@
 #include <conio.h>
 #include <locale>
 #include <ctime>
+#include "..\data\ganancias.h"
 
 using namespace std;
 
@@ -1049,6 +1050,9 @@ void activarMembresi()
 {
     string dni;
 
+    // Inicializamos par guardarlo en ganancias.csv
+    Ganancia ganancia;
+
     limpiarPantalla();
     setConsoleBackground(White);
     dibujarTitulo(27, 0, 2, letras);
@@ -1086,7 +1090,6 @@ void activarMembresi()
                 pausa();
                 return;
             }
-
             gotoxy(27, 17);
             color(2);
             cout << "Se tienen los siguientes tipos de membresías: ";
@@ -1113,14 +1116,20 @@ void activarMembresi()
             else if (respuesta == "1")
             {
                 actual->usuario.membresia = "ESTANDAR";
+                ganancia.monto = 15.00;
+                ganancia.origen = "MEMBRESIA ESTANDAR";
             }
             else if (respuesta == "2")
             {
                 actual->usuario.membresia = "PREMIUM";
+                ganancia.monto = 30.00;
+                ganancia.origen = "MEMBRESIA PREMIUM";
             }
             else if (respuesta == "3")
             {
                 actual->usuario.membresia = "VIP";
+                ganancia.monto = 50.00;
+                ganancia.origen = "MEMBRESIA VIP";
             }
             else
             {
@@ -1147,6 +1156,14 @@ void activarMembresi()
             dibujarTextoPuntos(36, 23, "Activando membresia");
             gotoxy(36, 23);
             cout << "Membresia activada correctamente!";
+
+            // LLenamos los otros datos
+            ganancia.id_usuario = stoi(dni);
+            ganancia.fecha = fecha;
+            ListaGanancias listaGanancias;
+            insertarFinalGanancias(&listaGanancias, &ganancia);
+            guardarGananciasCSV(&listaGanancias, "output/ganancias.csv");
+
         }
         actual = actual->siguiente;
     }

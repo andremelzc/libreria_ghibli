@@ -245,3 +245,24 @@ struct ColaClientes {
 
 
 };
+
+// Ganancia
+struct Ganancia{
+    int id_usuario;
+    string origen;
+    float monto;
+    string fecha;
+};
+
+struct NodoGanancia{
+    Ganancia ganancia;
+    NodoGanancia *sgte;
+    NodoGanancia(Ganancia ganancia1): ganancia(ganancia1), sgte(nullptr) {}; 
+    NodoGanancia(): sgte(nullptr) {}; 
+};
+
+struct ListaGanancias{
+    int longitud;
+    NodoGanancia *head;
+    ListaGanancias(): head(nullptr), longitud(0) {}; 
+};
