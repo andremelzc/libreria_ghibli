@@ -367,3 +367,14 @@ bool leerInputEscape(string &input) {
         }
     }
 }
+
+void imprimirCarita(int maxX, int y, int idUsuario){
+    // Buscar al usuario por su ID
+    Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
+    std::string id_usuario_str = std::to_string(idUsuario);
+    Nodo *actual = buscarUsuarioPorDNI(listaUsuarios, id_usuario_str);
+    // Imprimos la carita
+    int longitud = actual->usuario.usuario.length()+2;
+    gotoxy(maxX - longitud, y);
+    cout << char(1) << " "<<actual->usuario.usuario;
+}
