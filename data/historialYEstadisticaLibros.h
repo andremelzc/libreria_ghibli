@@ -302,6 +302,45 @@ void mostrarHistorialCliente(int dni)
     pausa();
 }
 
+// a partir de aqui tiene que ver con estadisticas
+
+ListaStrings cargarNombreLibrosCSV()
+{
+    ListaStrings listaLibros;
+    ListaLibros libros = leerLibrosCSV("output/libros.csv");
+    nodoLibros *actual = libros.cabeza;
+
+    while (actual != nullptr)
+    {
+        NodoStrings *nodo = new NodoStrings(actual->libro.nombre_Libro);
+        if (listaLibros.cabeza == nullptr)
+        {
+            listaLibros.cabeza = nodo;
+        }
+        else
+        {
+            bool encontrado = false;
+            NodoStrings *ultimo = listaLibros.cabeza;
+            while (ultimo->sgte != nullptr)
+            {
+                if (ultimo->dato == nodo->dato)
+                {
+                    encontrado = true;
+                }
+                ultimo = ultimo->sgte;
+            }
+            if (!encontrado)
+            {
+                ultimo->sgte = nodo;
+            }
+        }
+        listaLibros.longitud++;
+        actual = actual->siguiente;
+    }
+
+    return listaLibros;
+}
+
 void encolarEstadistica(NodoEstadisticas *stat, colaPrioEstadisticas &q)
 {
 
@@ -360,9 +399,17 @@ NodoEstadisticas *desencolar(colaPrioEstadisticas &q)
 
 colaPrioEstadisticas cargarEstadisticaCSV(string nombreArchivo)
 {
+    /*
+    - recuperar la informacion de estadisticas de libros desde un archivo CSV
+    - crear un array de strings con los nombres de los libros
+    - crear una funcion que transforme el id de los libros del pedido en el nombre del libro
+    - crear un doble for que recorra el array de strings y compare con el nombre del libro del pedido
+    al final de este for se estaría creando un nodoEstadistica con el nombre del libro y las veces solicitado
+    */
     fstream archivo(nombreArchivo);
 
     colaPrioEstadisticas colaPrincipal; // crear una cola de prioridad vacia
+
     string linea;
 
     if (!archivo.is_open())
@@ -372,21 +419,108 @@ colaPrioEstadisticas cargarEstadisticaCSV(string nombreArchivo)
 
         return colaPrincipal; // Regresar la lista vacía si el archivo no se pudo abrir
     }
-
-    while (getline(archivo, linea))
+    int vecesSolicitado = 0, vecesPrestado = 0, vecesDevueltoTarde = 0;
+    ListaStrings listaLibros = cargarNombreLibrosCSV();
+    NodoStrings *actualLibro = listaLibros.cabeza;
+    while (actualLibro != nullptr)
     {
-        stringstream ss(linea);
-        string campo;
         estadisticaLibro stat;
+        // Resetear el cursor al inicio del archivo
+        archivo.clear();  // Limpia los flags de error del archivo
+        archivo.seekg(0); // Mueve el cursor al inicio del archivo
 
-        // Leer el ID de libro
+        while (getline(archivo, linea))
+        {
 
-        // veces solicitado
+            stringstream ss(linea);
+            string campo;
+            getline(ss, campo, ','); // saltando el id del pedido
+            getline(ss, campo, ','); // saltando el id del usuario
 
-        // veces prestado
+            // Leer el ID de libro
+            getline(ss, campo, ',');
+            ListaLibros libros = leerLibrosCSV("output/Libros.csv");
+            string nombreLibro = devolverLibroNombre(libros, stoi(campo));
+            // Leer el estado del pedido
+            getline(ss, campo, ',');
+            if (actualLibro->dato == nombreLibro)
+            {
+                if (campo == "PRESTADO")
+                {
+                    // veces prestado
+                    vecesPrestado++;
+                }
+                else if (campo == "DEVUELTO_TARDE" or campo == "NO_DEVUELTO")
+                {
+                    // veces devuelto tarde
+                    vecesDevueltoTarde++;
+                }
+                else if (campo == "SOLICTADO")
+                {
+                    // veces solicitado
+                    vecesSolicitado++;
+                }
+            }
+        }
+        stat.nombreLibro = actualLibro->dato;
+        stat.vecesSolicitado = vecesSolicitado;
+        stat.vecesPrestado = vecesPrestado;
+        stat.vecesDevueltoTarde = vecesDevueltoTarde;
+        NodoEstadisticas *nodo = new NodoEstadisticas(stat);
 
-        // veces devuelto tarde
+        if (colaPrincipal.delante == nullptr)
+        {
+            colaPrincipal.delante = nodo;
+            colaPrincipal.atras = nodo;
+        }
+        else
+        {
+            encolarEstadistica(nodo, colaPrincipal);
+        }
+        actualLibro = actualLibro->sgte;
+    }
+    archivo.close();
+    return colaPrincipal;
+}
+
+void mostrarEstadisticas()
+{   
+
+    colaPrioEstadisticas estadisticas = cargarEstadisticaCSV("output/pedidos.csv");
+
+    NodoEstadisticas *actual = desencolar(estadisticas);
+
+    limpiarPantalla();
+    setConsoleBackground(White);
+    dibujarTitulo(27, 0, 2, letras);
+    estructura_menu2(16, 103, 10, 27);
+
+    gotoxy(44, 11);
+    color(2);
+    cout << "Estadisticas de Libros";
+    color(0);
+    gotoxy(20, 13);
+    cout << "Nombre del libro";
+    gotoxy(51, 13);
+    cout << "Veces solicitado";
+    gotoxy(69, 13);
+    cout << "Veces prestado";
+    gotoxy(86, 13);
+    cout << "Veces devuelto tarde";
+
+    while (actual != nullptr)
+    {
+        color(0);
+        gotoxy(20, 15);
+        cout << actual->estadistica.nombreLibro;
+        gotoxy(57, 15);
+        cout << actual->estadistica.vecesSolicitado;
+        gotoxy(75, 15);
+        cout << actual->estadistica.vecesPrestado;
+        gotoxy(93, 15);
+        cout << actual->estadistica.vecesDevueltoTarde;
+        actual = actual->sgte; // pasando al siguiente nodo
     }
 
-    return colaPrincipal;
+    pausa();
 }

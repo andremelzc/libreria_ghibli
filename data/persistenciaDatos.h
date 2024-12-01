@@ -171,7 +171,7 @@ struct PilaLaptops
 };
 
 struct estadisticaLibro{ // para la estadistica de los libros más populares
-    int id_libro, vecesSolicitado, vecesPrestado;
+    int vecesSolicitado, vecesPrestado, vecesDevueltoTarde;
     string nombreLibro;
 };
 
@@ -198,4 +198,16 @@ struct colaHistorial{
     NodoPedidos *atras;
  
     colaHistorial(): adelante(nullptr), atras(nullptr){};
+};
+
+struct NodoStrings{
+    string dato;
+    NodoStrings *sgte;
+    NodoStrings(string dato1): dato(dato1), sgte(nullptr){};
+};
+
+struct ListaStrings{
+    NodoStrings *cabeza;
+    int longitud;
+    ListaStrings(): cabeza(nullptr), longitud(0){};
 };
