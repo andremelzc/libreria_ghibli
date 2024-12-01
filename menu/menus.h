@@ -10,6 +10,7 @@
 #include "../data/carritoLibro.h"
 #include "../data/historialYEstadisticaLibros.h"
 #include "../data/ganancias.h"
+#include "../data/gestionIncidencias.h"
 
 // Menu de opciones inicial
 vector<string> opcionesMenuPrincipal = {"Ver catalogo",
