@@ -37,6 +37,7 @@ struct Usuario
     string fechaInicio;  // fecha de inicio de membresia
     string fechaFinal;   // fecha de fin de membresia
     int librosPrestados; // Máximo 3 por cliente
+    int numeroCastigos; // Número de castigos
 };
 
 struct Nodo
@@ -112,6 +113,8 @@ struct Pedidos{
     int ID_pedido,ID_libro,ID_usuario;
     string estadoPedido; //SOLICITADO, PRESTADO, NO_DEVUELTO, DEVUELTO, DEVUELTO_TARDE
     fecha fechaPedido, fechaAdquisicion, devolucion, entregado;
+    int ID_recepcionistaEntrega, ID_recepcionistaRecibe;
+    int evaluacion;
 };
 
 struct NodoPedidos{

@@ -349,6 +349,7 @@ void gestionUsuarios_registrarUsuario()
     usuario->fechaInicio = "00/00/0000";
     usuario->fechaFinal = "00/00/0000";
     usuario->librosPrestados = 0;
+    usuario->numeroCastigos = 0;
 
     insertarFinal(lista, usuario);
 
@@ -653,6 +654,20 @@ void menuInicio_registrarUsuario()
         }
     } while (!telefonoValido);
 
+    if (usuario->tipo == 0)
+    {
+        usuario->membresia = "INACTIVA";
+    }
+    else
+    {
+        usuario->membresia = "ACTIVA";
+    }
+
+    usuario->fechaInicio = "00/00/0000";
+    usuario->fechaFinal = "00/00/0000";
+    usuario->librosPrestados = 0;
+    usuario->numeroCastigos = 0;
+
     insertarFinal(lista, usuario);
 
     color(2);
@@ -712,8 +727,8 @@ void guardar_CSV(Lista *lista, string nombreArchivo)
         // system("PAUSE");
         Usuario usuario = actual->usuario;
 
-        archivo << usuario.estadoUsuario << "," << usuario.tipo << "," << usuario.ID_Usuario << "," << usuario.usuario << "," << usuario.contrasena << "," << usuario.nombre << "," << usuario.apellidos << "," << usuario.genero << ","
-                << usuario.correoElectronico << "," << usuario.telefono << "," << usuario.membresia << "," << usuario.librosPrestados << "," << usuario.fechaInicio << "," << usuario.fechaFinal << "\n";
+        archivo << usuario.estadoUsuario << "," << usuario.tipo << "," << usuario.ID_Usuario << "," << usuario.usuario << "," << usuario.contrasena << "," << usuario.nombre << "," << usuario.apellidos << "," << usuario.genero << "," << usuario.correoElectronico << "," << usuario.telefono << "," << usuario.membresia << "," << usuario.librosPrestados << ","
+                << usuario.fechaInicio << "," << usuario.fechaFinal << "," << usuario.numeroCastigos << "\n";
 
         actual = actual->siguiente;
     }
@@ -1164,6 +1179,9 @@ Lista leerUsuariosCSV(string nombreArchivo)
 
             getline(ss, usuario.fechaInicio, ',');
             getline(ss, usuario.fechaFinal, ',');
+
+            getline(ss, dato, ',');
+            usuario.numeroCastigos = stoi(dato); // Convertir a entero
 
             // Insertar el usuario en la lista enlazada
             insertarFinal(&listaDeUsuarios, &usuario);
