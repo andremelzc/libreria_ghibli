@@ -491,33 +491,6 @@ void insertarNodoLibroAlFinal(ListaLibros *lista, nodoLibros *nodo)
     lista->longitud++;
 }
 
-// Creada para ser Usada en AgregarCarrito en CarritoLibro.h
-void modificarEstadoLibro(ListaLibros *listaDeLibros, int idLibro_Modificar, string estadoNuevo)
-{
-    nodoLibros *actual = listaDeLibros->cabeza; // Asumiendo que la lista tiene un puntero a su nodo cabeza
-    if (actual != nullptr)
-    {
-        // Recorrer la lista enlazada
-        while (actual != nullptr)
-        {
-            // Verificar si el ID del libro actual coincide con el ID proporcionado
-            if (actual->libro.id == idLibro_Modificar)
-            {
-                // Modificar el estado del libro
-                actual->libro.estado = estadoNuevo;
-                // cout << "Estado del libro con ID " << idLibro_Modificar << " actualizado a: " << estadoNuevo << endl;
-                return; // Salir de la función una vez modificado
-            }
-            actual = actual->siguiente; // Pasar al siguiente nodo
-        }
-    }
-    else
-    {
-        // Si el libro no se encuentra, mostrar un mensaje
-        cout << "No se encontró un libro con el ID " << idLibro_Modificar << " en la lista." << endl;
-    }
-}
-
 // Creada para poder ser Usada en Lista LibroEspecifico en CarritoLibro.h
 void eliminarPrimerLibro(ListaLibros *lista)
 {
@@ -584,61 +557,6 @@ ListaLibros leerLibrosCSV(string nombreArchivo)
 
             // Insertar el libro en la lista enlazada
             insertarLibrosFinal(&listaDeLibros, &libro);
-        }
-        archivo.close();
-    }
-    else
-    {
-        cout << "No se pudo abrir el archivo " << nombreArchivo << endl;
-    }
-    return listaDeLibros;
-}
-
-ListaLibros leerLibrosCSV_ObtenerStockLibroEspecifico(string nombreArchivo, string nLibro)
-{
-    ListaLibros listaDeLibros;
-    listaDeLibros.longitud = 0;
-    ifstream archivo(nombreArchivo);
-    string linea;
-
-    if (!archivo.is_open())
-    {
-        cout << "No se pudo abrir el archivo. " << nombreArchivo << endl;
-        perror("Error al abrir el archivo");
-        system("PAUSE");
-        return listaDeLibros;
-    }
-
-    if (archivo.is_open())
-    {
-        // Leer el archivo línea por línea
-        while (getline(archivo, linea))
-        {
-            stringstream ss(linea);
-            string dato;
-
-            Libro libro;
-
-            // Suponiendo que el CSV tiene los campos en el siguiente orden (para mostrar catálogo):
-            // Nombre, Autor, Año, Género, Stock, precio, estado
-            getline(ss, dato, ',');
-            libro.id = stoi(dato); // Convertir a entero
-            getline(ss, libro.nombre_Libro, ',');
-            getline(ss, libro.Autor, ',');
-            getline(ss, dato, ',');
-            libro.Ano = stoi(dato);
-            getline(ss, libro.Genero, ',');
-            getline(ss, dato, ',');
-            libro.precio = stoi(dato);
-            // libro.stock = contarTituloLibro("output/libros.csv", libro.nombre_Libro);
-            libro.stock = 1;
-            getline(ss, libro.estado, ',');
-            // Quiero una Lista solo con los Libros que he pedido
-            if (libro.nombre_Libro == nLibro && libro.estado == "Disponible")
-            {
-                // Insertar el libro en la lista enlazada
-                insertarLibrosFinal(&listaDeLibros, &libro);
-            }
         }
         archivo.close();
     }
@@ -1241,19 +1159,3 @@ LibroNodoArbol *leerLibrosArbol(string nombreArchivo, bool userView)
     return arbol;
 }
 
-void mostrarListaLibroSimple(ListaLibros listaMostrar)
-{
-    if (listaMostrar.cabeza == NULL)
-    {
-        cout << "Lista de Libros Vacia" << endl;
-    }
-    if (listaMostrar.cabeza != NULL)
-    {
-        while (listaMostrar.cabeza != NULL)
-        {
-            cout << "Libro: " << listaMostrar.cabeza->libro.nombre_Libro << endl;
-
-            listaMostrar.cabeza = listaMostrar.cabeza->siguiente;
-        }
-    }
-}

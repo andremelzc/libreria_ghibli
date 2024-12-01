@@ -1,16 +1,4 @@
-#pragma once
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string.h>
-#include <locale>
-#include <ctime>
-#include <filesystem>
-#include <cctype>
-#include <conio.h>
-#include <windows.h>
-
-using namespace std;
+/*
 void menu_CompraCarrito(int id_usuario);
 void modificarEstadoRegistroCarritoXIdCarrito(ListaCarritos *listaDeCarritos, int idLibro_Modificar, int estadoNuevo);
 // Uno listas en los Carritos
@@ -392,7 +380,7 @@ void agregarCarrito(int id_usuario)
                             listaLibroEspecifico.cabeza = listaLibroEspecifico.cabeza->siguiente;
                         }
                     }
-                    cout<<"Stock por Funcionalidad General "<<producto->libro.stock<<endl;***/
+                    cout<<"Stock por Funcionalidad General "<<producto->libro.stock<<endl;
                     getch();
                 }
             }
@@ -1349,3 +1337,104 @@ void entregarCompra()
 
     getch();
 }
+
+// Creada para ser Usada en AgregarCarrito en CarritoLibro.h
+void modificarEstadoLibro(ListaLibros *listaDeLibros, int idLibro_Modificar, string estadoNuevo)
+{
+    nodoLibros *actual = listaDeLibros->cabeza; // Asumiendo que la lista tiene un puntero a su nodo cabeza
+    if (actual != nullptr)
+    {
+        // Recorrer la lista enlazada
+        while (actual != nullptr)
+        {
+            // Verificar si el ID del libro actual coincide con el ID proporcionado
+            if (actual->libro.id == idLibro_Modificar)
+            {
+                // Modificar el estado del libro
+                actual->libro.estado = estadoNuevo;
+                // cout << "Estado del libro con ID " << idLibro_Modificar << " actualizado a: " << estadoNuevo << endl;
+                return; // Salir de la función una vez modificado
+            }
+            actual = actual->siguiente; // Pasar al siguiente nodo
+        }
+    }
+    else
+    {
+        // Si el libro no se encuentra, mostrar un mensaje
+        cout << "No se encontró un libro con el ID " << idLibro_Modificar << " en la lista." << endl;
+    }
+}
+
+ListaLibros leerLibrosCSV_ObtenerStockLibroEspecifico(string nombreArchivo, string nLibro)
+{
+    ListaLibros listaDeLibros;
+    listaDeLibros.longitud = 0;
+    ifstream archivo(nombreArchivo);
+    string linea;
+
+    if (!archivo.is_open())
+    {
+        cout << "No se pudo abrir el archivo. " << nombreArchivo << endl;
+        perror("Error al abrir el archivo");
+        system("PAUSE");
+        return listaDeLibros;
+    }
+
+    if (archivo.is_open())
+    {
+        // Leer el archivo línea por línea
+        while (getline(archivo, linea))
+        {
+            stringstream ss(linea);
+            string dato;
+
+            Libro libro;
+
+            // Suponiendo que el CSV tiene los campos en el siguiente orden (para mostrar catálogo):
+            // Nombre, Autor, Año, Género, Stock, precio, estado
+            getline(ss, dato, ',');
+            libro.id = stoi(dato); // Convertir a entero
+            getline(ss, libro.nombre_Libro, ',');
+            getline(ss, libro.Autor, ',');
+            getline(ss, dato, ',');
+            libro.Ano = stoi(dato);
+            getline(ss, libro.Genero, ',');
+            getline(ss, dato, ',');
+            libro.precio = stoi(dato);
+            // libro.stock = contarTituloLibro("output/libros.csv", libro.nombre_Libro);
+            libro.stock = 1;
+            getline(ss, libro.estado, ',');
+            // Quiero una Lista solo con los Libros que he pedido
+            if (libro.nombre_Libro == nLibro && libro.estado == "Disponible")
+            {
+                // Insertar el libro en la lista enlazada
+                insertarLibrosFinal(&listaDeLibros, &libro);
+            }
+        }
+        archivo.close();
+    }
+    else
+    {
+        cout << "No se pudo abrir el archivo " << nombreArchivo << endl;
+    }
+    return listaDeLibros;
+}
+
+void mostrarListaLibroSimple(ListaLibros listaMostrar)
+{
+    if (listaMostrar.cabeza == NULL)
+    {
+        cout << "Lista de Libros Vacia" << endl;
+    }
+    if (listaMostrar.cabeza != NULL)
+    {
+        while (listaMostrar.cabeza != NULL)
+        {
+            cout << "Libro: " << listaMostrar.cabeza->libro.nombre_Libro << endl;
+
+            listaMostrar.cabeza = listaMostrar.cabeza->siguiente;
+        }
+    }
+}
+
+*/

@@ -637,9 +637,6 @@ vector<string> opcionesMenuCliente = {
     "Ver catalogo",
     "Realizar pedido",
     "Ver historial de pedidos",
-    "Agregar al Carrito",
-    "Ver Carrito",
-    "Efectuar Compra",
     "Cerrar sesion",
 };
 int numCliente = opcionesMenuCliente.size();
@@ -708,25 +705,9 @@ void menu_opcionesCliente()
         mostrarHistorialCliente(id_usuariolog);
         break;
       case 4:
-        // 4."Agregar al Carrito", Miguel
-        system("CLS");
-        agregarCarrito(id_usuariolog);
-        break;
-      case 5:
-        // 5."Ver Carrito del Usuario", Miguel
-        system("CLS");
-        mostrarCarritoUsu(id_usuariolog, 0); // Agregado No Pagado
-        getch();
-        break;
-      case 6:
-        // 6."Efectuar Compra",Miguel
-        menu_CompraCarrito(id_usuariolog);
-        break;
-      case 7:
         repeat = false;
         system("CLS");
         break;
-
       default:
         cout << "Estas fuera del rango\n";
       }
@@ -826,7 +807,6 @@ void menu_opcionesGestionLaptops()
 vector<string> opcionesMenuGestionPedidosLibros = {"Atender pedido",
                                                    "Registrar devolucion de libro",
                                                    "Ver pedidos de cliente",
-                                                   "Entregar compra de libro",
                                                    "Retroceder"};
 
 int numGestionPedidosLibros = opcionesMenuGestionPedidosLibros.size();
@@ -900,10 +880,6 @@ void menu_opcionesPedido()
         mostrarHistorial();
         break;
       case 4:
-        // 4. Entregar compra de libro   
-        entregarCompra();
-        break;
-      case 5:
         // 5. Salir
         repeat = false;
         system("CLS");

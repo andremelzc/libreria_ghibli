@@ -19,7 +19,7 @@ Lista leerUsuariosCSV(string nombreArchivo);
 void guardar_CSV(Lista *lista, string nombreArchivo);
 
 // Registrar usuario (vista administrador)
-void gestionUsuarios_registrarUsuario()
+void menuInicio_registrarUsuario()
 {
     Lista *lista = new Lista();
     char respuesta[10];
