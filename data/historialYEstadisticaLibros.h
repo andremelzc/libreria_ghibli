@@ -5,6 +5,7 @@
 #include <vector>
 #include <windows.h>
 #include <cstdio>
+#include <ctime>
 #include <iostream>
 #include <stdexcept>
 #include <conio.h>
@@ -12,6 +13,7 @@
 #include "prestamoLibro.h"
 #include "..\menu\gotoxy.h"
 #include "gestionUsuarios.h"
+#include "..\servicio\funcionalidades.h"
 
 using namespace std;
 
@@ -423,7 +425,7 @@ NodoEstadisticas *desencolar(colaPrioEstadisticas &q)
 
     return stat;
 }
-// Cargar las estadísticas de libros a partir de un CSV 
+// Cargar las estadísticas de libros a partir de un CSV
 colaPrioEstadisticas cargarEstadisticaCSV(string nombreArchivo)
 {
     /*
@@ -511,7 +513,7 @@ colaPrioEstadisticas cargarEstadisticaCSV(string nombreArchivo)
 }
 
 void mostrarEstadisticas()
-{   
+{
 
     colaPrioEstadisticas estadisticas = cargarEstadisticaCSV("output/pedidos.csv");
 
@@ -549,5 +551,148 @@ void mostrarEstadisticas()
         actual = actual->sgte; // pasando al siguiente nodo
     }
 
+    pausa();
+}
+
+// -- FUNCIONES PARA ESTADISTICAS DE VENTAS --
+
+// Cargar las estadísticas de ventas a partir de un CSV
+ListaGanancias cargarEstadisticaVentasCSV(string nombreArchivo)
+{
+    fstream archivo(nombreArchivo);
+
+    ListaGanancias listaGanancias; // crear una lista de ganancias vacia
+
+    string linea;
+
+    if (!archivo.is_open())
+    { // Verificar si el archivo se abrió correctamente
+        cout << "Error al abrir el archivo: " << nombreArchivo << endl;
+        system("PAUSE");
+
+        return listaGanancias; // Regresar la lista vacía si el archivo no se pudo abrir
+    }
+
+    while (getline(archivo, linea))
+    {
+        stringstream ss(linea);
+        string campo;
+        Ganancia ganancia;
+
+        // Leer el ID de la venta
+        getline(ss, campo, ',');
+        ganancia.id_usuario = stoi(campo);
+
+        // Leer el ID del libro
+        getline(ss, campo, ',');
+        ganancia.origen = stoi(campo);
+
+        // Leer el precio de venta
+        getline(ss, campo, ',');
+        ganancia.monto = stof(campo);
+
+        // Leer la fecha de venta
+        getline(ss, campo, ',');
+        ganancia.fecha = campo; // falta convertir a fecha
+
+        NodoGanancia *nodo = new NodoGanancia(ganancia);
+
+        if (listaGanancias.head == nullptr)
+        {
+            listaGanancias.head = nodo;
+        }
+        else
+        {
+            NodoGanancia *ultimo = listaGanancias.head;
+            while (ultimo->sgte != nullptr)
+            {
+                ultimo = ultimo->sgte;
+            }
+            ultimo->sgte = nodo;
+        }
+        listaGanancias.longitud++;
+    }
+
+    archivo.close();
+    return listaGanancias;
+}
+
+void mostrarVistaEstadisticasGanancias()
+{
+    ListaGanancias ganancias = cargarEstadisticaVentasCSV("output/ganancias.csv");
+    NodoGanancia *actual = ganancias.head;
+
+    int contGananciasMora = 0;
+    int contGananciasMembresias = 0;
+    int contGananciasAmbos = 0;
+
+    limpiarPantalla();
+    setConsoleBackground(White);
+    dibujarTitulo(27, 0, 2, letras);
+    estructura_menu2(16, 103, 10, 27);
+
+    gotoxy(44, 11);
+    color(2);
+    cout << "Estadisticas de Ventas";
+    color(0);
+    gotoxy(20, 13);
+    cout << "ID Usuario";
+    gotoxy(35, 13);
+    cout << "Origen";
+    gotoxy(50, 13);
+    cout << "Monto";
+    gotoxy(65, 13);
+    cout << "Fecha";
+
+    while (actual != nullptr)
+    {
+        fecha fechaPago = convertirFecha(actual->ganancia.fecha);
+        if (esDelMesActual(fechaPago))
+        {
+            if (actual->ganancia.origen == "MORA")
+            {
+                contGananciasMora += actual->ganancia.monto;
+                contGananciasAmbos += actual->ganancia.monto;
+            }
+            else
+            {
+                contGananciasMembresias += actual->ganancia.monto;
+                contGananciasAmbos += actual->ganancia.monto;
+            }
+        }
+        actual = actual->sgte; // pasando al siguiente nodo
+    }
+
+    float valorEscalado1 = ((float)(contGananciasMora) * (35)) / (contGananciasAmbos);
+    float valorEscalado2 = ((float)(contGananciasMembresias) * (35)) / (contGananciasAmbos);
+
+    color(0);
+    gotoxy(20, 60);
+    cout << "Ganancias por mora: " << contGananciasMora;
+    for (int i = 0; i < valorEscalado1; i++)
+    {
+        color(11);
+        gotoxy(25, 58 - i);
+        cout << "**";
+    }
+    color(0);
+    gotoxy(45, 60);
+    cout << "Ganancias por Membresias: " << contGananciasMembresias;
+    for (int i = 0; i < valorEscalado2; i++)
+    {
+        color(11);
+        gotoxy(50, 58 - i);
+        cout << "**";
+    }
+
+    color(0);
+    gotoxy(70, 60);
+    cout << "Ganancias totales: " << contGananciasMora;
+    for (int i = 0; i < 35; i++)
+    {
+        color(11);
+        gotoxy(75, 58 - i);
+        cout << "**";
+    }
     pausa();
 }

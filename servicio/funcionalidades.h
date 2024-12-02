@@ -367,3 +367,12 @@ bool leerInputEscape(string &input) {
         }
     }
 }
+
+bool esDelMesActual(const fecha& f) {
+    time_t now = time(0);
+    tm* ltm = localtime(&now);
+    
+    // ltm->tm_mon va de 0-11, por eso sumamos 1
+    return (f.mes == ltm->tm_mon + 1) && 
+           (f.año == ltm->tm_year + 1900);
+}
