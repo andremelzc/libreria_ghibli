@@ -14,6 +14,7 @@ Nodo *buscarUsuarioPorDNI(Lista &listaUsuarios, string &dni); // Declaración pr
 #include "../data/historialYEstadisticaLibros.h"
 #include "../data/gestionIncidencias.h"
 #include "../data/gestionStock.h"
+#include "../data/verReportes.h"
 
 // Menu de opciones inicial
 vector<string> opcionesMenuPrincipal = {"Ver catalogo",
@@ -562,6 +563,7 @@ void menu_opcionesReportes()
         break;
       case 4:
         // 4. Incidencias
+        mostrarReporteIncidencias();
         break;
       case 5:
         // 5. Salir
