@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -366,4 +367,24 @@ bool leerInputEscape(string &input) {
             std::cout << static_cast<char>(ch);
         }
     }
+}
+
+bool esDelMesActual(const fecha& f) {
+    time_t now = time(0);
+    tm* ltm = localtime(&now);
+    
+    // ltm->tm_mon va de 0-11, por eso sumamos 1
+    return (f.mes == ltm->tm_mon + 1) && 
+           (f.año == ltm->tm_year + 1900);
+}
+
+void imprimirCarita(int maxX, int y, int idUsuario){
+    // Buscar al usuario por su ID
+    Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
+    std::string id_usuario_str = std::to_string(idUsuario);
+    Nodo *actual = buscarUsuarioPorDNI(listaUsuarios, id_usuario_str);
+    // Imprimos la carita
+    int longitud = actual->usuario.usuario.length()+2;
+    gotoxy(maxX - longitud, y);
+    cout << char(1) << " "<<actual->usuario.usuario;
 }

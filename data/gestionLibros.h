@@ -1108,3 +1108,54 @@ LibroNodoArbol *leerLibrosArbol(string nombreArchivo, bool userView)
     archivo.close();
     return arbol;
 }
+
+bool determinarSiExisteLibro(const ListaLibros &lista, const string &nombreBusco) {
+    nodoLibros *actual = lista.cabeza; // Comienza desde el primer nodo
+    while (actual != nullptr) {
+        if (actual->libro.nombre_Libro == nombreBusco) {
+            return true; // Si el nombre coincide, devuelve true
+        }
+        actual = actual->siguiente; // Avanza al siguiente nodo
+    }
+    return false; // Si no se encuentra el libro, devuelve false
+}
+
+void incrementarPopularidadLibro(ListaLibros &lista, const string &nLibro) {
+    nodoLibros *actual = lista.cabeza; // Comienza desde el primer nodo
+    while (actual != nullptr) {
+        if (actual->libro.nombre_Libro == nLibro) {
+            actual->libro.popularidad++; // Incrementa la popularidad en 1
+            return; // Termina la función una vez se ha encontrado y actualizado el libro
+        }
+        actual = actual->siguiente; // Avanza al siguiente nodo
+    }
+}
+
+void vaciarListaLibros(ListaLibros &lista) {
+    nodoLibros *actual = lista.cabeza;
+    while (actual != nullptr) {
+        nodoLibros *temp = actual;
+        actual = actual->siguiente;
+        delete temp; // Libera la memoria del nodo actual
+    }
+    lista.cabeza = nullptr; // La cabeza de la lista ahora es nullptr, dejando la lista vacía
+    lista.longitud = 0; // Resetea la longitud de la lista a 0
+}
+
+nodoLibros* obtenerLibroMasPopular(ListaLibros &lista) {
+    if (lista.cabeza == nullptr) {
+        return nullptr; // Si la lista está vacía, devuelve nullptr
+    }
+
+    nodoLibros *actual = lista.cabeza;
+    nodoLibros *masPopular = actual;
+
+    while (actual != nullptr) {
+        if (actual->libro.popularidad > masPopular->libro.popularidad) {
+            masPopular = actual; // Actualiza el nodo con la mayor popularidad
+        }
+        actual = actual->siguiente;
+    }
+
+    return masPopular; // Devuelve el nodo con la mayor popularidad
+}

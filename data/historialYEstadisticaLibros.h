@@ -5,6 +5,7 @@
 #include <vector>
 #include <windows.h>
 #include <cstdio>
+#include <ctime>
 #include <iostream>
 #include <stdexcept>
 #include <conio.h>
@@ -12,6 +13,7 @@
 #include "..\menu\gotoxy.h"
 #include "gestionUsuarios.h"
 #include "CuencaprestamoLibro.h"
+#include "..\servicio\funcionalidades.h"
 
 using namespace std;
 
@@ -329,6 +331,45 @@ void mostrarHistorialCliente(int dni)
     pausa();
 }
 
+// a partir de aqui tiene que ver con estadisticas
+
+ListaStrings cargarNombreLibrosCSV()
+{
+    ListaStrings listaLibros;
+    ListaLibros libros = leerLibrosCSV("output/libros.csv");
+    nodoLibros *actual = libros.cabeza;
+
+    while (actual != nullptr)
+    {
+        NodoStrings *nodo = new NodoStrings(actual->libro.nombre_Libro);
+        if (listaLibros.cabeza == nullptr)
+        {
+            listaLibros.cabeza = nodo;
+        }
+        else
+        {
+            bool encontrado = false;
+            NodoStrings *ultimo = listaLibros.cabeza;
+            while (ultimo->sgte != nullptr)
+            {
+                if (ultimo->dato == nodo->dato)
+                {
+                    encontrado = true;
+                }
+                ultimo = ultimo->sgte;
+            }
+            if (!encontrado)
+            {
+                ultimo->sgte = nodo;
+            }
+        }
+        listaLibros.longitud++;
+        actual = actual->siguiente;
+    }
+
+    return listaLibros;
+}
+
 // -- FUNCIONES PARA ESTADISTICAS DE LIBROS --
 // Encolar una estadística en la cola de estadísticas
 void encolarEstadistica(NodoEstadisticas *stat, colaPrioEstadisticas &q)
@@ -384,12 +425,20 @@ NodoEstadisticas *desencolar(colaPrioEstadisticas &q)
 
     return stat;
 }
-// Cargar las estadísticas de libros a partir de un CSV 
+// Cargar las estadísticas de libros a partir de un CSV
 colaPrioEstadisticas cargarEstadisticaCSV(string nombreArchivo)
 {
+    /*
+    - recuperar la informacion de estadisticas de libros desde un archivo CSV
+    - crear un array de strings con los nombres de los libros
+    - crear una funcion que transforme el id de los libros del pedido en el nombre del libro
+    - crear un doble for que recorra el array de strings y compare con el nombre del libro del pedido
+    al final de este for se estaría creando un nodoEstadistica con el nombre del libro y las veces solicitado
+    */
     fstream archivo(nombreArchivo);
 
     colaPrioEstadisticas colaPrincipal; // crear una cola de prioridad vacia
+
     string linea;
 
     if (!archivo.is_open())
@@ -399,21 +448,244 @@ colaPrioEstadisticas cargarEstadisticaCSV(string nombreArchivo)
 
         return colaPrincipal; // Regresar la lista vacía si el archivo no se pudo abrir
     }
+    int vecesSolicitado = 0, vecesPrestado = 0, vecesDevueltoTarde = 0;
+    ListaStrings listaLibros = cargarNombreLibrosCSV();
+    NodoStrings *actualLibro = listaLibros.cabeza;
+    while (actualLibro != nullptr)
+    {
+        estadisticaLibro stat;
+        // Resetear el cursor al inicio del archivo
+        archivo.clear();  // Limpia los flags de error del archivo
+        archivo.seekg(0); // Mueve el cursor al inicio del archivo
+
+        while (getline(archivo, linea))
+        {
+
+            stringstream ss(linea);
+            string campo;
+            getline(ss, campo, ','); // saltando el id del pedido
+            getline(ss, campo, ','); // saltando el id del usuario
+
+            // Leer el ID de libro
+            getline(ss, campo, ',');
+            ListaLibros libros = leerLibrosCSV("output/Libros.csv");
+            string nombreLibro = devolverLibroNombre(libros, stoi(campo));
+            // Leer el estado del pedido
+            getline(ss, campo, ',');
+            if (actualLibro->dato == nombreLibro)
+            {
+                if (campo == "PRESTADO")
+                {
+                    // veces prestado
+                    vecesPrestado++;
+                }
+                else if (campo == "DEVUELTO_TARDE" or campo == "NO_DEVUELTO")
+                {
+                    // veces devuelto tarde
+                    vecesDevueltoTarde++;
+                }
+                else if (campo == "SOLICTADO")
+                {
+                    // veces solicitado
+                    vecesSolicitado++;
+                }
+            }
+        }
+        stat.nombreLibro = actualLibro->dato;
+        stat.vecesSolicitado = vecesSolicitado;
+        stat.vecesPrestado = vecesPrestado;
+        stat.vecesDevueltoTarde = vecesDevueltoTarde;
+        NodoEstadisticas *nodo = new NodoEstadisticas(stat);
+
+        if (colaPrincipal.delante == nullptr)
+        {
+            colaPrincipal.delante = nodo;
+            colaPrincipal.atras = nodo;
+        }
+        else
+        {
+            encolarEstadistica(nodo, colaPrincipal);
+        }
+        actualLibro = actualLibro->sgte;
+    }
+    archivo.close();
+    return colaPrincipal;
+}
+
+void mostrarEstadisticas()
+{
+
+    colaPrioEstadisticas estadisticas = cargarEstadisticaCSV("output/pedidos.csv");
+
+    NodoEstadisticas *actual = desencolar(estadisticas);
+
+    limpiarPantalla();
+    setConsoleBackground(White);
+    dibujarTitulo(27, 0, 2, letras);
+    estructura_menu2(16, 103, 10, 27);
+
+    gotoxy(44, 11);
+    color(2);
+    cout << "Estadisticas de Libros";
+    color(0);
+    gotoxy(20, 13);
+    cout << "Nombre del libro";
+    gotoxy(51, 13);
+    cout << "Veces solicitado";
+    gotoxy(69, 13);
+    cout << "Veces prestado";
+    gotoxy(86, 13);
+    cout << "Veces devuelto tarde";
+
+    while (actual != nullptr)
+    {
+        color(0);
+        gotoxy(20, 15);
+        cout << actual->estadistica.nombreLibro;
+        gotoxy(57, 15);
+        cout << actual->estadistica.vecesSolicitado;
+        gotoxy(75, 15);
+        cout << actual->estadistica.vecesPrestado;
+        gotoxy(93, 15);
+        cout << actual->estadistica.vecesDevueltoTarde;
+        actual = actual->sgte; // pasando al siguiente nodo
+    }
+
+    pausa();
+}
+
+// -- FUNCIONES PARA ESTADISTICAS DE VENTAS --
+
+// Cargar las estadísticas de ventas a partir de un CSV
+ListaGanancias cargarEstadisticaVentasCSV(string nombreArchivo)
+{
+    fstream archivo(nombreArchivo);
+
+    ListaGanancias listaGanancias; // crear una lista de ganancias vacia
+
+    string linea;
+
+    if (!archivo.is_open())
+    { // Verificar si el archivo se abrió correctamente
+        cout << "Error al abrir el archivo: " << nombreArchivo << endl;
+        system("PAUSE");
+
+        return listaGanancias; // Regresar la lista vacía si el archivo no se pudo abrir
+    }
 
     while (getline(archivo, linea))
     {
         stringstream ss(linea);
         string campo;
-        estadisticaLibro stat;
+        Ganancia ganancia;
 
-        // Leer el ID de libro
+        // Leer el ID de la venta
+        getline(ss, campo, ',');
+        ganancia.id_usuario = stoi(campo);
 
-        // veces solicitado
+        // Leer el ID del libro
+        getline(ss, campo, ',');
+        ganancia.origen = campo;
 
-        // veces prestado
+        // Leer el precio de venta
+        getline(ss, campo, ',');
+        ganancia.monto = stof(campo);
 
-        // veces devuelto tarde
+        // Leer la fecha de venta
+        getline(ss, campo, ',');
+        ganancia.fecha = campo; // falta convertir a fecha
+
+        NodoGanancia *nodo = new NodoGanancia(ganancia);
+
+        if (listaGanancias.head == nullptr)
+        {
+            listaGanancias.head = nodo;
+        }
+        else
+        {
+            NodoGanancia *ultimo = listaGanancias.head;
+            while (ultimo->sgte != nullptr)
+            {
+                ultimo = ultimo->sgte;
+            }
+            ultimo->sgte = nodo;
+        }
+        listaGanancias.longitud++;
     }
 
-    return colaPrincipal;
+    archivo.close();
+    return listaGanancias;
+}
+
+void mostrarVistaEstadisticasGanancias()
+{
+    ListaGanancias ganancias = cargarEstadisticaVentasCSV("output/ganancias.csv");
+    NodoGanancia *actual = ganancias.head;
+
+    int contGananciasMora = 0;
+    int contGananciasMembresias = 0;
+    int contGananciasAmbos = 0;
+
+    limpiarPantalla();
+    setConsoleBackground(White);
+    dibujarTitulo(27, 0, 2, letras);
+    estructura_menu2(10, 130, 10, 35);
+
+    gotoxy(50, 11);
+    color(2);
+    cout << "Estadisticas de Ventas";
+
+    while (actual != nullptr)
+    {
+        fecha fechaPago = convertirFecha(actual->ganancia.fecha);
+        if (esDelMesActual(fechaPago))
+        {
+            if (actual->ganancia.origen == "MORA")
+            {
+                contGananciasMora += actual->ganancia.monto;
+                contGananciasAmbos += actual->ganancia.monto;
+            }
+            else if(actual->ganancia.origen != "MORA")
+            {
+                
+                contGananciasMembresias += actual->ganancia.monto;
+                contGananciasAmbos += actual->ganancia.monto;
+            }
+        }
+        actual = actual->sgte; // pasando al siguiente nodo
+    }
+
+    float valorEscalado1 = ((float)(contGananciasMora) * (20)) / (contGananciasAmbos);
+    float valorEscalado2 = ((float)(contGananciasMembresias) * (20)) / (contGananciasAmbos);
+
+    color(0);
+    gotoxy(15, 32);
+    cout << "Ganancias por mora: " << contGananciasMora;
+     for (int i = 0; i < valorEscalado1; i++)
+    {
+        color(11);
+        gotoxy(26, 30 - i);
+        cout << "****";
+    } 
+    color(0);
+    gotoxy(55, 32);
+    cout << "Ganancias por Membresias: " << contGananciasMembresias;
+    for (int i = 0; i < valorEscalado2; i++)
+    {
+        color(11);
+        gotoxy(70, 30 - i);
+        cout << "****";
+    }
+ 
+    color(0);
+    gotoxy(100, 32);
+    cout << "Ganancias totales: " << contGananciasAmbos;
+    
+    for (int i = 0; i < 20; i++)
+    {
+        color(11);
+        gotoxy(113, 30 - i);
+        cout << "****";
+    } 
+    pausa();
 }

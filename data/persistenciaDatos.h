@@ -66,6 +66,7 @@ struct Libro
     string estado;
     int stock;
     int StockInventario, StockActual;
+    int popularidad = 0;
 };
 
 struct nodoLibros
@@ -159,6 +160,26 @@ struct ListaCarritos{
     ListaCarritos(): head(nullptr), longitud(0) {};
 };
 
+//Categorías
+struct Categorias{
+    string nombre;
+    Libro libroPopular;
+    int popularidad;
+};
+
+struct NodoCategorias{
+    Categorias categoria;
+    NodoCategorias *sgte;
+    NodoCategorias(Categorias categoria1): categoria(categoria1), sgte(nullptr){};
+    NodoCategorias():sgte(nullptr){};
+};
+
+struct ListaCategorias{
+    int longitud;
+    NodoCategorias *head;
+    ListaCategorias() : head(nullptr), longitud(0){};
+};
+
 // Laptops
 struct Laptop {
     int id_laptop;        // Identificador único de la laptop
@@ -183,7 +204,7 @@ struct PilaLaptops
 };
 
 struct estadisticaLibro{ // para la estadistica de los libros más populares
-    int id_libro, vecesSolicitado, vecesPrestado;
+    int vecesSolicitado, vecesPrestado, vecesDevueltoTarde;
     string nombreLibro;
 };
 
@@ -210,6 +231,18 @@ struct colaHistorial{
     NodoPedidos *atras;
  
     colaHistorial(): adelante(nullptr), atras(nullptr){};
+};
+
+struct NodoStrings{
+    string dato;
+    NodoStrings *sgte;
+    NodoStrings(string dato1): dato(dato1), sgte(nullptr){};
+};
+
+struct ListaStrings{
+    NodoStrings *cabeza;
+    int longitud;
+    ListaStrings(): cabeza(nullptr), longitud(0){};
 };
 
 struct NodoLibroSimple {
