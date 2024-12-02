@@ -665,7 +665,7 @@ void mostrarVistaEstadisticasGanancias()
     {
         color(11);
         gotoxy(23, 30 - i);
-        cout << "***";
+        cout << "****";
     } 
     color(0);
     gotoxy(55, 32);
@@ -674,7 +674,7 @@ void mostrarVistaEstadisticasGanancias()
     {
         color(11);
         gotoxy(65, 30 - i);
-        cout << "***";
+        cout << "****";
     }
  
     color(0);
@@ -685,7 +685,7 @@ void mostrarVistaEstadisticasGanancias()
     {
         color(11);
         gotoxy(108, 30 - i);
-        cout << "***";
+        cout << "****";
     } 
     pausa();
 }
