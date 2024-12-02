@@ -15,6 +15,7 @@ Nodo *buscarUsuarioPorDNI(Lista &listaUsuarios, string &dni); // Declaración pr
 #include "../data/gestionIncidencias.h"
 #include "../data/gestionStock.h"
 #include "../data/verReportes.h"
+#include "../data/gestionCategorias.h"
 
 // Menu de opciones inicial
 vector<string> opcionesMenuPrincipal = {"Ver catalogo",
@@ -831,6 +832,7 @@ vector<string> opcionesMenuCliente = {
     "Ver catalogo",
     "Realizar pedido",
     "Ver historial de pedidos",
+    "Sugerencias",
     "Cerrar sesion",
 };
 int numCliente = opcionesMenuCliente.size();
@@ -899,6 +901,9 @@ void menu_opcionesCliente()
         mostrarHistorialCliente(id_usuariolog);
         break;
       case 4:
+        menu_sugerencias(id_usuariolog);
+        break;
+      case 5:
         repeat = false;
         system("CLS");
         break;

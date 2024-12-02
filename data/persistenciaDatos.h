@@ -66,6 +66,7 @@ struct Libro
     string estado;
     int stock;
     int StockInventario, StockActual;
+    int popularidad = 0;
 };
 
 struct nodoLibros
@@ -157,6 +158,26 @@ struct ListaCarritos{
     int longitud;
     NodoCarritos *head;
     ListaCarritos(): head(nullptr), longitud(0) {};
+};
+
+//Categorías
+struct Categorias{
+    string nombre;
+    Libro libroPopular;
+    int popularidad;
+};
+
+struct NodoCategorias{
+    Categorias categoria;
+    NodoCategorias *sgte;
+    NodoCategorias(Categorias categoria1): categoria(categoria1), sgte(nullptr){};
+    NodoCategorias():sgte(nullptr){};
+};
+
+struct ListaCategorias{
+    int longitud;
+    NodoCategorias *head;
+    ListaCategorias() : head(nullptr), longitud(0){};
 };
 
 // Laptops
