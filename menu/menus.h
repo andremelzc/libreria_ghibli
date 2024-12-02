@@ -12,7 +12,9 @@ Nodo *buscarUsuarioPorDNI(Lista &listaUsuarios, string &dni); // Declaración pr
 #include "../data/carritoLibro.h"
 #include "../data/historialYEstadisticaLibros.h"
 #include "../data/gestionIncidencias.h"
-
+#include "../data/gestionStock.h"
+#include "../data/gestionCategorias.h"
+#include "../data/verReportes.h"
 // Menu de opciones inicial
 vector<string> opcionesMenuPrincipal = {"Ver catalogo",
                                         "Registrarse",

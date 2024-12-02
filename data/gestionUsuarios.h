@@ -1378,8 +1378,7 @@ void levantarCastigoUsuarios()
     string mesStr = to_string(localTime->tm_mon + 1);
     string añoStr = to_string(localTime->tm_year + 1900);
     fecha = diaStr + "/" + mesStr + "/" + añoStr;
-    cout << fecha << endl;
-    system("PAUSE");
+    
     while (actual != nullptr)
     {
         if ((actual->usuario.fechaInicio == fecha))

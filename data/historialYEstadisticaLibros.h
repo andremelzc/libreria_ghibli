@@ -12,7 +12,7 @@
 #include "persistenciaDatos.h"
 #include "..\menu\gotoxy.h"
 #include "gestionUsuarios.h"
-#include "CuencaprestamoLibro.h"
+#include "prestamoLibro.h"
 #include "..\servicio\funcionalidades.h"
 
 using namespace std;
