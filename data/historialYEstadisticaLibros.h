@@ -9,9 +9,9 @@
 #include <stdexcept>
 #include <conio.h>
 #include "persistenciaDatos.h"
-#include "prestamoLibro.h"
 #include "..\menu\gotoxy.h"
 #include "gestionUsuarios.h"
+#include "CuencaprestamoLibro.h"
 
 using namespace std;
 

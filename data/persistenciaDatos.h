@@ -272,6 +272,7 @@ struct Incidencia{
     int id_incidencia;
     int id_recepcionista;
     int id_usuario;
+    int id_libro;
     string tipo;
     string descripcion;
     string fecha;

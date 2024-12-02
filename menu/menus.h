@@ -7,10 +7,10 @@
 #include "../data/gestionLibros.h"
 #include "../servicio/iniciarSesion.h"
 #include "../data/gestionLaptops.h"
-#include "../data/prestamoLibro.h"
 #include "../data/carritoLibro.h"
 #include "../data/historialYEstadisticaLibros.h"
 #include "../data/gestionIncidencias.h"
+#include "../data/CuencaprestamoLibro.h"
 
 // Menu de opciones inicial
 vector<string> opcionesMenuPrincipal = {"Ver catalogo",
@@ -37,7 +37,7 @@ void menu_opcionesGestionLaptops();  // Declaración previa
 // Para cuando se inicie sesión
 int id_usuariolog = 0;
 int costoTotal = 0;
-int mora = 0;
+double mora = 0;
 
 void menu_opcionesPrincipal()
 {

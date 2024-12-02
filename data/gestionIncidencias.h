@@ -8,7 +8,7 @@
 #include <ctime>
 #include <filesystem>
 #include "..\menu\gotoxy.h"
-#include "..\data\persistenciaDatos.h"
+
 
 using namespace std;
 
@@ -58,6 +58,8 @@ ListaIncidencias cargarCSVtoIncidencias(string nombreArchivo)
         incidencia.id_recepcionista = stoi(dato);
         getline(ss, dato, ',');
         incidencia.id_usuario = stoi(dato);
+        getline(ss, dato, ',');
+        incidencia.id_libro = stoi(dato);
         getline(ss, incidencia.tipo, ',');
         getline(ss, incidencia.descripcion, ',');
         getline(ss, incidencia.fecha, ',');
@@ -71,7 +73,7 @@ ListaIncidencias cargarCSVtoIncidencias(string nombreArchivo)
 
 void guardarCSVIncidencias(ListaIncidencias *lista, string nombreArchivo)
 {
-    ofstream archivo(nombreArchivo);
+    ofstream archivo(nombreArchivo, ios::out | ios::app);
 
     if (!archivo.is_open())
     {
@@ -80,14 +82,16 @@ void guardarCSVIncidencias(ListaIncidencias *lista, string nombreArchivo)
     }
 
     NodoIncidencia *puntero = lista->head;
-    while (puntero)
+    while (puntero != nullptr)
     {
         archivo << puntero->incidencia.id_incidencia << ","
                 << puntero->incidencia.id_recepcionista << ","
                 << puntero->incidencia.id_usuario << ","
+                << puntero->incidencia.id_libro << ","
                 << puntero->incidencia.tipo << ","
                 << puntero->incidencia.descripcion << ","
                 << puntero->incidencia.fecha << endl;
+        puntero = puntero->sgte;
     }
 
     archivo.close();

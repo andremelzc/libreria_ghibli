@@ -212,3 +212,4 @@ int stringAInt(const string &texto)
     ss >> numero;
     return numero;
 }
+
