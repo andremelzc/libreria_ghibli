@@ -664,7 +664,7 @@ void mostrarVistaEstadisticasGanancias()
      for (int i = 0; i < valorEscalado1; i++)
     {
         color(11);
-        gotoxy(23, 30 - i);
+        gotoxy(26, 30 - i);
         cout << "****";
     } 
     color(0);
@@ -673,7 +673,7 @@ void mostrarVistaEstadisticasGanancias()
     for (int i = 0; i < valorEscalado2; i++)
     {
         color(11);
-        gotoxy(65, 30 - i);
+        gotoxy(70, 30 - i);
         cout << "****";
     }
  
@@ -684,7 +684,7 @@ void mostrarVistaEstadisticasGanancias()
     for (int i = 0; i < 20; i++)
     {
         color(11);
-        gotoxy(108, 30 - i);
+        gotoxy(113, 30 - i);
         cout << "****";
     } 
     pausa();
