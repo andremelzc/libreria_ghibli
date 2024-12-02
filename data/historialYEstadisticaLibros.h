@@ -168,7 +168,7 @@ void mostrarHistorial()
 
     limpiarPantalla();
     setConsoleBackground(White);
-    dibujarTitulo(27, 0, 2, letras);
+    dibujarTitulo(24, 0, 2, letras);
     estructura_menu2(16, 103, 10, 27);
 
     Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
@@ -246,7 +246,7 @@ void mostrarHistorialCliente(int dni)
     {
         limpiarPantalla();
         setConsoleBackground(White);
-        dibujarTitulo(27, 0, 2, letras);
+        dibujarTitulo(24, 0, 2, letras);
         estructura_menu2(16, 103, 10, 27);
         gotoxy(44, 11);
         color(2);
@@ -277,7 +277,7 @@ void mostrarHistorialCliente(int dni)
 
     limpiarPantalla();
     setConsoleBackground(White);
-    dibujarTitulo(27, 0, 2, letras);
+    dibujarTitulo(24, 0, 2, letras);
     estructura_menu2(16, 103, 10, 27);
 
     gotoxy(44, 11);

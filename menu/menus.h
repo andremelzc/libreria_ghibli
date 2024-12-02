@@ -1,6 +1,9 @@
 #pragma once
 #include "../data/persistenciaDatos.h"
+Lista leerUsuariosCSV(string nombreArchivo);
+Nodo *buscarUsuarioPorDNI(Lista &listaUsuarios, string &dni); // Declaración previa
 #include "../servicio/funcionalidades.h"
+#include "../data/ganancias.h"
 #include "../data/gestionUsuarios.h"
 #include "gotoxy.h"
 #include "../data/gestionLibros.h"
@@ -9,7 +12,9 @@
 #include "../data/prestamoLibro.h"
 #include "../data/carritoLibro.h"
 #include "../data/historialYEstadisticaLibros.h"
-#include "../data/ganancias.h"
+#include "../data/gestionIncidencias.h"
+#include "../data/gestionStock.h"
+#include "../data/verReportes.h"
 
 // Menu de opciones inicial
 vector<string> opcionesMenuPrincipal = {"Ver catalogo",
@@ -32,6 +37,7 @@ void menu_opcionesGestionLibros();   // Declaración previa
 void menu_opcionesGestionUsuarios(); // Declaración previa
 void menu_opcionesGestionPedidos();  // Declaración previa
 void menu_opcionesGestionLaptops();  // Declaración previa
+void menu_opcionesReportes();        // Declaración previa
 
 // Para cuando se inicie sesión
 int id_usuariolog = 0;
@@ -135,7 +141,7 @@ vector<string> opcionesMenuAdministrador = {"Gestionar libros",
                                             "Gestionar usuarios",
                                             "Gestionar pedidos",
                                             "Gestionar laptops",
-                                            "Ver estadisticas",
+                                            "Ver reportes",
                                             "Cerrar sesion"};
 int numAdmin = opcionesMenuAdministrador.size();
 
@@ -149,6 +155,7 @@ void menu_opcionesAdministrador()
     setConsoleBackground(White);
     dibujarTitulo(27, 0, 2, letras);
     estructura_menu2(16, 103, 10, 27);
+    imprimirCarita(103, 10, id_usuariolog);
     // Imprimir las opciones
     for (int i = 0; i < numAdmin; i++)
     {
@@ -209,6 +216,7 @@ void menu_opcionesAdministrador()
       case 5:
         // 5. Ver estadisticas
         ejecutarGradienteDoble(150);
+        menu_opcionesReportes();
         break;
       case 6:
         // 6. Salir
@@ -225,6 +233,7 @@ void menu_opcionesAdministrador()
 // Menu de opciones de gestionar libros (Administrador)
 vector<string> opcionesMenuGestionLibros = {"Registrar libro",
                                             "Modificar libro",
+                                            "Aumentar stock",
                                             "Retroceder"};
 int numGestionLibros = opcionesMenuGestionLibros.size();
 
@@ -284,7 +293,11 @@ void menu_opcionesGestionLibros()
         modificarLibro();
         break;
       case 3:
-        // 3. Salir
+        // 3. Aumentar stock
+        aumentarStock();
+        break;
+      case 4:
+        // 4. Salir
         repeat = false;
         system("CLS");
         break;
@@ -471,6 +484,98 @@ vector<string> opcionesMenuGestionLaptops = {"Visualizar Pila de Laptops",
                                              "Restaurar Laptop",
                                              "Salir"};
 int numGestionLaptops = opcionesMenuGestionLaptops.size();
+
+// Menu de opciones de reportes (Administrador)
+vector<string> opcionesVerReportes = {"Ganancias",
+                                      "Historial de libros",
+                                      "Estadisticas de libros",
+                                      "Incidencias",
+                                      "Retroceder"};
+int numReportes = opcionesVerReportes.size();
+
+void menu_opcionesReportes()
+{
+  bool repeat = true;
+  int opt = 1;
+  while (repeat)
+  {
+    limpiarPantalla();
+    setConsoleBackground(White);
+    dibujarTitulo(27, 0, 2, letras);
+    estructura_menu2(16, 103, 10, 27);
+    gotoxy(46, 12);
+    color(2);
+    cout << "Reportes de la biblioteca";
+    gotoxy(27, 14);
+    color(0);
+    cout << "Bienvenido, en esta sección puede ver los reportes de la biblioteca";
+    gotoxy(27, 16);
+    color(0);
+    cout << "Ver reportes sobre";
+    // Imprimir las opciones
+    for (int i = 0; i < numReportes; i++)
+    {
+      color(0);
+      if (i == opt - 1)
+      {
+        color(2);
+        gotoxy(52, 16 + i);
+        cout << "=>   ";
+        gotoxy(54, 16 + i);
+        cout << opcionesVerReportes[i] << endl;
+      }
+      else
+      {
+        gotoxy(59, 16 + i);
+        cout << "   " << opcionesVerReportes[i] << endl;
+      }
+    }
+    // Capturamos la entrada de usuario
+    int input = _getch();
+
+    switch (input)
+    {
+    // Aumentar o disminuir la opcion en la que estamos
+    case 72: // Flecha arriba
+      opt = (opt == 1) ? numReportes : --opt;
+      break;
+    case 80: // Flecha abajo
+      opt = (opt == numReportes) ? 1 : ++opt;
+      break;
+    case 27: // Escape
+      repeat = false;
+      limpiarPantalla();
+      break;
+    // Ejecutar una de las opciones del menu
+    case 13:
+      switch (opt)
+      {
+      case 1:
+      {
+        // 1. Ganancias
+        break;
+      }
+      case 2:
+        // 2. Historial de libros
+        break;
+      case 3:
+        // 3. Estadisticas de libros
+        break;
+      case 4:
+        // 4. Incidencias
+        mostrarReporteIncidencias();
+        break;
+      case 5:
+        // 5. Salir
+        repeat = false;
+        system("CLS");
+        break;
+      default:
+        cout << "Estas fuera del rango\n";
+      }
+    }
+  }
+}
 
 void menu_opcionesGestionLaptops()
 {

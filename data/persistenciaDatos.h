@@ -278,3 +278,27 @@ struct ListaGanancias{
     NodoGanancia *head;
     ListaGanancias(): head(nullptr), longitud(0) {}; 
 };
+
+// Incidencia
+struct Incidencia{
+    int id_incidencia;
+    int id_recepcionista;
+    int id_usuario;
+    string tipo;
+    string descripcion;
+    string fecha;
+};
+
+struct NodoIncidencia{
+    Incidencia incidencia;
+    NodoIncidencia *sgte;
+    NodoIncidencia(Incidencia incidencia1): incidencia(incidencia1), sgte(nullptr) {}; 
+    NodoIncidencia(): sgte(nullptr) {}; 
+};
+
+
+struct ListaIncidencias{
+    int longitud;
+    NodoIncidencia *head;
+    ListaIncidencias(): head(nullptr), longitud(0) {}; 
+};

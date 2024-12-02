@@ -10,7 +10,6 @@
 #include <conio.h>
 #include <locale>
 #include <ctime>
-#include "..\data\ganancias.h"
 
 using namespace std;
 
@@ -28,7 +27,7 @@ void gestionUsuarios_registrarUsuario()
 
     limpiarPantalla();
     setConsoleBackground(White);
-    dibujarTitulo(27, 0, 2, letras);
+    dibujarTitulo(24, 0, 2, letras);
     estructura_menu2(16, 103, 10, 27);
 
     Usuario *usuario = new Usuario();
@@ -372,7 +371,7 @@ void menuInicio_registrarUsuario()
 
     limpiarPantalla();
     setConsoleBackground(White);
-    dibujarTitulo(27, 0, 2, letras);
+    dibujarTitulo(24, 0, 2, letras);
     estructura_menu2(16, 103, 10, 27);
 
     Usuario *usuario = new Usuario();
@@ -782,7 +781,7 @@ void gestionUsuario_modificarUsuario()
 
     limpiarPantalla();
     setConsoleBackground(White);
-    dibujarTitulo(27, 0, 2, letras);
+    dibujarTitulo(24, 0, 2, letras);
     estructura_menu2(16, 103, 10, 27);
     color(2);
     gotoxy(52, 12);
@@ -821,7 +820,7 @@ void gestionUsuario_modificarUsuario()
             {
                 limpiarPantalla();
                 setConsoleBackground(White);
-                dibujarTitulo(27, 0, 2, letras);
+                dibujarTitulo(24, 0, 2, letras);
                 estructura_menu2(16, 103, 10, 27);
                 color(2);
                 gotoxy(52, 12);
@@ -1055,7 +1054,7 @@ void activarMembresi()
 
     limpiarPantalla();
     setConsoleBackground(White);
-    dibujarTitulo(27, 0, 2, letras);
+    dibujarTitulo(24, 0, 2, letras);
     estructura_menu2(16, 103, 10, 27);
     gotoxy(52, 12);
     color(2);
