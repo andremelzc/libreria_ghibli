@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -376,6 +377,7 @@ bool esDelMesActual(const fecha& f) {
     return (f.mes == ltm->tm_mon + 1) && 
            (f.año == ltm->tm_year + 1900);
 }
+
 void imprimirCarita(int maxX, int y, int idUsuario){
     // Buscar al usuario por su ID
     Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv");

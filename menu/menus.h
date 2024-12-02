@@ -553,6 +553,7 @@ void menu_opcionesReportes()
       case 1:
       {
         // 1. Ganancias
+        mostrarVistaEstadisticasGanancias();
         break;
       }
       case 2:

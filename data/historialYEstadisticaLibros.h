@@ -585,7 +585,7 @@ ListaGanancias cargarEstadisticaVentasCSV(string nombreArchivo)
 
         // Leer el ID del libro
         getline(ss, campo, ',');
-        ganancia.origen = stoi(campo);
+        ganancia.origen = campo;
 
         // Leer el precio de venta
         getline(ss, campo, ',');
@@ -629,20 +629,11 @@ void mostrarVistaEstadisticasGanancias()
     limpiarPantalla();
     setConsoleBackground(White);
     dibujarTitulo(27, 0, 2, letras);
-    estructura_menu2(16, 103, 10, 27);
+    estructura_menu2(10, 130, 10, 35);
 
-    gotoxy(44, 11);
+    gotoxy(50, 11);
     color(2);
     cout << "Estadisticas de Ventas";
-    color(0);
-    gotoxy(20, 13);
-    cout << "ID Usuario";
-    gotoxy(35, 13);
-    cout << "Origen";
-    gotoxy(50, 13);
-    cout << "Monto";
-    gotoxy(65, 13);
-    cout << "Fecha";
 
     while (actual != nullptr)
     {
@@ -654,8 +645,9 @@ void mostrarVistaEstadisticasGanancias()
                 contGananciasMora += actual->ganancia.monto;
                 contGananciasAmbos += actual->ganancia.monto;
             }
-            else
+            else if(actual->ganancia.origen != "MORA")
             {
+                
                 contGananciasMembresias += actual->ganancia.monto;
                 contGananciasAmbos += actual->ganancia.monto;
             }
@@ -663,36 +655,37 @@ void mostrarVistaEstadisticasGanancias()
         actual = actual->sgte; // pasando al siguiente nodo
     }
 
-    float valorEscalado1 = ((float)(contGananciasMora) * (35)) / (contGananciasAmbos);
-    float valorEscalado2 = ((float)(contGananciasMembresias) * (35)) / (contGananciasAmbos);
+    float valorEscalado1 = ((float)(contGananciasMora) * (20)) / (contGananciasAmbos);
+    float valorEscalado2 = ((float)(contGananciasMembresias) * (20)) / (contGananciasAmbos);
 
     color(0);
-    gotoxy(20, 60);
+    gotoxy(15, 32);
     cout << "Ganancias por mora: " << contGananciasMora;
-    for (int i = 0; i < valorEscalado1; i++)
+     for (int i = 0; i < valorEscalado1; i++)
     {
         color(11);
-        gotoxy(25, 58 - i);
-        cout << "**";
-    }
+        gotoxy(23, 30 - i);
+        cout << "***";
+    } 
     color(0);
-    gotoxy(45, 60);
+    gotoxy(55, 32);
     cout << "Ganancias por Membresias: " << contGananciasMembresias;
     for (int i = 0; i < valorEscalado2; i++)
     {
         color(11);
-        gotoxy(50, 58 - i);
-        cout << "**";
+        gotoxy(65, 30 - i);
+        cout << "***";
     }
-
+ 
     color(0);
-    gotoxy(70, 60);
-    cout << "Ganancias totales: " << contGananciasMora;
-    for (int i = 0; i < 35; i++)
+    gotoxy(100, 32);
+    cout << "Ganancias totales: " << contGananciasAmbos;
+    
+    for (int i = 0; i < 20; i++)
     {
         color(11);
-        gotoxy(75, 58 - i);
-        cout << "**";
-    }
+        gotoxy(108, 30 - i);
+        cout << "***";
+    } 
     pausa();
 }
