@@ -18,6 +18,8 @@ bool verificarMembresia(Lista &Usuarios, int idUsuario);
 bool mostrarLibroXTitulo(ListaLibros &Libros, string tituloPedido, int &id);
 void modificarCantPrestada(int idUsuario);
 bool mostrarLibroXidCopy(ListaLibros &Libros, int id);
+void filtroIncidencias(int x, int y, string &eleccion);
+void escogerIncidencias(int x, int y, string &eleccion);
 // void encolarPrestamoPorPrioridad(ColaPedidos &colaPedidos, Pedidos pedido);
 
 // -- FUNCIONES PARA LISTA ENLAZADA DE PEDIDOS --
@@ -953,17 +955,20 @@ void registrarDevolucionLibro(double &mora, int idRecepcionista)
 
             gotoxy(48, 12);
             color(2);
-            cout << "Historial de Incidencias";
-            gotoxy(17, 14);
-            cout << "Recepcionista:";
-            gotoxy(34, 14);
-            cout << "Libro: ";
-            gotoxy(58, 14);
-            cout << "Tipo: ";
-            gotoxy(68, 14);
-            cout << "Descripcion: ";
-            gotoxy(94, 14);
-            cout << "Fecha: ";
+            cout << "Registro de incidencias";
+            gotoxy(19, 14);
+            color(2);
+            cout << "Historial";
+            gotoxy(19, 15);
+            cout << "Recep.";
+            gotoxy(34, 15);
+            cout << "Libro";
+            gotoxy(58, 15);
+            cout << "Tipo";
+            gotoxy(68, 15);
+            cout << "Desc.";
+            gotoxy(92, 15);
+            cout << "Fecha";
             color(0);
             int contador = 0;
             while (actual != nullptr && actual->incidencia.id_usuario == stoi(dni))
@@ -972,7 +977,7 @@ void registrarDevolucionLibro(double &mora, int idRecepcionista)
 
                 Nodo *recepcionista = buscarUsuarioPorDNI(listaUsuarios, dni_recepcionista);
                 string nombre_completo = recepcionista->usuario.nombre + " " + recepcionista->usuario.apellidos;
-                gotoxy(17, 16 + contador);
+                gotoxy(19, 16 + contador);
 
                 if (nombre_completo.length() > 16)
                 {
@@ -1010,24 +1015,24 @@ void registrarDevolucionLibro(double &mora, int idRecepcionista)
                 {
                     cout << actual->incidencia.descripcion;
                 }
-                gotoxy(94, 16 + contador);
+                gotoxy(92, 16 + contador);
                 cout << actual->incidencia.fecha;
 
                 actual = actual->sgte;
                 contador++;
             }
 
-            gotoxy(27, 17 + contador);
+            gotoxy(19, 19 + contador);
             color(2);
 
             cout << "Ingresa el Tipo de incidencia: ";
             color(0);
             string tipo_incidencia;
-            getline(cin, tipo_incidencia);
+            escogerIncidencias(50, 19+contador, tipo_incidencia);
 
-            gotoxy(27, 18 + contador);
+            gotoxy(19, 23 + contador);
             color(2);
-            cout << "Insegra la Descripcion de la incidencia: ";
+            cout << "Ingrese la Descripcion de la incidencia: ";
             color(0);
             string descripcion_incidencia;
             getline(cin, descripcion_incidencia);
@@ -1082,7 +1087,7 @@ void registrarDevolucionLibro(double &mora, int idRecepcionista)
             }
             else
             {
-                gotoxy(27, 19 + contador);
+                gotoxy(19, 24 + contador);
                 color(2);
                 cout << "Cantidad de dias de castigo: ";
                 color(0);
@@ -1160,7 +1165,7 @@ void registrarDevolucionLibro(double &mora, int idRecepcionista)
             cout << mora;
         }
 
-        system("PAUSE>0");
+        pausa();
     }
 }
 
