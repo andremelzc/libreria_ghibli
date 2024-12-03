@@ -1162,7 +1162,6 @@ void activarMembresi()
             ListaGanancias listaGanancias;
             insertarFinalGanancias(&listaGanancias, &ganancia);
             guardarGananciasCSV(&listaGanancias, "output/ganancias.csv");
-
         }
         actual = actual->siguiente;
     }
@@ -1264,16 +1263,17 @@ void actualizarMembresiaUsuarios()
     string mesStr = to_string(localTime->tm_mon + 1);
     string añoStr = to_string(localTime->tm_year + 1900);
     fecha = diaStr + "/" + mesStr + "/" + añoStr;
-
     while (actual != nullptr)
     {
-        if (actual->usuario.membresia == "ACTIVA")
+        if (actual->usuario.membresia == "VIP" || actual->usuario.membresia == "PREMIUM" || actual->usuario.membresia == "ESTANDAR")
         {
             if (actual->usuario.fechaFinal == fecha)
             {
                 actual->usuario.membresia = "INACTIVA";
                 actual->usuario.fechaInicio = "00/00/0000";
                 actual->usuario.fechaFinal = "00/00/0000";
+                actual->usuario.numeroCastigos = 0;
+                actual->usuario.librosPrestados = 0;
             }
         }
         actual = actual->siguiente;
@@ -1362,4 +1362,43 @@ Nodo *buscarUsuarioPorDNI(Lista &listaUsuarios, string &dni)
         actual = actual->siguiente;
     }
     return nullptr; // Usuario no encontrado
+}
+
+void levantarCastigoUsuarios()
+{
+
+    Lista listaUsuarios;
+    listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
+
+    Nodo *actual = listaUsuarios.cabeza;
+    time_t t = time(0);
+    tm *localTime = localtime(&t);
+    string fecha;
+    string diaStr = to_string(localTime->tm_mday);
+    string mesStr = to_string(localTime->tm_mon + 1);
+    string añoStr = to_string(localTime->tm_year + 1900);
+    fecha = diaStr + "/" + mesStr + "/" + añoStr;
+    
+    while (actual != nullptr)
+    {
+        if ((actual->usuario.fechaInicio == fecha))
+        {
+            if (actual->usuario.membresia == "CONGELADA_ESTANDAR")
+            {
+                actual->usuario.membresia = "ESTANDAR";
+            }
+            else if (actual->usuario.membresia == "CONGELADA_PREMIUM")
+            {
+                actual->usuario.membresia = "PREMIUM";
+            }
+            else if (actual->usuario.membresia == "CONGELADA_VIP")
+            {
+                actual->usuario.membresia = "VIP";
+            }
+        }
+
+        actual = actual->siguiente;
+    }
+    limpiarCSV("output/usuarios.csv");
+    guardar_CSV(&listaUsuarios, "output/usuarios.csv");
 }

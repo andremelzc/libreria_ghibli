@@ -9,13 +9,12 @@ Nodo *buscarUsuarioPorDNI(Lista &listaUsuarios, string &dni); // Declaración pr
 #include "../data/gestionLibros.h"
 #include "../servicio/iniciarSesion.h"
 #include "../data/gestionLaptops.h"
-#include "../data/prestamoLibro.h"
 #include "../data/carritoLibro.h"
 #include "../data/historialYEstadisticaLibros.h"
 #include "../data/gestionIncidencias.h"
 #include "../data/gestionStock.h"
+#include "../data/gestionCategorias.h"
 #include "../data/verReportes.h"
-
 // Menu de opciones inicial
 vector<string> opcionesMenuPrincipal = {"Ver catalogo",
                                         "Registrarse",
@@ -42,7 +41,7 @@ void menu_opcionesReportes();        // Declaración previa
 // Para cuando se inicie sesión
 int id_usuariolog = 0;
 int costoTotal = 0;
-int mora = 0;
+double mora = 0;
 
 void menu_opcionesPrincipal()
 {
@@ -831,6 +830,7 @@ vector<string> opcionesMenuCliente = {
     "Ver catalogo",
     "Realizar pedido",
     "Ver historial de pedidos",
+    "Sugerencias",
     "Cerrar sesion",
 };
 int numCliente = opcionesMenuCliente.size();
@@ -899,6 +899,9 @@ void menu_opcionesCliente()
         mostrarHistorialCliente(id_usuariolog);
         break;
       case 4:
+        menu_sugerencias(id_usuariolog);
+        break;
+      case 5:
         repeat = false;
         system("CLS");
         break;

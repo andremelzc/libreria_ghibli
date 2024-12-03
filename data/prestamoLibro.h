@@ -8,6 +8,7 @@
 #include <ctime>
 #include <filesystem>
 #include "..\menu\gotoxy.h"
+#include "gestionIncidencias.h"
 
 using namespace std;
 
@@ -114,7 +115,6 @@ void guardar_CSV_Pedido(ListaPedidos *Lista, string nombreArchivo)
     }
 
     archivo.close();
-    cout << "Datos guardados en " << nombreArchivo << endl;
 }
 
 void guardar_CSV_PedidoReferencia(ListaPedidos &Lista, const string &nombreArchivo)
@@ -226,6 +226,20 @@ ListaPedidos leerPedidosDesdeCSV(string nombreArchivo)
 
     archivo.close(); // Cerrar el archivo CSV
     return lista;    // Regresar la lista de pedidos
+}
+
+NodoPedidos *buscarPedidoPorID(ListaPedidos &listaPedidos, int idLibro, int dni)
+{
+    NodoPedidos *actual = listaPedidos.head;
+    while (actual != nullptr)
+    {
+        if (actual->pedido.ID_libro == idLibro && actual->pedido.ID_usuario == dni && actual->pedido.estadoPedido == "PRESTADO")
+        {
+            return actual; //  encontrado
+        }
+        actual = actual->sgte;
+    }
+    return nullptr; //  no encontrado
 }
 
 // -- FUNCIONES PARA REGISTRAR PEDIDOS DE LIBROS --
@@ -721,9 +735,8 @@ bool mostrarPedidosxdni(ListaPedidos &listaPedidos, string dni)
     return usuarioEncontrado;
 }
 
-
 // -- FUNCIONES PARA DEVOLVER LIBROS --
-void registrarDevolucionLibro(int &mora, int idRecepcionista)
+void registrarDevolucionLibro(double &mora, int idRecepcionista)
 
 {
     string dni;
@@ -752,11 +765,9 @@ void registrarDevolucionLibro(int &mora, int idRecepcionista)
         color(2);
         cout << "DNI del usuario: ";
         color(0);
-        
+
         // Leer el DNI del usuario por si ingresó un escape
         getline(cin, dni);
-        cout<<"             "<<dni;
-
 
         color(2);
         dibujarTextoPuntos(27, 17, "Buscando usuario");
@@ -782,132 +793,374 @@ void registrarDevolucionLibro(int &mora, int idRecepcionista)
 
     if (usuarioEncontrado)
     {
-        gotoxy(27, 25);
+        gotoxy(27, 24);
         color(2);
         cout << "ID del libro a devolver: ";
         color(0);
         // Leer el ID del libro por si ingresó un escape
         getline(cin, id_libro);
+        gotoxy(27, 25);
+        color(2);
+        cout << "Desea reportar alguna incididencia? (s/n): ";
+        string respuesta;
+        color(0);
+        getline(cin, respuesta);
 
-        NodoPedidos *actual = listaPedidos.head;
-        string nombreLibroDevuelto;
-        while (actual != nullptr)
+        if (respuesta[0] == 'n' || respuesta[0] == 'N')
         {
-            if (actual->pedido.ID_usuario == stoi(dni) && actual->pedido.ID_libro == stoi(id_libro) && (actual->pedido.estadoPedido == "PRESTADO" || actual->pedido.estadoPedido == "NO_DEVUELTO"))
+            NodoPedidos *actual = listaPedidos.head;
+            string nombreLibroDevuelto;
+            while (actual != nullptr)
             {
-                // Modificamos datos del libros.csv
-                idLibroEncontrado = true;
-                ListaLibros listaLibros = leerLibrosCSV("output/libros.csv");
-                nodoLibros *actualLibro = listaLibros.cabeza;
-                while (actualLibro != nullptr)
+                if (actual->pedido.ID_usuario == stoi(dni) && actual->pedido.ID_libro == stoi(id_libro) && (actual->pedido.estadoPedido == "PRESTADO" || actual->pedido.estadoPedido == "NO_DEVUELTO"))
                 {
-                    if (actualLibro->libro.id == stoi(id_libro))
+                    // Modificamos datos del libros.csv
+                    idLibroEncontrado = true;
+                    ListaLibros listaLibros = leerLibrosCSV("output/libros.csv");
+                    nodoLibros *actualLibro = listaLibros.cabeza;
+                    while (actualLibro != nullptr)
                     {
-                        actualLibro->libro.StockActual++;
-                        nombreLibroDevuelto = actualLibro->libro.nombre_Libro;
-                        break;
+                        if (actualLibro->libro.id == stoi(id_libro))
+                        {
+                            actualLibro->libro.StockActual++;
+                            nombreLibroDevuelto = actualLibro->libro.nombre_Libro;
+                            break;
+                        }
+                        actualLibro = actualLibro->siguiente;
                     }
-                    actualLibro = actualLibro->siguiente;
+
+                    guardar_CSV_Libros_Sobreescribir(&listaLibros, "output/libros.csv");
+
+                    time_t tiempoActual = time(nullptr);
+
+                    // Convierte el tiempo a una estructura tm
+                    tm *tiempoLocal = localtime(&tiempoActual);
+
+                    actual->pedido.entregado.año = tiempoLocal->tm_year + 1900;
+                    actual->pedido.entregado.mes = tiempoLocal->tm_mon + 1;
+                    actual->pedido.entregado.dia = tiempoLocal->tm_mday;
+                    actual->pedido.ID_recepcionistaRecibe = idRecepcionista;
+
+                    dias = calcularDiasEntreFechas(actual->pedido.entregado.año, actual->pedido.entregado.mes, actual->pedido.entregado.dia, actual->pedido.devolucion.año, actual->pedido.devolucion.mes, actual->pedido.devolucion.dia);
+
+                    if (dias > 7)
+                    {
+                        mora = 3 * (dias - 7);
+                        actual->pedido.estadoPedido = "DEVUELTO_TARDE";
+
+                        // Registramos la mora en ganancias
+                        ListaGanancias listaGanancias;
+                        Ganancia ganancia;
+                        ganancia.id_usuario = stoi(dni);
+                        ganancia.monto = mora;
+                        ganancia.fecha = fechaAString(actual->pedido.entregado);
+                        ganancia.origen = "MORA";
+                        insertarFinalGanancias(&listaGanancias, &ganancia);
+                        guardarGananciasCSV(&listaGanancias, "output/ganancias.csv");
+                    }
+                    else
+                    {
+                        actual->pedido.estadoPedido = "DEVUELTO";
+                    }
+
+                    guardar_CSV_PedidoReferencia(listaPedidos, "output/pedidos.csv");
+
+                    Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
+                    Nodo *actualUsuario = listaUsuarios.cabeza;
+
+                    while (actualUsuario != nullptr)
+                    {
+                        if (actualUsuario->usuario.ID_Usuario == dni)
+                        {
+                            actualUsuario->usuario.librosPrestados--;
+                            break;
+                        }
+                        actualUsuario = actualUsuario->siguiente;
+                    }
+                    limpiarCSV("output/usuarios.csv");
+                    guardar_CSV(&listaUsuarios, "output/usuarios.csv");
                 }
 
-                guardar_CSV_Libros_Sobreescribir(&listaLibros, "output/libros.csv");
-
-                time_t tiempoActual = time(nullptr);
-
-                // Convierte el tiempo a una estructura tm
-                tm *tiempoLocal = localtime(&tiempoActual);
-
-                actual->pedido.entregado.año = tiempoLocal->tm_year + 1900;
-                actual->pedido.entregado.mes = tiempoLocal->tm_mon + 1;
-                actual->pedido.entregado.dia = tiempoLocal->tm_mday;
-                actual->pedido.ID_recepcionistaRecibe=idRecepcionista;
-
-                dias = calcularDiasEntreFechas(actual->pedido.entregado.año, actual->pedido.entregado.mes, actual->pedido.entregado.dia, actual->pedido.devolucion.año, actual->pedido.devolucion.mes, actual->pedido.devolucion.dia);
-                
+                actual = actual->sgte;
+            }
+            if (idLibroEncontrado)
+            {
+                limpiarPantalla();
+                setConsoleBackground(White);
+                ejecutarGradienteDoble(150);
+                estructura_menu2(16, 103, 11, 26);
+                dibujarTitulo(24, 0, 2, letras);
+                gotoxy(44, 12);
+                color(2);
+                cout << "Registrar devolucion de libro";
+                dibujarTextoPuntos(27, 14, "Devolviendo libro");
+                gotoxy(27, 14);
+                cout << "Libro '";
+                color(0);
+                cout << nombreLibroDevuelto;
+                color(2);
+                cout << "' ha sido devuelto con exito!";
+                gotoxy(27, 16);
+                cout << "Dias de prestamo: ";
+                color(0);
+                cout << dias << " días";
+                gotoxy(27, 17);
+                color(2);
+                cout << "Dias de retraso: ";
+                color(0);
                 if (dias > 7)
                 {
-                    mora = 3 * (dias - 7);
-                    actual->pedido.estadoPedido = "DEVUELTO_TARDE";
-
-                    // Registramos la mora en ganancias
-                    ListaGanancias listaGanancias;
-                    Ganancia ganancia;
-                    ganancia.id_usuario = stoi(dni);
-                    ganancia.monto = mora;
-                    ganancia.fecha = fechaAString(actual->pedido.entregado);
-                    ganancia.origen = "MORA";
-                    insertarFinalGanancias(&listaGanancias, &ganancia);
-                    guardarGananciasCSV(&listaGanancias, "output/ganancias.csv");
+                    cout << dias - 7 << " días";
                 }
                 else
                 {
-                    actual->pedido.estadoPedido = "DEVUELTO";
+                    cout << "0 días";
                 }
-
-                guardar_CSV_PedidoReferencia(listaPedidos, "output/pedidos.csv");
-
-                Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
-                Nodo *actualUsuario = listaUsuarios.cabeza;
-
-                while (actualUsuario != nullptr)
-                {
-                    if (actualUsuario->usuario.ID_Usuario == dni)
-                    {
-                        actualUsuario->usuario.librosPrestados--;
-                        break;
-                    }
-                    actualUsuario = actualUsuario->siguiente;
-                }
-                limpiarCSV("output/usuarios.csv");
-                guardar_CSV(&listaUsuarios, "output/usuarios.csv");
+                gotoxy(27, 18);
+                color(2);
+                cout << "Mora a pagar: S/ ";
+                color(0);
+                cout << mora;
             }
-
-            actual = actual->sgte;
+            else
+            {
+                gotoxy(40, 22);
+                cout << "Libro no encontrado...";
+            }
         }
-        if (idLibroEncontrado)
+        else if (respuesta[0] == 's' || respuesta[0] == 'S')
         {
+
+            string respuesta_incidencia;
+            ListaIncidencias listaIncidencias = cargarCSVtoIncidencias("output/incidencias.csv");
+            NodoIncidencia *actual = listaIncidencias.head;
+            ListaPedidos listaPedidosNuevo = leerPedidosDesdeCSV("output/pedidos.csv");
+
+            Lista listaUsuarios = leerUsuariosCSV("output/usuarios.csv");
+            Nodo *usuario = buscarUsuarioPorDNI(listaUsuarios, dni);
+            ListaLibros listaLibros = leerLibrosCSV("output/libros.csv");
+            nodoLibros *libro = buscarLibroPorID(listaLibros, stoi(id_libro));
+
+            fecha f = obtenerFechaActual();
+            string fecha_formateada = to_string(f.dia) + "/" + to_string(f.mes) + "/" + to_string(f.año);
+            string nivel_membresia = usuario->usuario.membresia;
+
             limpiarPantalla();
             setConsoleBackground(White);
             ejecutarGradienteDoble(150);
             estructura_menu2(16, 103, 11, 26);
             dibujarTitulo(24, 0, 2, letras);
-            gotoxy(44, 12);
+
+            gotoxy(48, 12);
             color(2);
-            cout << "Registrar devolucion de libro";
-            dibujarTextoPuntos(27, 14, "Devolviendo libro");
-            gotoxy(27, 14);
-            cout << "Libro '";
+            cout << "Historial de Incidencias";
+            gotoxy(17, 14);
+            cout << "Recepcionista:";
+            gotoxy(34, 14);
+            cout << "Libro: ";
+            gotoxy(58, 14);
+            cout << "Tipo: ";
+            gotoxy(68, 14);
+            cout << "Descripcion: ";
+            gotoxy(94, 14);
+            cout << "Fecha: ";
             color(0);
-            cout << nombreLibroDevuelto;
-            color(2);
-            cout << "' ha sido devuelto con exito!";
-            gotoxy(27, 16);
-            cout << "Dias de prestamo: ";
-            color(0);
-            cout << dias << " días";
-            gotoxy(27, 17);
-            color(2);
-            cout << "Dias de retraso: ";
-            color(0);
-            if (dias > 7)
+            int contador = 0;
+            while (actual != nullptr && actual->incidencia.id_usuario == stoi(dni))
             {
-                cout << dias - 7 << " días";
+                string dni_recepcionista = to_string(actual->incidencia.id_recepcionista);
+
+                Nodo *recepcionista = buscarUsuarioPorDNI(listaUsuarios, dni_recepcionista);
+                string nombre_completo = recepcionista->usuario.nombre + " " + recepcionista->usuario.apellidos;
+                gotoxy(17, 16 + contador);
+
+                if (nombre_completo.length() > 16)
+                {
+
+                    cout << nombre_completo.substr(0, 13) << "...";
+                }
+                else
+                {
+                    cout << nombre_completo;
+                }
+                int id_libro = actual->incidencia.id_libro;
+                nodoLibros *libro = buscarLibroPorID(listaLibros, id_libro);
+
+                gotoxy(34, 16 + contador);
+
+                if (libro->libro.nombre_Libro.length() > 22)
+                {
+
+                    cout << libro->libro.nombre_Libro.substr(0, 20) << "...";
+                }
+                else
+                {
+                    cout << libro->libro.nombre_Libro;
+                }
+
+                gotoxy(58, 16 + contador);
+                cout << actual->incidencia.tipo;
+                gotoxy(68, 16 + contador);
+                if (actual->incidencia.descripcion.length() > 22)
+                {
+
+                    cout << actual->incidencia.descripcion.substr(0, 20) << "...";
+                }
+                else
+                {
+                    cout << actual->incidencia.descripcion;
+                }
+                gotoxy(94, 16 + contador);
+                cout << actual->incidencia.fecha;
+
+                actual = actual->sgte;
+                contador++;
+            }
+
+            gotoxy(27, 17 + contador);
+            color(2);
+
+            cout << "Ingresa el Tipo de incidencia: ";
+            color(0);
+            string tipo_incidencia;
+            getline(cin, tipo_incidencia);
+
+            gotoxy(27, 18 + contador);
+            color(2);
+            cout << "Insegra la Descripcion de la incidencia: ";
+            color(0);
+            string descripcion_incidencia;
+            getline(cin, descripcion_incidencia);
+
+            NodoIncidencia *nueva_incidencia = new NodoIncidencia();
+            nueva_incidencia->incidencia.id_incidencia = contarFilasCSV("output/incidencias.csv") + 1;
+            nueva_incidencia->incidencia.id_recepcionista = idRecepcionista;
+            nueva_incidencia->incidencia.id_libro = stoi(id_libro);
+            nueva_incidencia->incidencia.tipo = tipo_incidencia;
+            nueva_incidencia->incidencia.descripcion = descripcion_incidencia;
+            nueva_incidencia->incidencia.fecha = fecha_formateada;
+            nueva_incidencia->incidencia.id_usuario = stoi(dni);
+
+            insertarFinalIncidencias(&listaIncidencias, &nueva_incidencia->incidencia);
+
+            if (nivel_membresia == "ESTANDAR")
+            {
+                mora += libro->libro.precio;
+            }
+            else if (nivel_membresia == "PREMIUM")
+            {
+                mora += libro->libro.precio * 0.8;
+            }
+            else if (nivel_membresia == "VIP")
+            {
+                mora += libro->libro.precio * 0.5;
+            }
+
+            usuario->usuario.librosPrestados--;
+
+            usuario->usuario.numeroCastigos++;
+
+            libro->libro.StockInventario--;
+
+            NodoPedidos *actualPedido = buscarPedidoPorID(listaPedidosNuevo, stoi(id_libro), stoi(dni));
+            actualPedido->pedido.estadoPedido = "INCIDENCIA";
+            actualPedido->pedido.ID_recepcionistaRecibe = idRecepcionista;
+
+            limpiarCSV("output/pedidos.csv");
+            guardar_CSV_Pedido(&listaPedidosNuevo, "output/pedidos.csv");
+            limpiarCSV("output/incidencias.csv");
+            guardarCSVIncidencias(&listaIncidencias, "output/incidencias.csv");
+            guardar_CSV_Libros_Sobreescribir(&listaLibros, "output/libros.csv");
+            bool usuarioCastigado = false;
+            if (usuario->usuario.numeroCastigos >= 5)
+            {
+                usuario->usuario.membresia = "INACTIVA";
+                usuario->usuario.fechaInicio = "00/00/0000";
+                usuario->usuario.fechaFinal = "00/00/0000";
+                usuario->usuario.numeroCastigos = 0;
+                usuarioCastigado = true;
             }
             else
             {
-                cout << "0 días";
+                gotoxy(27, 19 + contador);
+                color(2);
+                cout << "Cantidad de dias de castigo: ";
+                color(0);
+
+                int diasCastigo;
+                cin >> diasCastigo;
+                fecha nueva_fecha = sumarDiasAFecha(f, diasCastigo);
+                string fecha_castigo = to_string(nueva_fecha.dia) + "/" + to_string(nueva_fecha.mes) + "/" + to_string(nueva_fecha.año);
+                usuario->usuario.fechaInicio = fecha_castigo;
+
+                // Estructura tm para la primera fecha
+                tm fecha1 = {};
+                pausa();
+                fecha1.tm_year = f.año - 1900; // tm_year es años desde 1900
+                fecha1.tm_mon = f.mes - 1;     // tm_mon es de 0 a 11
+                fecha1.tm_mday = f.dia;
+
+                // Estructura tm para la segunda fecha
+                tm fecha2 = {};
+                fecha2.tm_year = nueva_fecha.año - 1900;
+                fecha2.tm_mon = nueva_fecha.mes - 1;
+                fecha2.tm_mday = nueva_fecha.dia;
+
+                // Convertir las fechas a tiempo en segundos desde la época
+                time_t tiempo1 = mktime(&fecha1);
+                time_t tiempo2 = mktime(&fecha2);
+
+                // Calcular la diferencia en segundos y convertirla a días
+                double diferenciaSegundos = difftime(tiempo2, tiempo1);
+                int diferenciaDias = diferenciaSegundos / (60 * 60 * 24); // Convierte de segundos a días
+
+                if (diferenciaDias < 0)
+                {
+                    usuario->usuario.fechaFinal = usuario->usuario.fechaInicio;
+                }
+
+                if (usuario->usuario.membresia == "ESTANDAR")
+                {
+                    usuario->usuario.membresia = "CONGELADA_ESTANDAR";
+                }
+                else if (usuario->usuario.membresia == "PREMIUM")
+                {
+                    usuario->usuario.membresia = "CONGELADA_PREMIUM";
+                }
+                else if (usuario->usuario.membresia == "VIP")
+                {
+                    usuario->usuario.membresia = "CONGELADA_VIP";
+                }
             }
-            gotoxy(27, 18);
+
+            limpiarCSV("output/usuarios.csv");
+            guardar_CSV(&listaUsuarios, "output/usuarios.csv");
+
+            limpiarPantalla();
+            setConsoleBackground(White);
+            ejecutarGradienteDoble(150);
+            estructura_menu2(16, 103, 11, 26);
+            dibujarTitulo(24, 0, 2, letras);
+            gotoxy(43, 12);
             color(2);
-            cout << "Mora a pagar: S/ ";
+
+            cout << "Resumen del Reporte de Incidencia";
+            if (usuarioCastigado)
+            {
+                gotoxy(48, 14);
+                cout << "Usuario castigado, su membresia ha sido desactivada";
+            }
+            gotoxy(48, 16);
+            cout << "Libro reportado con exito!";
+
+            gotoxy(48, 18);
+            color(2);
+            cout << "Penalidad a pagar: S/ ";
             color(0);
             cout << mora;
         }
-        else
-        {
-            gotoxy(40, 22);
-            cout << "Libro no encontrado...";
-        }
+
+        system("PAUSE>0");
     }
 }
 

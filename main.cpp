@@ -13,6 +13,9 @@ using namespace std;
 int main()
 {
     // Inicio
+
+    levantarCastigoUsuarios();
+    actualizarMembresiaUsuarios();
     ejecutarGradiente(300);
     dibujarTitulo(32, 5, 1, libros);
     dibujarTitulo(24, 14, 2, letras);
