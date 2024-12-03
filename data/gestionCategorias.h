@@ -2,6 +2,7 @@
 #include "persistenciaDatos.h"
 #include "gestionLibros.h"
 #include "prestamoLibro.h"
+#include <iomanip> // Asegúrate de incluir esto
 using namespace std;
 
 // Función para agregar un nodo al inicio de la lista
@@ -118,10 +119,9 @@ void mostrarLista(const ListaCategorias& lista) {
     }
 }
 void mostrarListaConLibro(const ListaCategorias& lista) {
+    ListaPedidos listaPedidosGeneral = leerPedidosDesdeCSV("output/pedidos.csv");
     
     
-    
-
     NodoCategorias* temp = lista.head;
     if (temp == nullptr) {
         color(0);//Negro
@@ -137,7 +137,12 @@ void mostrarListaConLibro(const ListaCategorias& lista) {
         gotoxy(50, lineaBase);
         cout << temp->categoria.libroPopular.nombre_Libro;
         gotoxy(85, lineaBase);
-        cout << temp->categoria.libroPopular.popularidad;
+        int popu = temp->categoria.libroPopular.popularidad;
+        cout << popu;
+        gotoxy(90, lineaBase);
+        int longi = listaPedidosGeneral.longitud;
+        float porce = (static_cast<float>(popu) / longi) * 100;
+        cout << fixed << setprecision(2) << porce << "%";
         lineaBase++;
         temp = temp->sgte;
     }
@@ -376,7 +381,9 @@ void menu_sugerencias(int idUsuario){
     gotoxy(50, 13);
     cout << "Nombre";
     gotoxy(85, 13);
-    cout << "Popularidad";
+    cout << "#";
+    gotoxy(90, 13);
+    cout << "%";
 
     mostrarListaConLibro(listaUsuario);
 
