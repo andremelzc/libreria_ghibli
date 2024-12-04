@@ -489,6 +489,8 @@ vector<string> opcionesVerReportes = {"Ganancias",
                                       "Historial de libros",
                                       "Estadisticas de libros",
                                       "Incidencias",
+                                      "Empleado del mes",
+                                      "Cliente del mes",
                                       "Retroceder"};
 int numReportes = opcionesVerReportes.size();
 
@@ -567,7 +569,15 @@ void menu_opcionesReportes()
         mostrarReporteIncidencias();
         break;
       case 5:
-        // 5. Salir
+        // 5. Empleado del mes
+        mostrarEstadisticasRecepcionistas();
+        break;
+      case 6:
+        // 6. Cliente del mes
+        mostrarEstadisticasUsuarios();
+        break;
+      case 7:
+        // 7. Salir
         repeat = false;
         system("CLS");
         break;

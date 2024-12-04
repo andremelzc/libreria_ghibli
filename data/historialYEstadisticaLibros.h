@@ -563,6 +563,16 @@ void mostrarEstadisticas()
         cout << actual->estadistica.cantIncidencias;
         actual = actual->sgte; // pasando al siguiente nodo
         espacioV++;
+
+        if (espacioV > 10)
+        {
+            pausa();
+            limpiarPantalla();
+            setConsoleBackground(White);
+            dibujarTitulo(27, 0, 2, letras);
+            estructura_menu2(16, 103, 10, 32);
+            espacioV = 0;
+        }
     }
 
     pausa();
