@@ -37,7 +37,8 @@ void menu_opcionesGestionUsuarios(); // Declaración previa
 void menu_opcionesGestionPedidos();  // Declaración previa
 void menu_opcionesGestionLaptops();  // Declaración previa
 void menu_opcionesReportes();        // Declaración previa
-
+void calificar_recepcionista(int);
+void guardarCalificacionRecepcionista(int, int);
 // Para cuando se inicie sesión
 int id_usuariolog = 0;
 int costoTotal = 0;
@@ -119,6 +120,40 @@ void menu_opcionesPrincipal()
           else
           {
             // Tipo 0 es para usuario
+            ListaPedidos pedidos = leerPedidosDesdeCSV("output/pedidos.csv");
+            NodoPedidos *actual = pedidos.head;
+            bool pedidoEncontrado = false;
+            ListaPedidos listaPedidos = leerPedidosDesdeCSV("output/pedidos.csv");
+            NodoPedidos *nodoPedidos = listaPedidos.head;
+            bool flag = false;
+            if (&listaPedidos != NULL)
+            {
+              while (nodoPedidos != NULL)
+              {
+                if (nodoPedidos->pedido.ID_recepcionistaRecibe != -1 && nodoPedidos->pedido.evaluacion == -1 && nodoPedidos->pedido.ID_usuario == id_usuariolog)
+                {
+                  flag = true;
+                  break;
+                }
+                nodoPedidos = nodoPedidos->sgte;
+              }
+  
+            }
+
+            while (actual != nullptr)
+            {
+              if (actual->pedido.ID_usuario == id_usuariolog && flag == true)
+              {
+                pedidoEncontrado = true;
+                break;
+              }
+              actual = actual->sgte;
+            }
+            if (pedidoEncontrado)
+            {
+              calificar_recepcionista(id_usuariolog);
+            }
+
             menu_opcionesCliente();
           }
         }
@@ -452,7 +487,7 @@ void menu_opcionesGestionPedidos()
       case 1:
       {
         // 1. Registrar pedido
-        
+
         break;
       }
       case 2:
@@ -913,7 +948,6 @@ void menu_opcionesCliente()
   }
 }
 
-
 // Menu de opciones de gestionar pedidos de libros (Recepcionista)
 vector<string> opcionesMenuGestionPedidosLibros = {"Atender pedido",
                                                    "Registrar devolucion de libro",
@@ -998,5 +1032,61 @@ void menu_opcionesPedido()
         cout << "Estas fuera del rango\n";
       }
     }
+  }
+}
+
+void calificar_recepcionista(int id_usuariolog)
+{
+  limpiarPantalla();
+  setConsoleBackground(White);
+  dibujarTitulo(27, 0, 2, letras);
+  estructura_menu2(16, 103, 10, 27);
+  gotoxy(46, 12);
+  color(2);
+  cout << "Calificar al recepcionista";
+  gotoxy(27, 14);
+  color(0);
+  cout << "Bienvenido, por favor califique el servicio del último recepcionista";
+  gotoxy(45, 15);
+  cout << "que le atendió en la biblioteca";
+  gotoxy(27, 17);
+  color(0);
+  cout << "Calificacion: ";
+  int calificacion = 0;
+  cin >> calificacion;
+  if (calificacion < 0 || calificacion > 5)
+  {
+    gotoxy(27, 19);
+    cout << "La calificacion debe estar entre 0 y 5\n";
+    pausa();
+    calificar_recepcionista(id_usuariolog);
+  }
+  else
+  {
+    // Guardar la calificacion
+    guardarCalificacionRecepcionista(id_usuariolog, calificacion);
+    gotoxy(27, 19);
+    cout << "Gracias por su calificacion";
+    pausa();
+  }
+}
+
+void guardarCalificacionRecepcionista(int id_usuariolog, int calificacion)
+{
+  ListaPedidos listaPedidos = leerPedidosDesdeCSV("output/pedidos.csv");
+  NodoPedidos *nodoPedidos = listaPedidos.head;
+  if (&listaPedidos != NULL)
+  {
+
+    while (nodoPedidos != NULL)
+    {
+      if (nodoPedidos->pedido.ID_recepcionistaRecibe != -1 && nodoPedidos->pedido.evaluacion == -1 && nodoPedidos->pedido.ID_usuario == id_usuariolog)
+      {
+        nodoPedidos->pedido.evaluacion = calificacion;
+        break;
+      }
+      nodoPedidos = nodoPedidos->sgte;
+    }
+    guardar_CSV_PedidoReferencia(listaPedidos, "output/pedidos.csv");
   }
 }
