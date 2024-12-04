@@ -112,6 +112,7 @@ void adicionarCampo()
         dibujarTitulo(24, 0, 2, letras);
         estructura_menu2(16, 103, 10, 27);
         Libro *libro = new Libro();
+        libro->id = contarFilasCSV("output/libros.csv") + contador;
         libro->estado = "Disponible";
         gotoxy(52, 12);
         color(2);

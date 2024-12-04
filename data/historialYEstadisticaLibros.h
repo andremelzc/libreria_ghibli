@@ -304,7 +304,15 @@ void mostrarHistorialCliente(int dni)
             gotoxy(20, 15 + contador);
             cout << actual->pedido.ID_pedido;
             gotoxy(26, 15 + contador);
-            cout << actual->pedido.ID_libro << ") " << devolverLibroNombre(Libros, actual->pedido.ID_libro);
+            cout << actual->pedido.ID_libro << ") ";
+            if (devolverLibroNombre(Libros, actual->pedido.ID_libro).length() > 22)
+            {
+                cout << devolverLibroNombre(Libros, actual->pedido.ID_libro).substr(0, 20) << "...";
+            }
+            else
+            {
+                cout << devolverLibroNombre(Libros, actual->pedido.ID_libro);
+            }
             gotoxy(57, 15 + contador);
             if (actual->pedido.estadoPedido == "NO_DEVUELTO" or actual->pedido.estadoPedido == "DEVUELTO_TARDE")
             {

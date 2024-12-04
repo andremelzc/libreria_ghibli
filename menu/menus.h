@@ -138,7 +138,6 @@ void menu_opcionesPrincipal()
 // Menu de opciones administrador
 vector<string> opcionesMenuAdministrador = {"Gestionar libros",
                                             "Gestionar usuarios",
-                                            "Gestionar pedidos",
                                             "Gestionar laptops",
                                             "Ver reportes",
                                             "Cerrar sesion"};
@@ -152,9 +151,9 @@ void menu_opcionesAdministrador()
   {
     limpiarPantalla();
     setConsoleBackground(White);
-    dibujarTitulo(27, 0, 2, letras);
+    dibujarTitulo(24, 0, 2, letras);
     estructura_menu2(16, 103, 10, 27);
-    imprimirCarita(103, 10, id_usuariolog);
+    imprimirCarita(103, 11, id_usuariolog);
     // Imprimir las opciones
     for (int i = 0; i < numAdmin; i++)
     {
@@ -195,30 +194,29 @@ void menu_opcionesAdministrador()
         // 1. Gestionar libros
         ejecutarGradienteDoble(150);
         menu_opcionesGestionLibros();
+        ejecutarGradienteDoble(150);
         break;
       }
       case 2:
         // 2. Gestionar usuarios
         ejecutarGradienteDoble(150);
         menu_opcionesGestionUsuarios();
+        ejecutarGradienteDoble(150);
         break;
       case 3:
-        // 3. Gestionar pedidos
-        ejecutarGradienteDoble(150);
-        menu_opcionesGestionPedidos();
-        break;
-      case 4:
-        // 4. Gestionar laptops
+        // 3. Gestionar laptops
         ejecutarGradienteDoble(150);
         menu_opcionesGestionLaptops();
+        ejecutarGradienteDoble(150);
         break;
-      case 5:
-        // 5. Ver estadisticas
+      case 4:
+        // 4. Ver estadisticas
         ejecutarGradienteDoble(150);
         menu_opcionesReportes();
+        ejecutarGradienteDoble(150);
         break;
-      case 6:
-        // 6. Salir
+      case 5:
+        // 5. Salir
         repeat = false;
         system("CLS");
         break;
@@ -246,6 +244,7 @@ void menu_opcionesGestionLibros()
     setConsoleBackground(White);
     dibujarTitulo(27, 0, 2, letras);
     estructura_menu2(16, 103, 10, 27);
+    imprimirCarita(103, 11, id_usuariolog);
     // Imprimir las opciones
     for (int i = 0; i < numGestionLibros; i++)
     {
@@ -310,7 +309,6 @@ void menu_opcionesGestionLibros()
 // Menu de opciones de gestionar usuarios (Administrador)
 vector<string> opcionesMenuGestionUsuarios = {"Registrar usuario",
                                               "Modificar usuario",
-                                              "Eliminar usuario",
                                               "Leer usuarios",
                                               "Retroceder"};
 int numGestionUsuarios = opcionesMenuGestionUsuarios.size();
@@ -325,6 +323,7 @@ void menu_opcionesGestionUsuarios()
     setConsoleBackground(White);
     dibujarTitulo(27, 0, 2, letras);
     estructura_menu2(16, 103, 10, 27);
+    imprimirCarita(103, 11, id_usuariolog);
     // Imprimir las opciones
     for (int i = 0; i < numGestionUsuarios; i++)
     {
@@ -364,18 +363,20 @@ void menu_opcionesGestionUsuarios()
       case 1:
       {
         // 1. Registrar usuario
+        ejecutarGradienteDoble(150);
         gestionUsuarios_registrarUsuario();
+        ejecutarGradienteDoble(150);
         break;
       }
       case 2:
         // 2. Modificar usuario
+        ejecutarGradienteDoble(150);
         gestionUsuario_modificarUsuario();
+        ejecutarGradienteDoble(150);
         break;
       case 3:
-        // 3. Eliminar usuario
-        break;
-      case 4:
-        // 4. Mostrar usuarios
+        // 3. Mostrar usuarios
+        ejecutarGradienteDoble(150);
         limpiarPantalla();
         setConsoleBackground(White);
         dibujarTitulo(27, 0, 2, letras);
@@ -384,87 +385,9 @@ void menu_opcionesGestionUsuarios()
         // Mostrar los usuarios cargados en la lista
         mostrarUsuarios(listaDeUsuarios);
         pausa();
-        break;
-      case 5:
-        // 5. Salir
-        repeat = false;
-        system("CLS");
-        break;
-      default:
-        cout << "Estas fuera del rango\n";
-      }
-    }
-  }
-}
-
-// Menu de opciones de gestionar pedidos (Administrador)
-vector<string> opcionesMenuGestionPedidos = {"Registrar pedido",
-                                             "Modificar pedido",
-                                             "Eliminar pedido",
-                                             "Leer pedidos",
-                                             "Retroceder"};
-int numGestionPedidos = opcionesMenuGestionPedidos.size();
-
-void menu_opcionesGestionPedidos()
-{
-  bool repeat = true;
-  int opt = 1;
-  while (repeat)
-  {
-    limpiarPantalla();
-    setConsoleBackground(White);
-    dibujarTitulo(27, 0, 2, letras);
-    estructura_menu2(16, 103, 10, 27);
-    // Imprimir las opciones
-    for (int i = 0; i < numGestionPedidos; i++)
-    {
-      color(0);
-      if (i == opt - 1)
-      {
-        color(2);
-        gotoxy(46, 16 + i);
-        cout << "=>   ";
-        gotoxy(48, 16 + i);
-        cout << opcionesMenuGestionPedidos[i] << endl;
-      }
-      else
-      {
-        gotoxy(53, 16 + i);
-        cout << "   " << opcionesMenuGestionPedidos[i] << endl;
-      }
-    }
-    // Capturamos la entrada de usuario
-    int input = _getch();
-
-    switch (input)
-    {
-    // Aumentar o disminuir la opcion en la que estamos
-    case 72: // Flecha arriba
-      opt = (opt == 1) ? numGestionPedidos : --opt;
-      break;
-    case 80: // Flecha abajo
-      opt = (opt == numGestionPedidos) ? 1 : ++opt;
-      break;
-    // Ejecutar una de las opciones del menu
-    case 13:
-      switch (opt)
-      {
-      case 1:
-      {
-        // 1. Registrar pedido
-        
-        break;
-      }
-      case 2:
-        // 2. Modificar pedido
-        break;
-      case 3:
-        // 3. Eliminar pedido
+        ejecutarGradienteDoble(150);
         break;
       case 4:
-        // 4. Mostrar pedidos
-        break;
-      case 5:
         // 5. Salir
         repeat = false;
         system("CLS");
@@ -588,6 +511,7 @@ void menu_opcionesGestionLaptops()
     setConsoleBackground(White);
     dibujarTitulo(27, 0, 2, letras);
     estructura_menu2(16, 103, 10, 27);
+    imprimirCarita(103, 11, id_usuariolog);
     // Imprimir las opciones
     for (int i = 0; i < numGestionLaptops; i++)
     {
@@ -676,6 +600,7 @@ void menu_opcionesRecepcionista()
     setConsoleBackground(White);
     dibujarTitulo(27, 0, 2, letras);
     estructura_menu2(16, 103, 10, 27);
+    imprimirCarita(103, 11, id_usuariolog);
     // Imprimir las opciones
     for (int i = 0; i < numRecepcionista; i++)
     {
@@ -683,14 +608,14 @@ void menu_opcionesRecepcionista()
       if (i == opt - 1)
       {
         color(2);
-        gotoxy(46, 15 + i);
+        gotoxy(46, 17 + i);
         cout << "=>   ";
-        gotoxy(48, 15 + i);
+        gotoxy(48, 17 + i);
         cout << opcionesMenuRecepcionista[i] << endl;
       }
       else
       {
-        gotoxy(53, 15 + i);
+        gotoxy(53, 17 + i);
         cout << "   " << opcionesMenuRecepcionista[i] << endl;
       }
     }
@@ -713,24 +638,32 @@ void menu_opcionesRecepcionista()
       case 1:
       {
         // 1. Gestionar pedido de libro
+        ejecutarGradienteDoble(150);
         limpiarPantalla();
         setConsoleBackground(White);
         dibujarTitulo(27, 0, 2, letras);
         estructura_menu2(16, 103, 10, 27);
         menu_opcionesPedido();
+        ejecutarGradienteDoble(150);
         break;
       }
       case 2:
         // 2. Gestionar pedido de laptop
+        ejecutarGradienteDoble(150);
         menu_opcionesLaptop();
+        ejecutarGradienteDoble(150);
         break;
       case 3:
         // 3. Registrar cliente
+        ejecutarGradienteDoble(150);
         menuInicio_registrarUsuario();
+        ejecutarGradienteDoble(150);
         break;
       case 4:
         // 4. Activar membresia
+        ejecutarGradienteDoble(150);
         activarMembresi();
+        ejecutarGradienteDoble(150);
         break;
       case 5:
         // 5. Salir
@@ -758,6 +691,7 @@ void menu_opcionesLaptop()
   int opt = 1;
   while (repeat)
   {
+    ejecutarGradienteDoble(150);
     limpiarPantalla();
     setConsoleBackground(White);
     dibujarTitulo(27, 0, 2, letras);
@@ -800,22 +734,28 @@ void menu_opcionesLaptop()
       case 1:
       {
         // 1. Visualizar Pila de Laptops
+        ejecutarGradienteDoble(150);
         mostrarPilaLaptops(pila);
+        ejecutarGradienteDoble(150);
         getch();
         break;
       }
       case 2:
         // 2. Prestar Laptop
+        ejecutarGradienteDoble(150);
         prestarLaptop(pila);
+        ejecutarGradienteDoble(150);
         getch();
         break;
       case 3:
         // 3. Devolver Laptop
+        ejecutarGradienteDoble(150);
         devolverLaptop(pila);
+        ejecutarGradienteDoble(150);
         getch();
         break;
       case 4:
-        // 6. Salir
+        // 4. Salir
         repeat = false;
         system("CLS");
         break;
@@ -846,6 +786,7 @@ void menu_opcionesCliente()
     setConsoleBackground(White);
     dibujarTitulo(27, 0, 2, letras);
     estructura_menu2(16, 103, 10, 27);
+    imprimirCarita(103, 11, id_usuariolog);
     // Imprimir las opciones
     for (int i = 0; i < numCliente; i++)
     {
@@ -885,22 +826,30 @@ void menu_opcionesCliente()
       case 1:
       {
         // 1. Ver catalogo
+        ejecutarGradienteDoble(150);
         listaDeLibros = leerLibrosDoblesCSV("output/libros.csv", true);
         mostrarLibros(listaDeLibros, true);
+        ejecutarGradienteDoble(150);
         break;
       }
       case 2:
         // 2. Realizar pedido
+        ejecutarGradienteDoble(150);
         adicionarCampoPedido(id_usuariolog);
+        ejecutarGradienteDoble(150);
         // adicionarCampoPedido();
         break;
       case 3:
         // 3. Ver historial de pedidos
         limpiarPantalla();
+        ejecutarGradienteDoble(150);
         mostrarHistorialCliente(id_usuariolog);
+        ejecutarGradienteDoble(150);
         break;
       case 4:
+        ejecutarGradienteDoble(150);
         menu_sugerencias(id_usuariolog);
+        ejecutarGradienteDoble(150);
         break;
       case 5:
         repeat = false;
@@ -912,7 +861,6 @@ void menu_opcionesCliente()
     }
   }
 }
-
 
 // Menu de opciones de gestionar pedidos de libros (Recepcionista)
 vector<string> opcionesMenuGestionPedidosLibros = {"Atender pedido",
@@ -931,6 +879,7 @@ void menu_opcionesPedido()
     setConsoleBackground(White);
     dibujarTitulo(27, 0, 2, letras);
     estructura_menu2(16, 103, 10, 27);
+    imprimirCarita(103, 11, id_usuariolog);
     // Imprimir las opciones
     for (int i = 0; i < numGestionPedidosLibros; i++)
     {
@@ -967,27 +916,33 @@ void menu_opcionesPedido()
       case 1:
       {
         // 1. Atender pedido
+        ejecutarGradienteDoble(150);
         limpiarPantalla();
         setConsoleBackground(White);
         dibujarTitulo(27, 0, 2, letras);
         estructura_menu2(16, 103, 10, 27);
         atenderPrestamoMenu(id_usuariolog);
         getch();
+        ejecutarGradienteDoble(150);
         break;
       }
       case 2:
         // 2. Registrar devolucion de libro
+        ejecutarGradienteDoble(150);
         system("CLS");
         registrarDevolucionLibro(mora, id_usuariolog);
         getch();
+        ejecutarGradienteDoble(150);
         break;
       case 3:
         // 3. Ver pedidos de cliente
+        ejecutarGradienteDoble(150);
         limpiarPantalla();
         setConsoleBackground(White);
         dibujarTitulo(27, 0, 2, letras);
         estructura_menu2(16, 103, 10, 27);
         mostrarHistorial();
+        ejecutarGradienteDoble(150);
         break;
       case 4:
         // 5. Salir

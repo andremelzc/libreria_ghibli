@@ -582,6 +582,7 @@ bool verificarMembresia(Lista &Usuarios, int id)
         {
             if (actual->usuario.membresia != "INACTIVA")
             {
+               
                 find = true;
                 return true;
             }

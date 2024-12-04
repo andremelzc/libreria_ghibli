@@ -60,7 +60,7 @@ void inicioSesion(int &tipo, bool &sesion, int &id)
     gotoxy(40, 23);
     color(2);
     cout << "Contrase"<<(char)164<<"a: ";
-    gotoxy(53, 23);
+    gotoxy(52, 23);
 
     // Captura de contraseña con asteriscos
     char caracter;
