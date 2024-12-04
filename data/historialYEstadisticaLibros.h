@@ -962,20 +962,21 @@ void mostrarEstadisticasRecepcionistas()
     limpiarPantalla();
     setConsoleBackground(White);
     dibujarTitulo(27, 0, 2, letras);
-    estructura_menu2(10, 130, 10, 35);
+    estructura_menu2(10, 113, 10, 35);
 
     gotoxy(50, 11);
     color(2);
     cout << "Estadisticas de Recepcionistas";
 
     // Encabezados
-    color(0);
+    color(2);
     gotoxy(20, 13);
     cout << "Nombre";
     gotoxy(45, 13);
     cout << "ID";
     gotoxy(70, 13);
     cout << "Rating";
+    color(0);
 
     // Imprimir lista ordenada
     actual = lista.head;
