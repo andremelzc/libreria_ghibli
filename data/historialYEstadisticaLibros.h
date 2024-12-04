@@ -857,8 +857,10 @@ ListaRecepcionistas cargarRecepcionistasCSV()
 }
 
 ListaRecepcionistas cargarEstadisticaRecepcionistaCSV()
-{
+{   
+    //cout << "ayudaaaa 8";
     ListaRecepcionistas listaRecepcionistas = cargarRecepcionistasCSV();
+    //cout << "ayudaaaa 9";
     fstream archivo("output/pedidos.csv");
     string linea, campo;
 
@@ -878,24 +880,24 @@ ListaRecepcionistas cargarEstadisticaRecepcionistaCSV()
     string campos[NUM_CAMPOS];
 
     while (getline(archivo, linea))
-    {
+    {   
         stringstream ss(linea);
         int i = 0;
-
+        //cout << endl << "ayudaaaa 10";
         while (getline(ss, campo, ',') && i < NUM_CAMPOS)
         {
             campos[i] = campo;
             i++;
         }
-
+        //cout << "ayudaaaa 11";
         // Verificamos i == NUM_CAMPOS para asegurar que leímos todos los campos
         if (i == NUM_CAMPOS)
         {
             string idTrabajador = campos[9]; // el recepcionista que atiende primero
             /* cout << "idTrabajador: " << idTrabajador << endl; */
             float pesoCalificacion = stof(campos[8]);
-            /* cout << "peso " << pesoCalificacion << endl; */
-            pausa();
+            /* cout << "peso " << pesoCalificacion << endl; 
+            pausa(); */
             if (idTrabajador != "-1")
             {
                 NodoRecepcionista *actual = listaRecepcionistas.head;
@@ -910,7 +912,7 @@ ListaRecepcionistas cargarEstadisticaRecepcionistaCSV()
                         actual->Peso++;
                         /*cout << "idTrabajador: " << idTrabajador << endl;
                         cout << "peso 2: " << actual->Peso << endl;*/
-                        pausa();
+                        /* pausa(); */
                         break;
                     }
                     actual = actual->sgte;
@@ -918,23 +920,26 @@ ListaRecepcionistas cargarEstadisticaRecepcionistaCSV()
             }
         }
     }
-
+    //cout << "ayudaaaa 7";
     archivo.close();
     return listaRecepcionistas;
 }
 
 void mostrarEstadisticasRecepcionistas()
-{
+{   
+    //cout << "ayudaaaa";
     // Cargar y ordenar lista
     ListaRecepcionistas lista = cargarEstadisticaRecepcionistaCSV();
-
+    //cout << "ayudaaaa 6";
     // Ordenar por peso (bubble sort)
     NodoRecepcionista *actual = lista.head;
     while (actual != nullptr)
-    {
+    {   
+        //cout << "ayudaaaa 4";
         NodoRecepcionista *siguiente = actual->sgte;
         while (siguiente != nullptr)
-        {
+        {   
+            //cout << "ayudaaaa 5";
             if (siguiente->Peso > actual->Peso)
             {
                 // Intercambiar datos
@@ -952,6 +957,7 @@ void mostrarEstadisticasRecepcionistas()
         actual = actual->sgte;
     }
 
+    //cout << "ayudaaaa 2";
     // Mostrar resultados
     limpiarPantalla();
     setConsoleBackground(White);
@@ -975,7 +981,8 @@ void mostrarEstadisticasRecepcionistas()
     actual = lista.head;
     int espacioV = 0;
     while (actual != nullptr)
-    {
+    {   
+        //cout << "ayudaaaa 3";
         gotoxy(20, 15 + espacioV);
         cout << actual->trabajador.nombre;
         gotoxy(45, 15 + espacioV);
@@ -1111,14 +1118,14 @@ void mostrarEstadisticasUsuarios()
     limpiarPantalla();
     setConsoleBackground(White);
     dibujarTitulo(27, 0, 2, letras);
-    estructura_menu2(10, 130, 10, 35);
+    estructura_menu2(10, 113, 10, 35);
 
     gotoxy(50, 11);
     color(2);
     cout << "Cliente del Mes";
 
     // Encabezados
-    color(0);
+    color(2);
     gotoxy(20, 13);
     cout << "Nombre";
     gotoxy(45, 13);
@@ -1127,6 +1134,7 @@ void mostrarEstadisticasUsuarios()
     cout << "Email";
     gotoxy(85, 13);
     cout << "Rating";
+    color(0);
 
     // Imprimir lista ordenada
     actual = lista.head;
