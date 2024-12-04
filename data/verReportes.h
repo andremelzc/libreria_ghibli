@@ -141,7 +141,7 @@ void escogerIncidencias(int x, int y, string &eleccion)
         // Imprimir las opciones
         for (int i = 0; i < numIncidencias; i++)
         {
-            limpiarArea(x, y + i, 50, 1);
+            limpiarArea(x, y + i, 30, 1);
             setTextColor(0);
             if (i == opt - 1)
             {

@@ -1008,18 +1008,18 @@ void calificar_recepcionista(int id_usuariolog)
   cout << "Calificar al recepcionista";
   gotoxy(27, 14);
   color(0);
-  cout << "Bienvenido, por favor califique el servicio del último recepcionista";
+  cout << "Bienvenido, por favor califique el servicio del "<< (char)163<<"ltimo recepcionista";
   gotoxy(45, 15);
-  cout << "que le atendió en la biblioteca";
+  cout << "que le atendi"<< (char)162<<" en la biblioteca";
   gotoxy(27, 17);
   color(0);
-  cout << "Calificacion: ";
+  cout << "Calificaci"<< (char)162<<"n: ";
   int calificacion = 0;
   cin >> calificacion;
   if (calificacion < 0 || calificacion > 5)
   {
     gotoxy(27, 19);
-    cout << "La calificacion debe estar entre 0 y 5\n";
+    cout << "La calificaci"<< (char)162<<"n debe estar entre 0 y 5\n";
     pausa();
     calificar_recepcionista(id_usuariolog);
   }
@@ -1028,7 +1028,9 @@ void calificar_recepcionista(int id_usuariolog)
     // Guardar la calificacion
     guardarCalificacionRecepcionista(id_usuariolog, calificacion);
     gotoxy(27, 19);
+    color(2);
     cout << "Gracias por su calificacion";
+    color(0);
     pausa();
   }
 }
