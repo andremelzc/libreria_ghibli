@@ -7,12 +7,14 @@
 // Headers
 #include "menu/gotoxy.h"
 #include "menu/menus.h"
+#include "data/historialYEstadisticaLibros.h"
 
 using namespace std;
 
 int main()
 {
-    mostrarCarritoUsu(74935134, 0);
-    
+    //mostrarCarritoUsu(74935134, 0);
+    //mostrarEstadisticas();
+    mostrarEstadisticasRecepcionistas();
     return 0;
 }

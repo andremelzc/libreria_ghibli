@@ -204,8 +204,10 @@ struct PilaLaptops
 };
 
 struct estadisticaLibro{ // para la estadistica de los libros más populares
-    int vecesSolicitado, vecesPrestado, vecesDevueltoTarde;
+    int vecesSolicitado, vecesPrestado, cantIncidencias;
     string nombreLibro;
+
+    estadisticaLibro(): vecesSolicitado(0), vecesPrestado(0), cantIncidencias(0), nombreLibro(""){};
 };
 
 struct NodoEstadisticas{
@@ -213,7 +215,7 @@ struct NodoEstadisticas{
     NodoEstadisticas *sgte;
     int prio;
 
-    NodoEstadisticas(estadisticaLibro stat): prio(estadistica.vecesSolicitado), estadistica(stat), sgte(nullptr){};  
+    NodoEstadisticas(estadisticaLibro stat): prio(estadistica.vecesPrestado), estadistica(stat), sgte(nullptr){};  
 };
 
 struct colaPrioEstadisticas{
@@ -323,4 +325,18 @@ struct ListaIncidencias{
     int longitud;
     NodoIncidencia *head;
     ListaIncidencias(): head(nullptr), longitud(0) {}; 
+};
+
+struct NodoRecepcionista{
+    Usuario trabajador;
+    float Peso;
+    NodoRecepcionista *sgte;
+    NodoRecepcionista(Usuario trabajador1): trabajador(trabajador1), Peso(0), sgte(nullptr) {}; 
+    NodoRecepcionista(): sgte(nullptr) {}; 
+};
+
+struct ListaRecepcionistas{
+    int longitud;
+    NodoRecepcionista *head;
+    ListaRecepcionistas(): head(nullptr), longitud(0) {}; 
 };

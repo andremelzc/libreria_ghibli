@@ -560,6 +560,7 @@ void menu_opcionesReportes()
         break;
       case 3:
         // 3. Estadisticas de libros
+        mostrarEstadisticas();
         break;
       case 4:
         // 4. Incidencias
