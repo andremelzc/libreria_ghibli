@@ -1114,48 +1114,84 @@ void mostrarEstadisticasUsuarios()
         }
         actual = actual->sgte;
     }
-
-    // Mostrar resultados
-    limpiarPantalla();
-    setConsoleBackground(White);
-    dibujarTitulo(27, 0, 2, letras);
-    estructura_menu2(10, 113, 10, 35);
-
-    gotoxy(50, 11);
-    color(2);
-    cout << "Cliente del Mes";
-
-    // Encabezados
-    color(2);
-    gotoxy(20, 13);
-    cout << "Nombre";
-    gotoxy(45, 13);
-    cout << "DNI";
-    gotoxy(60, 13);
-    cout << "Email";
-    gotoxy(85, 13);
-    cout << "Rating";
-    color(0);
-
-    // Imprimir lista ordenada
-    actual = lista.head;
-    int espacioV = 0;
-    while (actual != nullptr)
-    {
-        if (actual->usuario.tipo == 0)
-        { // Solo mostrar clientes
-            gotoxy(20, 15 + espacioV);
-            cout << actual->usuario.nombre;
-            gotoxy(45, 15 + espacioV);
-            cout << actual->usuario.ID_Usuario;
-            gotoxy(60, 15 + espacioV);
-            cout << actual->usuario.correoElectronico;
-            gotoxy(85, 15 + espacioV);
-            cout << actual->Peso;
-
-            espacioV += 1;
-        }
-        actual = actual->sgte;
+ // Contar total de elementos
+    int totalElementos = 0;
+    NodoUsuario *temp = lista.head;
+    while (temp != nullptr) {
+        if(temp->usuario.tipo == 0) totalElementos++;
+        temp = temp->sgte;
     }
-    pausa();
+    
+    const int ITEMS_POR_PAGINA = 8;
+    int totalPaginas = (totalElementos + ITEMS_POR_PAGINA - 1) / ITEMS_POR_PAGINA;
+    int paginaActual = 1;
+    char tecla;
+    
+    do {
+        limpiarPantalla();
+        setConsoleBackground(White);
+        dibujarTitulo(27, 0, 2, letras);
+        estructura_menu2(10, 130, 10, 32);
+
+        gotoxy(50, 11);
+        color(2);
+        cout << "Cliente del Mes";
+
+        // Encabezados
+        color(0);
+        gotoxy(20, 13);
+        cout << "Nombre";
+        gotoxy(45, 13);
+        cout << "DNI";
+        gotoxy(60, 13);
+        cout << "Email";
+        gotoxy(85, 13);
+        cout << "Rating";
+
+        // Calcular inicio de página actual
+        int inicio = (paginaActual - 1) * ITEMS_POR_PAGINA;
+        int contador = 0;
+        int clientesMostrados = 0;
+        
+        // Mostrar usuarios de la página actual
+        actual = lista.head;
+        while (actual != nullptr && clientesMostrados < ITEMS_POR_PAGINA) {
+            if(actual->usuario.tipo == 0) {
+                if(contador >= inicio) {
+                    gotoxy(20, 15 + (clientesMostrados * 2));
+                    cout << actual->usuario.nombre;
+                    gotoxy(45, 15 + (clientesMostrados * 2));
+                    cout << actual->usuario.ID_Usuario;
+                    gotoxy(60, 15 + (clientesMostrados * 2));
+                    cout << actual->usuario.correoElectronico;
+                    gotoxy(85, 15 + (clientesMostrados * 2));
+                    cout << actual->Peso;
+                    
+                    clientesMostrados++;
+                }
+                contador++;
+            }
+            actual = actual->sgte;
+        }
+        
+        // Información de paginación
+        gotoxy(20, 32);
+        color(0);
+        cout << "Pagina " << paginaActual << " de " << totalPaginas;
+        gotoxy(20, 31);
+        cout << "<- Pagina anterior | Siguiente pagina ->";
+        gotoxy(45, 32);
+        cout << "ESC para salir";
+        
+        tecla = getch();
+        switch(tecla) {
+            case 75: // Flecha izquierda
+                if(paginaActual > 1) paginaActual--;
+                break;
+            case 77: // Flecha derecha
+                if(paginaActual < totalPaginas) paginaActual++;
+                break;
+        }
+        
+    } while(tecla != 27); // ESC para salir
 }

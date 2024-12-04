@@ -15,8 +15,8 @@ int main()
 {
     //mostrarCarritoUsu(74935134, 0);
     //mostrarEstadisticas();
-    mostrarEstadisticasRecepcionistas();
-    //mostrarEstadisticasUsuarios();
+    //mostrarEstadisticasRecepcionistas();
+    mostrarEstadisticasUsuarios();
     //mostrarVistaEstadisticasGanancias();
     return 0;
 }
