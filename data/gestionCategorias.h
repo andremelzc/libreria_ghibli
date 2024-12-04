@@ -3,6 +3,9 @@
 #include "gestionLibros.h"
 #include "prestamoLibro.h"
 #include <iomanip> // Asegúrate de incluir esto
+#include <iostream>
+#include <string>
+
 using namespace std;
 
 // Función para agregar un nodo al inicio de la lista
@@ -133,9 +136,24 @@ void mostrarListaConLibro(const ListaCategorias& lista) {
     while (temp != nullptr) {
         color(0);//Negro
         gotoxy(27, lineaBase);
-        cout << temp->categoria.nombre;
+        if (temp->categoria.nombre.length() > 22)
+            {
+                cout << temp->categoria.nombre.substr(0, 19) + "...";
+            }
+            else
+            {
+                cout << temp->categoria.nombre;
+            }
+        
         gotoxy(50, lineaBase);
-        cout << temp->categoria.libroPopular.nombre_Libro;
+        if (temp->categoria.libroPopular.nombre_Libro.length() > 24)
+            {
+                cout << temp->categoria.libroPopular.nombre_Libro.substr(0, 21) + "...";
+            }
+            else
+            {
+                cout << temp->categoria.libroPopular.nombre_Libro;
+            }
         gotoxy(85, lineaBase);
         int popu = temp->categoria.libroPopular.popularidad;
         cout << popu;
@@ -389,5 +407,5 @@ void menu_sugerencias(int idUsuario){
 
     gotoxy(35, 25);
     color(2);//Verde
-    system("PAUSE");
+    pausa();
 }
