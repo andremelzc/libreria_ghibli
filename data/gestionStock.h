@@ -30,10 +30,10 @@ void aumentarStock()
     cout << "Aumentar Stock";
     gotoxy(27, 14);
     color(0);
-    cout << "Para registrar el nuevo stock, por favor ingrese el ID del título: ";
+    cout << "Para registrar el nuevo stock, por favor ingrese el ID del t"<<(char)161<<"tulo: ";
     gotoxy(27, 15);
     color(2);
-    cout << "ID del título: ";
+    cout << "ID del t"<<(char)161<<"tulo: ";
     color(0);
     int idTitulo;
     cin >> idTitulo;
@@ -50,7 +50,7 @@ void aumentarStock()
         cout << "No se puede aumentar el stock.";
         gotoxy(27, 18);
         color(0);
-        cout << "Causa: El título ingresado no se encuentra registrado";
+        cout << "Causa: El t"<<(char)161<<"tulo ingresado no se encuentra registrado";
         gotoxy(27, 19);
         color(2);
         cout << "¿Desea registrarlo? (s/n): ";
@@ -61,7 +61,7 @@ void aumentarStock()
 
     gotoxy(27, 17);
     color(2);
-    cout << "Título encontrado: ";
+    cout << "T"<<(char)161<<"tulo encontrado: ";
     color(0);
     cout << libroEncontrado->libro.nombre_Libro;
     gotoxy(27, 18);
@@ -74,7 +74,7 @@ void aumentarStock()
     do
     {
         gotoxy(27, 20);
-        cout << "¿Este es el título que desea aumentar el stock? (s/n): ";
+        cout << "¿Este es el t"<<(char)161<<"tulo que desea aumentar el stock? (s/n): ";
         color(0);
         getline(cin, respuesta);
         if (respuesta[0] == 's' || respuesta[0] == 'S')
@@ -93,7 +93,7 @@ void aumentarStock()
         {
             gotoxy(27, 21);
             color(4);
-            cout << "Respuesta inválida. Intente de nuevo.";
+            cout << "Respuesta inv"<<(char)160<<"lida. Intente de nuevo.";
             pausa();
             limpiarArea(27, 20, 50, 1);
             limpiarArea(27, 21, 50, 1);

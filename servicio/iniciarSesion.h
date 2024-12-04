@@ -22,46 +22,90 @@ void inicioSesion(int &tipo, bool &sesion, int &id)
     dibujarTitulo(27, 0, 2, letras);
     estructura_menu2(16, 103, 11, 26);
     gotoxy(52, 12);
-    setTextColor(2);
-    cout << "Inicio de sesion";
+    color(2);
+    dibujarTitulo(37, 11, 2, inicioSesionn);
     gotoxy(36, 14);
     // Ingresamos usuario
-    cout << "Usuario: ";
-    setTextColor(0);
-    getline(cin, nombre);
-    gotoxy(36, 15);
-    setTextColor(2);
+    dibujarCuadroConTexto(44, 38, 18, "Usuario: ");
     // Ingresamos contraseña
-    cout << "Contraseña: ";
-    setTextColor(0);
-    // Captura de contraseña con asteriscos
-    char caracter;
-    caracter = getch(); // Espera a que el usuario presione una tecla
-    contra = "";
+    dibujarCuadroConTexto(44, 38, 22, "Contraseña: ");
+    color(0);
 
-    while (caracter != 13) // 13 es el código ASCII para Enter
+    // Sobreponemos usuaario y consistenciamos
+    gotoxy(40, 19);
+    color(2);
+    cout << "Usuario: ";
+    gotoxy(40, 23);
+    cout << "Contrase"<<(char)164<<"a: ";
+    color(0);
+    bool respuestaVacia = false;
+    do
     {
-        if (caracter == 8) // 8 es el código ASCII para Backspace
+        color(0);
+        gotoxy(49, 19);
+        getline(cin, nombre);
+        if (nombre == "")
         {
-            if (contra.size() > 0)
-            {
-                contra.pop_back();
-                cout << "\b \b";
-            }
+            gotoxy(40, 19);
+            color(2);
+            cout << "Usuario: ";
         }
         else
         {
-            contra.push_back(caracter);
-            cout << "*";
+            respuestaVacia = true;
         }
-        caracter = getch();
-    }
+    } while (!respuestaVacia);
+    
+    // Sobreponemos contraseña y consistenciamos
+    gotoxy(40, 23);
+    color(2);
+    cout << "Contrase"<<(char)164<<"a: ";
+    gotoxy(53, 23);
+
+    // Captura de contraseña con asteriscos
+    char caracter;
+    bool contraseñaVacia = false;
+    do
+    {
+        color(0);
+        caracter = getch(); // Espera a que el usuario presione una tecla
+        contra = "";
+
+        while (caracter != 13) // 13 es el código ASCII para Enter
+        {
+            if (caracter == 8) // 8 es el código ASCII para Backspace
+            {
+                if (contra.size() > 0)
+                {
+                    contra.pop_back();
+                    cout << "\b \b";
+                }
+            }
+            else
+            {
+                contra.push_back(caracter);
+                cout << "*";
+            }
+            caracter = getch();
+        }
+
+        if (contra == "")
+        {
+            gotoxy(40, 23);
+            color(2);
+            cout << "Contrase"<<(char)164<<"a: ";
+        }
+        else
+        {
+            contraseñaVacia = true;
+        }
+    } while (!contraseñaVacia);
 
     sesion = verificacionInicioSesion(nombre, contra, tipo, id);
 
     if (sesion)
     {
-        gotoxy(36, 17);
+        gotoxy(39, 25);
         setTextColor(2);
         cout << "Inicio de Sesion exitoso!" << endl;
         pausa();
@@ -72,7 +116,7 @@ void inicioSesion(int &tipo, bool &sesion, int &id)
 bool verificacionInicioSesion(string nombre_usuario, string contraseña_usuario, int &tipo, int &dni)
 {
     // Verificando con los puntitos
-    dibujarTextoPuntos(36, 17, "Verificando");
+    dibujarTextoPuntos(39, 25, "Verificando");
     bool taActivo = false;
     // Debo determinar si Existe
     if (verificarUsuarioEnCSV(nombre_usuario))
@@ -96,16 +140,16 @@ bool verificacionInicioSesion(string nombre_usuario, string contraseña_usuario,
         }
         else
         {
-            gotoxy(36, 17);
+            gotoxy(39, 25);
             color(4);
-            cout << "Contraseña o Usuario Incorrecto" << endl;
+            cout << "Contrase"<<(char)164<<"a o Usuario Incorrecto" << endl;
             color(7);
             pausa();
         }
     }
     else
     {
-        gotoxy(36, 17);
+        gotoxy(39, 25);
         color(4);
         cout << "Usuario No Existente" << endl;
         color(7);
@@ -212,4 +256,3 @@ int stringAInt(const string &texto)
     ss >> numero;
     return numero;
 }
-

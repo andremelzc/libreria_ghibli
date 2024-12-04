@@ -18,6 +18,8 @@ bool verificarMembresia(Lista &Usuarios, int idUsuario);
 bool mostrarLibroXTitulo(ListaLibros &Libros, string tituloPedido, int &id);
 void modificarCantPrestada(int idUsuario);
 bool mostrarLibroXidCopy(ListaLibros &Libros, int id);
+void filtroIncidencias(int x, int y, string &eleccion);
+void escogerIncidencias(int x, int y, string &eleccion);
 // void encolarPrestamoPorPrioridad(ColaPedidos &colaPedidos, Pedidos pedido);
 
 // -- FUNCIONES PARA LISTA ENLAZADA DE PEDIDOS --
@@ -264,7 +266,7 @@ void adicionarCampoPedido(int id_usuariologeado)
         pedido->ID_pedido = contarFilasCSV("output/pedidos.csv") + i;
 
         gotoxy(52, 11);
-        cout << "Préstamo de libro";
+        cout << "Pr"<<(char)130<<"stamo de libro";
 
         pedido->ID_usuario = id_usuariologeado;
 
@@ -275,7 +277,7 @@ void adicionarCampoPedido(int id_usuariologeado)
         {
             gotoxy(27, 13);
             color(4);
-            cout << "Usuario no habilitado para solicitar préstamo";
+            cout << "Usuario no habilitado para solicitar pr"<<(char)130<<"stamo";
             color(0);
             gotoxy(27, 14);
             cout << "Causa: Membresia inactiva";
@@ -291,10 +293,10 @@ void adicionarCampoPedido(int id_usuariologeado)
         {
             gotoxy(27, 13);
             color(4);
-            cout << "Usuario no habilitado para solicitar préstamo";
+            cout << "Usuario no habilitado para solicitar pr"<<(char)130<<"stamo";
             color(0);
             gotoxy(27, 14);
-            cout << "Causa: Máximo de libros prestados alcanzado";
+            cout << "Causa: M"<<(char)160<<"ximo de libros prestados alcanzado";
             pausa();
             break;
         }
@@ -304,7 +306,7 @@ void adicionarCampoPedido(int id_usuariologeado)
         // Búsqueda del libro por id
         gotoxy(27, 13);
         color(2);
-        cout << "ID del libro a solicitar préstamo: ";
+        cout << "ID del libro a solicitar pr"<<(char)130<<"stamo: ";
         color(0);
         cin >> pedido->ID_libro;
         cin.ignore();
@@ -332,7 +334,7 @@ void adicionarCampoPedido(int id_usuariologeado)
             gotoxy(27, 15);
             cout << "Causa: El libro ya ha sido prestado o solicitado anteriormente";
             gotoxy(27, 16);
-            cout << "y todavía no ha sido devuelto";
+            cout << "y todav"<<(char)161<<"a no ha sido devuelto";
             pausa();
             continue;
         }
@@ -354,7 +356,7 @@ void adicionarCampoPedido(int id_usuariologeado)
             color(2);
             dibujarTextoPuntos(27, 22, "Solicitando prestamo");
             gotoxy(27, 22);
-            cout << "Préstamo solicitado con éxito!";
+            cout << "Pr"<<(char)130<<"stamo solicitado con "<<(char)130<<"xito!";
 
             // Reducimos el stock del libro
             nodoLibros *actual = libros.cabeza;
@@ -381,7 +383,7 @@ void adicionarCampoPedido(int id_usuariologeado)
         {
             gotoxy(27, 18);
             color(4);
-            cout << "Libro no existente o no disponible, revise en el catálogo";
+            cout << "Libro no existente o no disponible, revise en el cat"<<(char)160<<"logo";
             pausa();
             continue;
         }
@@ -650,7 +652,7 @@ bool mostrarPedidosxdni(ListaPedidos &listaPedidos, string dni)
     {
         gotoxy(40, 21);
         color(4);
-        cout << "DNI inválido. Asegúrese de ingresar solo números.";
+        cout << "DNI inv"<<(char)160<<"lido. Aseg"<<(char)163<<"rese de ingresar solo n"<<(char)163<<"meros.";
         color(0);
         return false;
     }
@@ -758,7 +760,7 @@ void registrarDevolucionLibro(double &mora, int idRecepcionista)
         cout << "Registrar devolucion de libro";
         gotoxy(27, 14);
         color(0);
-        cout << "Para registrar la devolución de un libro, por favor ingrese el";
+        cout << "Para registrar la devoluci"<<(char)162<<"n de un libro, por favor ingrese el";
         gotoxy(27, 15);
         cout << "DNI del usuario que desea devolver el libro.";
         gotoxy(27, 16);
@@ -903,18 +905,18 @@ void registrarDevolucionLibro(double &mora, int idRecepcionista)
                 gotoxy(27, 16);
                 cout << "Dias de prestamo: ";
                 color(0);
-                cout << dias << " días";
+                cout << dias << " d"<<(char)161<<"as";
                 gotoxy(27, 17);
                 color(2);
                 cout << "Dias de retraso: ";
                 color(0);
                 if (dias > 7)
                 {
-                    cout << dias - 7 << " días";
+                    cout << dias - 7 << " d"<<(char)161<<"as";
                 }
                 else
                 {
-                    cout << "0 días";
+                    cout << "0 d"<<(char)161<<"as";
                 }
                 gotoxy(27, 18);
                 color(2);
@@ -953,17 +955,20 @@ void registrarDevolucionLibro(double &mora, int idRecepcionista)
 
             gotoxy(48, 12);
             color(2);
-            cout << "Historial de Incidencias";
-            gotoxy(17, 14);
-            cout << "Recepcionista:";
-            gotoxy(34, 14);
-            cout << "Libro: ";
-            gotoxy(58, 14);
-            cout << "Tipo: ";
-            gotoxy(68, 14);
-            cout << "Descripcion: ";
-            gotoxy(94, 14);
-            cout << "Fecha: ";
+            cout << "Registro de incidencias";
+            gotoxy(19, 14);
+            color(2);
+            cout << "Historial";
+            gotoxy(19, 15);
+            cout << "Recep.";
+            gotoxy(34, 15);
+            cout << "Libro";
+            gotoxy(58, 15);
+            cout << "Tipo";
+            gotoxy(68, 15);
+            cout << "Desc.";
+            gotoxy(92, 15);
+            cout << "Fecha";
             color(0);
             int contador = 0;
             while (actual != nullptr && actual->incidencia.id_usuario == stoi(dni))
@@ -972,7 +977,7 @@ void registrarDevolucionLibro(double &mora, int idRecepcionista)
 
                 Nodo *recepcionista = buscarUsuarioPorDNI(listaUsuarios, dni_recepcionista);
                 string nombre_completo = recepcionista->usuario.nombre + " " + recepcionista->usuario.apellidos;
-                gotoxy(17, 16 + contador);
+                gotoxy(19, 16 + contador);
 
                 if (nombre_completo.length() > 16)
                 {
@@ -1010,24 +1015,24 @@ void registrarDevolucionLibro(double &mora, int idRecepcionista)
                 {
                     cout << actual->incidencia.descripcion;
                 }
-                gotoxy(94, 16 + contador);
+                gotoxy(92, 16 + contador);
                 cout << actual->incidencia.fecha;
 
                 actual = actual->sgte;
                 contador++;
             }
 
-            gotoxy(27, 17 + contador);
+            gotoxy(19, 19 + contador);
             color(2);
 
             cout << "Ingresa el Tipo de incidencia: ";
             color(0);
             string tipo_incidencia;
-            getline(cin, tipo_incidencia);
+            escogerIncidencias(50, 19+contador, tipo_incidencia);
 
-            gotoxy(27, 18 + contador);
+            gotoxy(19, 23 + contador);
             color(2);
-            cout << "Insegra la Descripcion de la incidencia: ";
+            cout << "Ingrese la Descripcion de la incidencia: ";
             color(0);
             string descripcion_incidencia;
             getline(cin, descripcion_incidencia);
@@ -1082,7 +1087,7 @@ void registrarDevolucionLibro(double &mora, int idRecepcionista)
             }
             else
             {
-                gotoxy(27, 19 + contador);
+                gotoxy(19, 24 + contador);
                 color(2);
                 cout << "Cantidad de dias de castigo: ";
                 color(0);
@@ -1160,7 +1165,7 @@ void registrarDevolucionLibro(double &mora, int idRecepcionista)
             cout << mora;
         }
 
-        system("PAUSE>0");
+        pausa();
     }
 }
 
@@ -1186,7 +1191,7 @@ Pedidos desencolarPrestamo(ColaPedidos &colaPedidos)
 {
     if (colaPedidos.delante == nullptr)
     {
-        cout << "La cola de pedidos está vacía";
+        cout << "La cola de pedidos est"<<(char)160<<" vac"<<(char)161<<"a";
         return Pedidos{}; // Pedido vacio
     }
 
@@ -1366,10 +1371,10 @@ void atenderPrestamoMenu(int idRecepcionista)
 {
     gotoxy(50, 11);
     color(2);
-    cout << "Atendiendo Préstamos";
+    cout << "Atendiendo Pr"<<(char)130<<"stamos";
     color(0);
     gotoxy(27, 13);
-    cout << "Para atender los préstamos, ingrese el DNI del usuario que";
+    cout << "Para atender los pr"<<(char)130<<"stamos, ingrese el DNI del usuario que";
     gotoxy(27, 14);
     cout << "desea atender.";
     gotoxy(27, 15);
@@ -1389,7 +1394,7 @@ void atenderPrestamoMenu(int idRecepcionista)
     color(2);
     dibujarTextoPuntos(27, 17, "Cargando pedidos");
     gotoxy(27, 17);
-    cout << "Pedidos cargados con éxito";
+    cout << "Pedidos cargados con "<<(char)130<<"xito";
     ColaPedidos colaPedidos = cargarColaPedidosUsuario(stoi(idUsuarioIngresado));
     if (colaPedidos.delante == nullptr)
     {
@@ -1412,10 +1417,10 @@ void atenderPrestamoMenu(int idRecepcionista)
             dibujarTitulo(24, 0, 2, letras);
             gotoxy(50, 11);
             color(2);
-            cout << "Atendiendo Préstamos";
+            cout << "Atendiendo Pr"<<(char)130<<"stamos";
             color(0);
             gotoxy(27, 13);
-            cout << "Para atender los préstamos, ingrese el DNI del usuario que";
+            cout << "Para atender los pr"<<(char)130<<"stamos, ingrese el DNI del usuario que";
             gotoxy(27, 14);
             cout << "desea atender.";
             gotoxy(27, 15);
