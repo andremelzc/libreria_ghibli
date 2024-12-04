@@ -257,6 +257,13 @@ string carritoCompras = R"(
       |            |
      (o)          (o))";
 
+string inicioSesionn = R"(
+  ___      _    _       ___         _  __      
+ |_ _|_ _ (_)__(_)___  / __| ___ __(_)/_/ _ _  
+  | || ' \| / _| / _ \ \__ \/ -_|_-< / _ \ ' \ 
+ |___|_||_|_\__|_\___/ |___/\___/__/_\___/_||_|
+    )";
+
 // Función para dibujar presionar la tecla
 void dibujarPresionaTecla(int x, int y)
 {
@@ -441,6 +448,37 @@ void estructura_menu()
     gotoxy(16, 30);
     cout << (char)200;
     color(7);
+}
+
+// Función para dibujar un cuadro alrededor de un string con líneas dobles
+void dibujarCuadroConTexto(int longitud, int x, int y, const string& texto) {
+    int ancho = longitud;
+
+    // Dibuja la parte superior del cuadro
+    gotoxy(x, y);
+    cout << (char)201; // Esquina superior izquierda
+    for (int i = 0; i < ancho; ++i) {
+        cout << (char)205; // Línea horizontal
+    }
+    cout << (char)187; // Esquina superior derecha
+
+    // Dibuja los lados del cuadro
+    gotoxy(x, y + 1);
+    cout << (char)186;
+    gotoxy(x + ancho + 1, y + 1);
+    cout << (char)186;
+
+    // Dibuja la parte inferior del cuadro
+    gotoxy(x, y + 2);
+    cout << (char)200; // Esquina inferior izquierda
+    for (int i = 0; i < ancho; ++i) {
+        cout << (char)205; // Línea horizontal
+    }
+    cout << (char)188; // Esquina inferior derecha
+
+    // Imprime el texto en el centro del cuadro
+    gotoxy(x + 2, y + 1);
+    cout << texto;
 }
 
 // Marcos de los menus

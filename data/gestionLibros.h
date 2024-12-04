@@ -134,7 +134,7 @@ void adicionarCampo()
             {
                 gotoxy(27, 15);
                 color(4);
-                cout << "Ingrese un nombre válido";
+                cout << "Ingrese un nombre v"<<(char)160<<"lido";
                 pausa();
                 limpiarArea(27, 14, 50, 1);
                 limpiarArea(27, 15, 50, 1);
@@ -158,7 +158,7 @@ void adicionarCampo()
             {
                 gotoxy(27, 16);
                 color(4);
-                cout << "Ingrese un autor válido";
+                cout << "Ingrese un autor v"<<(char)160<<"lido";
                 pausa();
                 limpiarArea(27, 15, 50, 1);
                 limpiarArea(27, 16, 50, 1);
@@ -171,7 +171,7 @@ void adicionarCampo()
         {
             gotoxy(27, 16);
             color(2);
-            cout << "Año de publicación: ";
+            cout << "A"<<(char)164<<"o de publicaci"<<(char)162<<"n: ";
             color(0);
             cin >> libro->Ano;
             cin.ignore();
@@ -183,7 +183,7 @@ void adicionarCampo()
             {
                 gotoxy(27, 17);
                 color(4);
-                cout << "Ingrese un año válido";
+                cout << "Ingrese un año v"<<(char)160<<"lido";
                 pausa();
                 limpiarArea(27, 16, 50, 1);
                 limpiarArea(27, 17, 50, 1);
@@ -217,7 +217,7 @@ void adicionarCampo()
             {
                 gotoxy(27, 19);
                 color(4);
-                cout << "Ingrese un stock válido";
+                cout << "Ingrese un stock v"<<(char)160<<"lido";
                 pausa();
                 limpiarArea(27, 18, 50, 1);
                 limpiarArea(27, 19, 50, 1);
@@ -244,7 +244,7 @@ void adicionarCampo()
             {
                 gotoxy(27, 20);
                 color(4);
-                cout << "Ingrese un precio válido";
+                cout << "Ingrese un precio v"<<(char)160<<"lido";
                 pausa();
                 limpiarArea(27, 19, 50, 1);
                 limpiarArea(27, 20, 50, 1);
@@ -369,12 +369,12 @@ void modificarLibro()
                         // Modificar género
                         gotoxy(36, 16);
                         color(2);
-                        cout << "Antiguo género: ";
+                        cout << "Antiguo g"<<(char)130<<"nero: ";
                         color(0);
                         cout << actual->libro.Genero;
                         gotoxy(36, 17);
                         color(2);
-                        cout << "Nuevo género: ";
+                        cout << "Nuevo g"<<(char)130<<"nero: ";
                         color(0);
                         fflush(stdin);
                         getline(cin, datoString);
@@ -384,12 +384,12 @@ void modificarLibro()
                         // Modificar año
                         gotoxy(36, 16);
                         color(2);
-                        cout << "Antiguo año: ";
+                        cout << "Antiguo a"<<(char)164<<"o: ";
                         color(0);
                         cout << actual->libro.Ano;
                         gotoxy(36, 17);
                         color(2);
-                        cout << "Nuevo año: ";
+                        cout << "Nuevo a"<<(char)164<<"o: ";
                         color(0);
                         cin >> datoInt;
                         cin.ignore();
@@ -424,7 +424,7 @@ void modificarLibro()
                         actual->libro.estado = datoString;
                         break;
                     default:
-                        cout << "Opción no válida." << endl;
+                        cout << "Opci"<<(char)162<<"n no v"<<(char)160<<"lida." << endl;
                         break;
                     }
 
@@ -447,14 +447,14 @@ void modificarLibro()
             color(4);
             dibujarTextoPuntos(36, 15, "Cancelando");
             gotoxy(36, 15);
-            cout << "Modifiación cancelada";
+            cout << "Modifiaci"<<(char)162<<"n cancelada";
             system("pause>0");
         }
     }
     dibujarTextoPuntos(36, 22, "Modificando libro");
     gotoxy(36, 22);
     color(2);
-    cout << "Modificación realizada con éxito";
+    cout << "Modificaci"<<(char)162<<"n realizada con "<<(char)130<<"xito";
     system("pause>0");
 }
 
@@ -497,7 +497,7 @@ void eliminarPrimerLibro(ListaLibros *lista)
     // Verificar si la lista está vacía
     if (lista->cabeza == nullptr)
     {
-        cout << "La lista está vacía. No hay libros para eliminar." << endl;
+        cout << "La lista est"<<(char)160<<" vac"<<(char)161<<"a. No hay libros para eliminar." << endl;
         return;
     }
 
@@ -698,7 +698,7 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
     // Verificamos si la lista está vacía
     if (lista.cabeza == nullptr)
     {
-        cout << "La lista de libros está vacía." << endl;
+        cout << "La lista de libros est"<<(char)160<<" vac"<<(char)161<<"a." << endl;
         return;
     }
 
@@ -717,7 +717,7 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
 
         gotoxy(50, 11);
         color(2);
-        cout << "Catálogo de libros";
+        cout << "Cat"<<(char)160<<"logo de libros";
 
         gotoxy(10, 13);
         cout << "ID";
@@ -726,9 +726,9 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
         gotoxy(50, 13);
         cout << "Autor";
         gotoxy(74, 13);
-        cout << "Género";
+        cout << "G"<<(char)130<<"nero";
         gotoxy(96, 13);
-        cout << "Año";
+        cout << "A"<<(char)164<<"o";
         gotoxy(105, 13);
         cout << "Stock";
 
@@ -785,7 +785,7 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
         gotoxy(10, 26);
         color(2);
 
-        cout << "Opciones: (0 = salir, 1 = anterior, 2 = siguiente, 3 = buscar por título): ";
+        cout << "Opciones: (0 = salir, 1 = anterior, 2 = siguiente, 3 = buscar por t"<<(char)161<<"tulo): ";
 
         color(0);
         cin >> opcion;
@@ -818,7 +818,7 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
             string titulo;
             gotoxy(10, 27);
             color(2);
-            cout << "Título del libro: ";
+            cout << "T"<<(char)161<<"tulo del libro: ";
             color(0);
             getline(cin, titulo);
             // Lista enlazada para guardar los libros encontrados
@@ -836,7 +836,7 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
 
             gotoxy(50, 11);
             color(2);
-            cout << "Catálogo de libros";
+            cout << "Cat"<<(char)160<<"logo de libros";
 
             gotoxy(10, 13);
             color(2);
@@ -861,9 +861,9 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
             gotoxy(50, 15);
             cout << "Autor";
             gotoxy(74, 15);
-            cout << "Género";
+            cout << "G"<<(char)130<<"nero";
             gotoxy(96, 15);
-            cout << "Año";
+            cout << "A"<<(char)164<<"o";
             gotoxy(105, 15);
             cout << "Stock";
             color(0);
@@ -917,7 +917,7 @@ void mostrarLibros(ListaDobleLibros &lista, bool userView)
         }
         else if (opcion != 0)
         {
-            cout << "Opción no válida. Inténtelo de nuevo." << endl;
+            cout << "Opci"<<(char)162<<"n no v"<<(char)160<<"lida. Int"<<(char)130<<"ntelo de nuevo." << endl;
             pausa();
         }
     }

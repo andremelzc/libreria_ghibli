@@ -392,7 +392,7 @@ void prestarLaptop(PilaLaptops *pila)
         // Mostrar mensaje si el DNI no pertenece a un cliente registrado o no es tipo 0
         gotoxy(30, 27);
         color(4);
-        cout << "     El DNI ingresado no está registrado como cliente...";
+        cout << "     El DNI ingresado no est"<<(char)160<<" registrado como cliente...";
         color(0);
         getch(); // Esperar a que el usuario presione una tecla
     }
@@ -482,7 +482,7 @@ void restaurarLaptop(PilaLaptops *pila)
             actualCima->laptop.estado = 1;     // Cambiar el estado a 1
             actualCima->laptop.id_cliente = 0; // Asignar un id_cliente de 0 (Sin asignar)
             gotoxy(36, 27);
-            cout << "La laptop ha sido restaurada y está ahora en servicio." << endl;
+            cout << "La laptop ha sido restaurada y est"<<(char)160<<" ahora en servicio." << endl;
             laptopRestaurada = true; // Indicamos que se ha restaurado una laptop
             break;                   // Salimos del bucle después de restaurar una laptop
         }

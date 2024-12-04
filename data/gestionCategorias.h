@@ -31,7 +31,7 @@ void agregarFinal(ListaCategorias& lista, Categorias nuevaCategoria) {
 // Función para eliminar un nodo al inicio de la lista
 void eliminarInicio(ListaCategorias& lista) {
     if (lista.head == nullptr) {
-        cout << "La lista está vacia, no se puede eliminar." << endl;
+        cout << "La lista est"<<(char)160<<" vacia, no se puede eliminar." << endl;
         return;
     }
     NodoCategorias* temp = lista.head;
@@ -43,7 +43,7 @@ void eliminarInicio(ListaCategorias& lista) {
 // Función para eliminar un nodo al final de la lista
 void eliminarFinal(ListaCategorias& lista) {
     if (lista.head == nullptr) {
-        cout << "La lista está vacia, no se puede eliminar." << endl;
+        cout << "La lista est"<<(char)160<<" vacia, no se puede eliminar." << endl;
         return;
     }
     if (lista.head->sgte == nullptr) {
@@ -74,7 +74,7 @@ void eliminarTodos(ListaCategorias& lista) {
 
 void eliminarNodoXCategoria(ListaCategorias& lista, const std::string& nombre) {
     if (lista.head == nullptr) {
-        cout << "La lista está vacía.\n";
+        cout << "La lista est"<<(char)160<<" vac"<<(char)161<<"a.\n";
         return;
     }
 
@@ -94,7 +94,7 @@ void eliminarNodoXCategoria(ListaCategorias& lista, const std::string& nombre) {
             // Liberar la memoria del nodo eliminado
             delete temp;
 
-            cout << "Categoría \"" << nombre << "\" eliminada.\n";
+            cout << "Categor"<<(char)161<<"a \"" << nombre << "\" eliminada.\n";
             return;
         }
 
@@ -102,7 +102,7 @@ void eliminarNodoXCategoria(ListaCategorias& lista, const std::string& nombre) {
         temp = temp->sgte; // Avanzar al siguiente nodo
     }
 
-    cout << "Categoría \"" << nombre << "\" no encontrada.\n";
+    cout << "Categor"<<(char)161<<"a \"" << nombre << "\" no encontrada.\n";
 }
 
 
@@ -110,7 +110,7 @@ void eliminarNodoXCategoria(ListaCategorias& lista, const std::string& nombre) {
 void mostrarLista(const ListaCategorias& lista) {
     NodoCategorias* temp = lista.head;
     if (temp == nullptr) {
-        cout << "La lista está vacia." << endl;
+        cout << "La lista est"<<(char)160<<" vacia." << endl;
         return;
     }
     while (temp != nullptr) {
@@ -126,7 +126,7 @@ void mostrarListaConLibro(const ListaCategorias& lista) {
     if (temp == nullptr) {
         color(0);//Negro
         gotoxy(27, 15);
-        cout << "La lista está vacia." << endl;
+        cout << "La lista est"<<(char)160<<" vacia." << endl;
         return;
     }
     int lineaBase = 14;

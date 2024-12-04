@@ -296,7 +296,7 @@ void mostrarDatosIncidencia(int x, int y, string tipo)
     limpiarArea(x, y, 65, 5);
     color(2);
     gotoxy(x, y);
-    cout << "Incidencias en el último mes: ";
+    cout << "Incidencias en el "<<(char)163<<"ltimo mes: ";
     color(0);
     cout << incidenciasMes;
     color(2);
@@ -306,7 +306,7 @@ void mostrarDatosIncidencia(int x, int y, string tipo)
     cout << incidenciasTotales;
     color(2);
     gotoxy(x, y + 2);
-    cout << "Usuario con más incidencias: ";
+    cout << "Usuario con m"<<(char)160<<"s incidencias: ";
     color(0);
     if (maxIncidenciasNodo != nullptr)
     {
@@ -321,7 +321,7 @@ void mostrarDatosIncidencia(int x, int y, string tipo)
     }
     gotoxy(x, y + 4);
     color(2);
-    cout << "Variación desde el último mes: ";
+    cout << "Variaci"<<(char)162<<"n desde el "<<(char)163<<"ltimo mes: ";
     color(0);
     float variacion = (incidenciasMes - incidenciasMesPasado);
     if (variacion > 0)
@@ -458,7 +458,7 @@ void mostrarTotalIncidencias()
             cout << incidenciaHurtado;
             color(1);
             gotoxy(27, 25);
-            cout << "Incidencias de extravío: ";
+            cout << "Incidencias de extrav"<<(char)161<<"o: ";
             cout << incidenciaExtraviado;
             color(5);
             gotoxy(27, 26);
@@ -495,7 +495,7 @@ void mostrarTotalIncidencias()
             cout << incidenciaHurtadoMes;
             color(1);
             gotoxy(27, 25);
-            cout << "Incidencias de extravío: ";
+            cout << "Incidencias de extrav"<<(char)161<<"o: ";
             cout << incidenciaExtraviadoMes;
             color(5);
             gotoxy(27, 26);
@@ -522,7 +522,7 @@ void mostrarTotalIncidencias()
         {
             gotoxy(27, 14);
             color(4);
-            cout << "Ingrese una opción válida";
+            cout << "Ingrese una opci"<<(char)162<<"n v"<<(char)160<<"lida";
             pausa();
             limpiarArea(27, 13, 50, 1);
             limpiarArea(27, 14, 50, 1);
