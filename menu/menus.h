@@ -409,9 +409,10 @@ int numGestionLaptops = opcionesMenuGestionLaptops.size();
 
 // Menu de opciones de reportes (Administrador)
 vector<string> opcionesVerReportes = {"Ganancias",
-                                      "Historial de libros",
                                       "Estadisticas de libros",
                                       "Incidencias",
+                                      "Empleado del mes",
+                                      "Cliente del mes",
                                       "Retroceder"};
 int numReportes = opcionesVerReportes.size();
 
@@ -479,18 +480,23 @@ void menu_opcionesReportes()
         break;
       }
       case 2:
-        // 2. Historial de libros
-        break;
-      case 3:
-        // 3. Estadisticas de libros
+        // 2. Estadisticas de libros
         mostrarEstadisticas();
         break;
-      case 4:
-        // 4. Incidencias
+      case 3:
+        // 3. Incidencias
         mostrarReporteIncidencias();
         break;
+      case 4:
+        // 4. Empleado del mes
+        mostrarEstadisticasRecepcionistas();
+        break;
       case 5:
-        // 5. Salir
+        // 5. Cliente del mes
+        mostrarEstadisticasUsuarios();
+        break;
+      case 6:
+        // 4. Salir
         repeat = false;
         system("CLS");
         break;
