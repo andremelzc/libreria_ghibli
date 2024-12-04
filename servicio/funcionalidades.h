@@ -348,26 +348,26 @@ string intToString(int num)
     return ss.str();
 }
 
-// Detectaar si se presiona el escape
-bool leerInputEscape(string &input) {
+bool leerInputEscape(std::string &input) {
     input.clear();
     while (true) {
         int ch = _getch();
-        if (ch == 27) { // 27 es el código ASCII para ESC
-            return false; // Indica que se canceló la entrada
+        if (ch == 27) { // ESC
+            return false; // Salir del proceso de entrada
         } else if (ch == '\r') { // ENTER
+            std::cout << std::endl; // Nueva línea al presionar ENTER
             return true; // Entrada completada
         } else if (ch == '\b') { // BACKSPACE
             if (!input.empty()) {
                 input.pop_back();
-                // Mover el cursor atrás, imprimir espacio y mover nuevamente
+                std::cout << "\b \b"; // Retrocede y elimina el carácter en pantalla
             }
         } else {
             input += static_cast<char>(ch);
             std::cout << static_cast<char>(ch);
         }
     }
-}
+}   
 
 bool esDelMesActual(const fecha& f) {
     time_t now = time(0);

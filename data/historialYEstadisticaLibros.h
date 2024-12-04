@@ -304,7 +304,15 @@ void mostrarHistorialCliente(int dni)
             gotoxy(20, 15 + contador);
             cout << actual->pedido.ID_pedido;
             gotoxy(26, 15 + contador);
-            cout << actual->pedido.ID_libro << ") " << devolverLibroNombre(Libros, actual->pedido.ID_libro);
+            cout << actual->pedido.ID_libro << ") ";
+            if (devolverLibroNombre(Libros, actual->pedido.ID_libro).length() > 22)
+            {
+                cout << devolverLibroNombre(Libros, actual->pedido.ID_libro).substr(0, 20) << "...";
+            }
+            else
+            {
+                cout << devolverLibroNombre(Libros, actual->pedido.ID_libro);
+            }
             gotoxy(57, 15 + contador);
             if (actual->pedido.estadoPedido == "NO_DEVUELTO" or actual->pedido.estadoPedido == "DEVUELTO_TARDE")
             {
@@ -519,53 +527,93 @@ colaPrioEstadisticas cargarEstadisticaCSV(string nombreArchivo)
     return colaPrincipal;
 }
 
-void mostrarEstadisticas()
-{
-
+void mostrarEstadisticas() {
     colaPrioEstadisticas estadisticas = cargarEstadisticaCSV("output/pedidos.csv");
-
     NodoEstadisticas *actual = desencolar(estadisticas);
-
-    limpiarPantalla();
-    setConsoleBackground(White);
-    dibujarTitulo(27, 0, 2, letras);
-    estructura_menu2(16, 103, 10, 32);
-
-    gotoxy(44, 11);
-    color(2);
-    cout << "Estadisticas de Libros";
-    color(0);
-    gotoxy(20, 13);
-    cout << "Nombre del libro";
-    gotoxy(51, 13);
-    cout << "Veces solicitado";
-    gotoxy(69, 13);
-    cout << "Veces prestado";
-    gotoxy(86, 13);
-    cout << "Incidencias";
-
-    int espacioV = 0;
-    while (actual != nullptr)
-    {
-        // Verificar y cortar si es necesario
-        if (actual->estadistica.nombreLibro.length() > 28)
-        {
-            actual->estadistica.nombreLibro = actual->estadistica.nombreLibro.substr(0, 28 - 3) + "...";
-        }
-        color(0);
-        gotoxy(20, 15 + espacioV);
-        cout << actual->estadistica.nombreLibro;
-        gotoxy(57, 15 + espacioV);
-        cout << actual->estadistica.vecesSolicitado;
-        gotoxy(75, 15 + espacioV);
-        cout << actual->estadistica.vecesPrestado;
-        gotoxy(93, 15 + espacioV);
-        cout << actual->estadistica.cantIncidencias;
-        actual = actual->sgte; // pasando al siguiente nodo
-        espacioV++;
+    
+    // Contar total de elementos
+    int totalElementos = 0;
+    NodoEstadisticas *temp = actual;
+    while (temp != nullptr) {
+        totalElementos++;
+        temp = temp->sgte;
     }
+    
+    const int ITEMS_POR_PAGINA = 10;
+    int totalPaginas = (totalElementos + ITEMS_POR_PAGINA - 1) / ITEMS_POR_PAGINA;
+    int paginaActual = 1;
+    char tecla;
+    
+    do {
+        limpiarPantalla();
+        setConsoleBackground(White);
+        dibujarTitulo(27, 0, 2, letras);
+        estructura_menu2(16, 103, 10, 32);
 
-    pausa();
+        gotoxy(44, 11);
+        color(2);
+        cout << "Estadisticas de Libros";
+        color(0);
+        gotoxy(20, 13);
+        cout << "Nombre del libro";
+        gotoxy(51, 13);
+        cout << "Veces solicitado";
+        gotoxy(69, 13);
+        cout << "Veces prestado";
+        gotoxy(86, 13);
+        cout << "Incidencias";
+
+        // Calcular inicio de la página actual
+        int inicio = (paginaActual - 1) * ITEMS_POR_PAGINA;
+        int contador = 0;
+        
+        // Avanzar hasta el inicio de la página actual
+        temp = actual;
+        for(int i = 0; i < inicio && temp != nullptr; i++) {
+            temp = temp->sgte;
+        }
+        
+        int espacioV = 0;
+        while (temp != nullptr && contador < ITEMS_POR_PAGINA) {
+            if (temp->estadistica.nombreLibro.length() > 28) {
+                temp->estadistica.nombreLibro = temp->estadistica.nombreLibro.substr(0, 25) + "...";
+            }
+            
+            color(0);
+            gotoxy(20, 15 + espacioV);
+            cout << temp->estadistica.nombreLibro;
+            gotoxy(57, 15 + espacioV);
+            cout << temp->estadistica.vecesSolicitado;
+            gotoxy(75, 15 + espacioV);
+            cout << temp->estadistica.vecesPrestado;
+            gotoxy(93, 15 + espacioV);
+            cout << temp->estadistica.cantIncidencias;
+            
+            temp = temp->sgte;
+            espacioV++;
+            contador++;
+        }
+        
+        // Mostrar información de paginación
+        gotoxy(40, 30);
+        color(0);
+        cout << "Pagina " << paginaActual << " de " << totalPaginas;
+        gotoxy(20, 31);
+        cout << "<- Pagina anterior | Siguiente pagina ->";
+        gotoxy(20, 32);
+        cout << "ESC para salir";
+        
+        tecla = getch();
+        switch(tecla) {
+            case 75: // Flecha izquierda
+                if(paginaActual > 1) paginaActual--;
+                break;
+            case 77: // Flecha derecha
+                if(paginaActual < totalPaginas) paginaActual++;
+                break;
+        }
+        
+    } while(tecla != 27); // ESC para salir
 }
 
 // -- FUNCIONES PARA ESTADISTICAS DE VENTAS --
@@ -809,8 +857,10 @@ ListaRecepcionistas cargarRecepcionistasCSV()
 }
 
 ListaRecepcionistas cargarEstadisticaRecepcionistaCSV()
-{
+{   
+    //cout << "ayudaaaa 8";
     ListaRecepcionistas listaRecepcionistas = cargarRecepcionistasCSV();
+    //cout << "ayudaaaa 9";
     fstream archivo("output/pedidos.csv");
     string linea, campo;
 
@@ -830,24 +880,24 @@ ListaRecepcionistas cargarEstadisticaRecepcionistaCSV()
     string campos[NUM_CAMPOS];
 
     while (getline(archivo, linea))
-    {
+    {   
         stringstream ss(linea);
         int i = 0;
-
+        //cout << endl << "ayudaaaa 10";
         while (getline(ss, campo, ',') && i < NUM_CAMPOS)
         {
             campos[i] = campo;
             i++;
         }
-
+        //cout << "ayudaaaa 11";
         // Verificamos i == NUM_CAMPOS para asegurar que leímos todos los campos
         if (i == NUM_CAMPOS)
         {
             string idTrabajador = campos[9]; // el recepcionista que atiende primero
-            cout << "idTrabajador: " << idTrabajador << endl;
+            /* cout << "idTrabajador: " << idTrabajador << endl; */
             float pesoCalificacion = stof(campos[8]);
-            cout << "peso " << pesoCalificacion << endl;
-            pausa();
+            /* cout << "peso " << pesoCalificacion << endl; 
+            pausa(); */
             if (idTrabajador != "-1")
             {
                 NodoRecepcionista *actual = listaRecepcionistas.head;
@@ -860,9 +910,9 @@ ListaRecepcionistas cargarEstadisticaRecepcionistaCSV()
                             actual->Peso += pesoCalificacion;
                         }
                         actual->Peso++;
-                        cout << "idTrabajador: " << idTrabajador << endl;
-                        cout << "peso 2: " << actual->Peso << endl;
-                        pausa();
+                        /*cout << "idTrabajador: " << idTrabajador << endl;
+                        cout << "peso 2: " << actual->Peso << endl;*/
+                        /* pausa(); */
                         break;
                     }
                     actual = actual->sgte;
@@ -870,23 +920,26 @@ ListaRecepcionistas cargarEstadisticaRecepcionistaCSV()
             }
         }
     }
-
+    //cout << "ayudaaaa 7";
     archivo.close();
     return listaRecepcionistas;
 }
 
 void mostrarEstadisticasRecepcionistas()
-{
+{   
+    //cout << "ayudaaaa";
     // Cargar y ordenar lista
     ListaRecepcionistas lista = cargarEstadisticaRecepcionistaCSV();
-
+    //cout << "ayudaaaa 6";
     // Ordenar por peso (bubble sort)
     NodoRecepcionista *actual = lista.head;
     while (actual != nullptr)
-    {
+    {   
+        //cout << "ayudaaaa 4";
         NodoRecepcionista *siguiente = actual->sgte;
         while (siguiente != nullptr)
-        {
+        {   
+            //cout << "ayudaaaa 5";
             if (siguiente->Peso > actual->Peso)
             {
                 // Intercambiar datos
@@ -904,30 +957,33 @@ void mostrarEstadisticasRecepcionistas()
         actual = actual->sgte;
     }
 
+    //cout << "ayudaaaa 2";
     // Mostrar resultados
     limpiarPantalla();
     setConsoleBackground(White);
     dibujarTitulo(27, 0, 2, letras);
-    estructura_menu2(10, 130, 10, 35);
+    estructura_menu2(10, 113, 10, 35);
 
     gotoxy(50, 11);
     color(2);
     cout << "Estadisticas de Recepcionistas";
 
     // Encabezados
-    color(0);
+    color(2);
     gotoxy(20, 13);
     cout << "Nombre";
     gotoxy(45, 13);
     cout << "ID";
     gotoxy(70, 13);
     cout << "Rating";
+    color(0);
 
     // Imprimir lista ordenada
     actual = lista.head;
     int espacioV = 0;
     while (actual != nullptr)
-    {
+    {   
+        //cout << "ayudaaaa 3";
         gotoxy(20, 15 + espacioV);
         cout << actual->trabajador.nombre;
         gotoxy(45, 15 + espacioV);
@@ -1063,14 +1119,14 @@ void mostrarEstadisticasUsuarios()
     limpiarPantalla();
     setConsoleBackground(White);
     dibujarTitulo(27, 0, 2, letras);
-    estructura_menu2(10, 130, 10, 35);
+    estructura_menu2(10, 113, 10, 35);
 
     gotoxy(50, 11);
     color(2);
     cout << "Cliente del Mes";
 
     // Encabezados
-    color(0);
+    color(2);
     gotoxy(20, 13);
     cout << "Nombre";
     gotoxy(45, 13);
@@ -1079,6 +1135,7 @@ void mostrarEstadisticasUsuarios()
     cout << "Email";
     gotoxy(85, 13);
     cout << "Rating";
+    color(0);
 
     // Imprimir lista ordenada
     actual = lista.head;

@@ -51,9 +51,6 @@ void aumentarStock()
         gotoxy(27, 18);
         color(0);
         cout << "Causa: El t"<<(char)161<<"tulo ingresado no se encuentra registrado";
-        gotoxy(27, 19);
-        color(2);
-        cout << "¿Desea registrarlo? (s/n): ";
         // Falta implementar la lógica para registrar un nuevo libro
         pausa();
         return;
@@ -74,7 +71,7 @@ void aumentarStock()
     do
     {
         gotoxy(27, 20);
-        cout << "¿Este es el t"<<(char)161<<"tulo que desea aumentar el stock? (s/n): ";
+        cout << "Este es el t"<<(char)161<<"tulo que desea aumentar el stock? (s/n): ";
         color(0);
         getline(cin, respuesta);
         if (respuesta[0] == 's' || respuesta[0] == 'S')
@@ -114,6 +111,11 @@ void aumentarStock()
     libroEncontrado->libro.StockActual += nuevoStock;
     limpiarCSV("output/libros.csv");
     guardar_CSV_Libros(&listaLibros, "output/libros.csv");
+
+    gotoxy(27, 24);
+    color(2);
+    dibujarTextoPuntos(27, 24, "Actualizando stock...");
+    cout << "Stock actualizado con "<<(char)130<<"xito.    ";
 
     pausa();
 }

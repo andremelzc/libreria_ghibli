@@ -54,7 +54,7 @@ void gestionUsuarios_registrarUsuario()
         {
             gotoxy(27, 15);
             color(4);
-            cout << "Ingrese un tipo de usuario v"<<(char)160<<"lido (0 o 1)";
+            cout << "Ingrese un tipo de usuario v" << (char)160 << "lido (0 o 1)";
             pausa();
             limpiarArea(60, 14, 50, 1);
             limpiarArea(27, 15, 70, 1);
@@ -84,7 +84,7 @@ void gestionUsuarios_registrarUsuario()
         {
             gotoxy(27, 16);
             color(4);
-            cout << "El DNI debe ser un n"<<(char)163<<"mero";
+            cout << "El DNI debe ser un n" << (char)163 << "mero";
             pausa();
             limpiarArea(31, 15, 20, 1);
             limpiarArea(27, 16, 50, 1);
@@ -122,7 +122,7 @@ void gestionUsuarios_registrarUsuario()
         {
             gotoxy(27, 17);
             color(4);
-            cout << "El nombre de usuario debe tener al menos 4 caracteres y m"<<(char)160<<"ximo 15";
+            cout << "El nombre de usuario debe tener al menos 4 caracteres y m" << (char)160 << "ximo 15";
             pausa();
             limpiarArea(45, 16, 50, 1);
             limpiarArea(27, 17, 70, 1);
@@ -141,7 +141,7 @@ void gestionUsuarios_registrarUsuario()
         gotoxy(27, 17);
         fflush(stdin);
         color(2);
-        cout << "Contrase"<<(char)164<<"a: ";
+        cout << "Contrase" << (char)164 << "a: ";
         color(0);
         getline(cin, usuario->contrasena);
 
@@ -149,7 +149,7 @@ void gestionUsuarios_registrarUsuario()
         {
             gotoxy(27, 18);
             color(4);
-            cout << "La contrase"<<(char)164<<"a debe tener al menos 6 caracteres y m"<<(char)160<<"ximo 15";
+            cout << "La contrase" << (char)164 << "a debe tener al menos 6 caracteres y m" << (char)160 << "ximo 15";
             pausa();
             limpiarArea(40, 17, 50, 1);
             limpiarArea(27, 18, 70, 1);
@@ -176,7 +176,7 @@ void gestionUsuarios_registrarUsuario()
         {
             gotoxy(27, 19);
             color(4);
-            cout << "Ingrese nombres v"<<(char)160<<"lidos";
+            cout << "Ingrese nombres v" << (char)160 << "lidos";
             pausa();
             limpiarArea(36, 18, 65, 1);
             limpiarArea(27, 19, 70, 1);
@@ -188,7 +188,7 @@ void gestionUsuarios_registrarUsuario()
         {
             gotoxy(27, 19);
             color(4);
-            cout << "Ingrese nombres v"<<(char)160<<"lido";
+            cout << "Ingrese nombres v" << (char)160 << "lido";
             pausa();
             limpiarArea(36, 18, 65, 1);
             limpiarArea(27, 19, 70, 1);
@@ -215,7 +215,7 @@ void gestionUsuarios_registrarUsuario()
         {
             gotoxy(27, 20);
             color(4);
-            cout << "Ingrese apellidos v"<<(char)160<<"lido";
+            cout << "Ingrese apellidos v" << (char)160 << "lido";
             pausa();
             limpiarArea(36, 19, 65, 1);
             limpiarArea(27, 20, 70, 1);
@@ -227,7 +227,7 @@ void gestionUsuarios_registrarUsuario()
         {
             gotoxy(27, 19);
             color(4);
-            cout << "Ingrese apellidos v"<<(char)160<<"lido";
+            cout << "Ingrese apellidos v" << (char)160 << "lido";
             pausa();
             limpiarArea(36, 19, 65, 1);
             limpiarArea(27, 20, 70, 1);
@@ -256,7 +256,7 @@ void gestionUsuarios_registrarUsuario()
         {
             gotoxy(27, 21);
             color(4);
-            cout << "Ingrese un g"<<(char)130<<"nero v"<<(char)160<<"lido (F o M)";
+            cout << "Ingrese un g" << (char)130 << "nero v" << (char)160 << "lido (F o M)";
             pausa();
             limpiarArea(47, 20, 50, 1);
             limpiarArea(27, 21, 70, 1);
@@ -280,11 +280,17 @@ void gestionUsuarios_registrarUsuario()
         cin.ignore();
         getline(cin, usuario->correoElectronico);
 
+        if (!leerInputEscape(usuario->correoElectronico))
+        {
+            correoValido = true;
+            return;
+        }
+
         if (esCorreoValido(usuario->correoElectronico) == false)
         {
             gotoxy(27, 22);
             color(4);
-            cout << "Ingrese un correo v"<<(char)160<<"lido";
+            cout << "Ingrese un correo v" << (char)160 << "lido";
             pausa();
             limpiarArea(45, 21, 50, 1);
             limpiarArea(27, 22, 70, 1);
@@ -303,39 +309,51 @@ void gestionUsuarios_registrarUsuario()
         gotoxy(27, 22);
         fflush(stdin);
         color(2);
-        cout << "N"<<(char)163<<"mero celular (9 digitos): ";
+        cout << "N" << (char)163 << "mero celular (9 digitos): ";
         color(0);
-        getline(cin, usuario->telefono);
 
-        try
+        if (!leerInputEscape(usuario->telefono))
         {
-            stoi(usuario->telefono);
+            telefonoValido = true;
+            return;
         }
-        catch (const std::invalid_argument &e)
-        {
-            gotoxy(27, 23);
-            color(4);
-            cout << "Ingrese un n"<<(char)163<<"mero de tel"<<(char)130<<"fono v"<<(char)160<<"lido";
-            pausa();
-            limpiarArea(45, 22, 50, 1);
-            limpiarArea(27, 23, 70, 1);
-            continue;
-        }
-
-        if (usuario->telefono.length() != 9)
-        {
-            gotoxy(27, 23);
-            color(4);
-            cout << "Ingrese un n"<<(char)163<<"mero de tel"<<(char)130<<"fono v"<<(char)160<<"lido";
-            pausa();
-            limpiarArea(45, 22, 50, 1);
-            limpiarArea(27, 23, 70, 1);
-            continue;
+        else if(usuario->telefono=="0"){
+            telefonoValido = true;
+            return;
         }
         else
         {
-            telefonoValido = true;
+            try
+            {
+                stoi(usuario->telefono);
+            }
+            catch (const std::invalid_argument &e)
+            {
+                gotoxy(27, 23);
+                color(4);
+                cout << "Ingrese un n" << (char)163 << "mero de tel" << (char)130 << "fono v" << (char)160 << "lido";
+                pausa();
+                limpiarArea(45, 22, 50, 1);
+                limpiarArea(27, 23, 70, 1);
+                continue;
+            }
+
+            if (usuario->telefono.length() != 9)
+            {
+                gotoxy(27, 23);
+                color(4);
+                cout << "Ingrese un n" << (char)163 << "mero de tel" << (char)130 << "fono v" << (char)160 << "lido";
+                pausa();
+                limpiarArea(45, 22, 50, 1);
+                limpiarArea(27, 23, 70, 1);
+                continue;
+            }
+            else
+            {
+                telefonoValido = true;
+            }
         }
+
     } while (!telefonoValido);
 
     if (usuario->tipo == 0)
@@ -401,7 +419,7 @@ void menuInicio_registrarUsuario()
         {
             gotoxy(27, 15);
             color(4);
-            cout << "El DNI debe ser un n"<<(char)163<<"mero";
+            cout << "El DNI debe ser un n" << (char)163 << "mero";
             pausa();
             limpiarArea(31, 14, 20, 1);
             limpiarArea(27, 15, 50, 1);
@@ -439,7 +457,7 @@ void menuInicio_registrarUsuario()
         {
             gotoxy(27, 16);
             color(4);
-            cout << "El nombre de usuario debe tener al menos 4 caracteres y m"<<(char)160<<"ximo 15";
+            cout << "El nombre de usuario debe tener al menos 4 caracteres y m" << (char)160 << "ximo 15";
             pausa();
             limpiarArea(45, 15, 50, 1);
             limpiarArea(27, 16, 70, 1);
@@ -466,7 +484,7 @@ void menuInicio_registrarUsuario()
         {
             gotoxy(27, 17);
             color(4);
-            cout << "La contrase"<<(char)164<<"a debe tener al menos 6 caracteres y m"<<(char)160<<"ximo 15";
+            cout << "La contrase" << (char)164 << "a debe tener al menos 6 caracteres y m" << (char)160 << "ximo 15";
             pausa();
             limpiarArea(40, 16, 50, 1);
             limpiarArea(27, 17, 70, 1);
@@ -493,7 +511,7 @@ void menuInicio_registrarUsuario()
         {
             gotoxy(27, 18);
             color(4);
-            cout << "Ingrese nombres v"<<(char)160<<"lidos";
+            cout << "Ingrese nombres v" << (char)160 << "lidos";
             pausa();
             limpiarArea(36, 17, 65, 1);
             limpiarArea(27, 18, 70, 1);
@@ -505,7 +523,7 @@ void menuInicio_registrarUsuario()
         {
             gotoxy(27, 18);
             color(4);
-            cout << "Ingrese nombres v"<<(char)160<<"lido";
+            cout << "Ingrese nombres v" << (char)160 << "lido";
             pausa();
             limpiarArea(36, 17, 65, 1);
             limpiarArea(27, 18, 70, 1);
@@ -532,7 +550,7 @@ void menuInicio_registrarUsuario()
         {
             gotoxy(27, 19);
             color(4);
-            cout << "Ingrese apellidos v"<<(char)160<<"lido";
+            cout << "Ingrese apellidos v" << (char)160 << "lido";
             pausa();
             limpiarArea(36, 18, 65, 1);
             limpiarArea(27, 19, 70, 1);
@@ -544,7 +562,7 @@ void menuInicio_registrarUsuario()
         {
             gotoxy(27, 19);
             color(4);
-            cout << "Ingrese apellidos v"<<(char)160<<"lido";
+            cout << "Ingrese apellidos v" << (char)160 << "lido";
             pausa();
             limpiarArea(36, 18, 65, 1);
             limpiarArea(27, 19, 70, 1);
@@ -573,7 +591,7 @@ void menuInicio_registrarUsuario()
         {
             gotoxy(27, 20);
             color(4);
-            cout << "Ingrese un g"<<(char)130<<"nero v"<<(char)160<<"lido (F o M)";
+            cout << "Ingrese un g" << (char)130 << "nero v" << (char)160 << "lido (F o M)";
             pausa();
             limpiarArea(47, 19, 50, 1);
             limpiarArea(27, 20, 70, 1);
@@ -601,7 +619,7 @@ void menuInicio_registrarUsuario()
         {
             gotoxy(27, 21);
             color(4);
-            cout << "Ingrese un correo v"<<(char)160<<"lido";
+            cout << "Ingrese un correo v" << (char)160 << "lido";
             pausa();
             limpiarArea(45, 20, 50, 1);
             limpiarArea(27, 21, 70, 1);
@@ -620,7 +638,7 @@ void menuInicio_registrarUsuario()
         gotoxy(27, 21);
         fflush(stdin);
         color(2);
-        cout << "N"<<(char)163<<"mero celular (9 digitos): ";
+        cout << "N" << (char)163 << "mero celular (9 digitos): ";
         color(0);
         getline(cin, usuario->telefono);
 
@@ -632,7 +650,7 @@ void menuInicio_registrarUsuario()
         {
             gotoxy(27, 22);
             color(4);
-            cout << "Ingrese un n"<<(char)163<<"mero de tel"<<(char)130<<"fono v"<<(char)160<<"lido";
+            cout << "Ingrese un n" << (char)163 << "mero de tel" << (char)130 << "fono v" << (char)160 << "lido";
             pausa();
             limpiarArea(45, 21, 50, 1);
             limpiarArea(27, 22, 70, 1);
@@ -643,7 +661,7 @@ void menuInicio_registrarUsuario()
         {
             gotoxy(27, 22);
             color(4);
-            cout << "Ingrese un n"<<(char)163<<"mero de tel"<<(char)130<<"fono v"<<(char)160<<"lido";
+            cout << "Ingrese un n" << (char)163 << "mero de tel" << (char)130 << "fono v" << (char)160 << "lido";
             pausa();
             limpiarArea(45, 21, 50, 1);
             limpiarArea(27, 22, 70, 1);
@@ -673,7 +691,7 @@ void menuInicio_registrarUsuario()
 
     color(2);
     dibujarTextoPuntos(27, 24, "Registrando usuario");
-    gotoxy(36, 24);
+    gotoxy(27, 24);
     cout << "Usuario registrado con exito!";
     pausa();
 
@@ -837,17 +855,17 @@ void gestionUsuario_modificarUsuario()
                 gotoxy(78, 15);
                 cout << "4. Usuario";
                 gotoxy(36, 16);
-                cout << "5. Contrase"<<(char)164<<"a";
+                cout << "5. Contrase" << (char)164 << "a";
                 gotoxy(50, 16);
                 cout << "6. Nombre";
                 gotoxy(64, 16);
                 cout << "7. Apellido";
                 gotoxy(78, 16);
-                cout << "8. G"<<(char)130<<"nero";
+                cout << "8. G" << (char)130 << "nero";
                 gotoxy(36, 17);
                 cout << "9. Correo";
                 gotoxy(50, 17);
-                cout << "10. Tel"<<(char)130<<"fono";
+                cout << "10. Tel" << (char)130 << "fono";
                 gotoxy(36, 18);
                 color(2);
                 cout << "--> ";
@@ -933,12 +951,12 @@ void gestionUsuario_modificarUsuario()
                     // Modificar contraseña
                     gotoxy(36, 20);
                     color(2);
-                    cout << "Antigua contrase"<<(char)164<<"a: ";
+                    cout << "Antigua contrase" << (char)164 << "a: ";
                     gotoxy(58, 20);
                     color(0);
                     cout << actual->usuario.contrasena;
                     gotoxy(36, 21);
-                    cout << "Nueva contrase"<<(char)164<<"a: ";
+                    cout << "Nueva contrase" << (char)164 << "a: ";
                     color(0);
                     fflush(stdin);
                     getline(cin, datoString);
@@ -980,13 +998,13 @@ void gestionUsuario_modificarUsuario()
                     // Modificar género
                     gotoxy(36, 20);
                     color(2);
-                    cout << "Antiguo g"<<(char)130<<"nero: ";
+                    cout << "Antiguo g" << (char)130 << "nero: ";
                     gotoxy(53, 20);
                     color(0);
                     cout << actual->usuario.genero;
                     gotoxy(36, 21);
                     color(2);
-                    cout << "Nuevo g"<<(char)130<<"nero: ";
+                    cout << "Nuevo g" << (char)130 << "nero: ";
                     color(0);
                     fflush(stdin);
                     getline(cin, datoString);
@@ -1012,13 +1030,13 @@ void gestionUsuario_modificarUsuario()
                     // Modificar teléfono
                     gotoxy(36, 20);
                     color(2);
-                    cout << "Antiguo tel"<<(char)130<<"fono: ";
+                    cout << "Antiguo tel" << (char)130 << "fono: ";
                     gotoxy(55, 20);
                     color(0);
                     cout << actual->usuario.telefono;
                     gotoxy(36, 21);
                     color(2);
-                    cout << "Nuevo tel"<<(char)130<<"fono: ";
+                    cout << "Nuevo tel" << (char)130 << "fono: ";
                     color(0);
                     fflush(stdin);
                     getline(cin, datoString);
@@ -1029,7 +1047,7 @@ void gestionUsuario_modificarUsuario()
             else
             {
                 gotoxy(36, 19);
-                cout << "Modifiaci"<<(char)162<<"n cancelada";
+                cout << "Modifiaci" << (char)162 << "n cancelada";
             }
         }
         actual = actual->siguiente;
@@ -1040,7 +1058,7 @@ void gestionUsuario_modificarUsuario()
 
     gotoxy(36, 23);
     color(2);
-    cout << "Modificaci"<<(char)162<<"n realizada con "<<(char)130<<"xito";
+    cout << "Modificaci" << (char)162 << "n realizada con " << (char)130 << "xito";
     system("pause>0");
 }
 
@@ -1059,7 +1077,7 @@ void activarMembresi()
     gotoxy(52, 12);
     color(2);
     cout << "Activando membresia";
-    gotoxy(36, 14);
+    gotoxy(27, 14);
     cout << "DNI del usuario: ";
     color(0);
     getline(cin, dni);
@@ -1091,7 +1109,7 @@ void activarMembresi()
             }
             gotoxy(27, 17);
             color(2);
-            cout << "Se tienen los siguientes tipos de membres"<<(char)161<<"as: ";
+            cout << "Se tienen los siguientes tipos de membres" << (char)161 << "as: ";
             color(0);
             gotoxy(27, 18);
             cout << "1. Estandar - S/ 15.00";
@@ -1109,7 +1127,7 @@ void activarMembresi()
             {
                 gotoxy(27, 23);
                 color(4);
-                cout << "Operaci"<<(char)162<<"n cancelada";
+                cout << "Operaci" << (char)162 << "n cancelada";
                 return;
             }
             else if (respuesta == "1")
@@ -1134,7 +1152,7 @@ void activarMembresi()
             {
                 gotoxy(27, 23);
                 color(4);
-                cout << "Opci"<<(char)162<<"n inv"<<(char)160<<"lida";
+                cout << "Opci" << (char)162 << "n inv" << (char)160 << "lida";
                 return;
             }
 
@@ -1152,8 +1170,8 @@ void activarMembresi()
             fecha = diaStr + "/" + mesStr + "/" + añoStr;
             actual->usuario.fechaFinal = fecha;
             color(2);
-            dibujarTextoPuntos(36, 23, "Activando membresia");
-            gotoxy(36, 23);
+            dibujarTextoPuntos(27, 23, "Activando membresia");
+            gotoxy(27, 23);
             cout << "Membresia activada correctamente!";
 
             // LLenamos los otros datos
@@ -1378,7 +1396,7 @@ void levantarCastigoUsuarios()
     string mesStr = to_string(localTime->tm_mon + 1);
     string añoStr = to_string(localTime->tm_year + 1900);
     fecha = diaStr + "/" + mesStr + "/" + añoStr;
-    
+
     while (actual != nullptr)
     {
         if ((actual->usuario.fechaInicio == fecha))
