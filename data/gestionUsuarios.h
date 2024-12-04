@@ -640,8 +640,12 @@ void menuInicio_registrarUsuario()
         color(2);
         cout << "N" << (char)163 << "mero celular (9 digitos): ";
         color(0);
-        getline(cin, usuario->telefono);
 
+         if (!leerInputEscape(usuario->telefono))
+        {
+            telefonoValido = true;
+            return;
+        }
         try
         {
             stoi(usuario->telefono);

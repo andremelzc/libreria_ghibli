@@ -595,13 +595,14 @@ void mostrarEstadisticas() {
         }
         
         // Mostrar información de paginación
-        gotoxy(40, 30);
-        color(0);
+        gotoxy(54, 30);
+        color(2);
         cout << "Pagina " << paginaActual << " de " << totalPaginas;
-        gotoxy(20, 31);
+        gotoxy(40, 31);
         cout << "<- Pagina anterior | Siguiente pagina ->";
-        gotoxy(20, 32);
+        gotoxy(54, 32);
         cout << "ESC para salir";
+        color(0);
         
         tecla = getch();
         switch(tecla) {
@@ -1138,7 +1139,7 @@ void mostrarEstadisticasUsuarios()
         cout << "Cliente del Mes";
 
         // Encabezados
-        color(0);
+        color(2);
         gotoxy(20, 13);
         cout << "Nombre";
         gotoxy(45, 13);
@@ -1147,6 +1148,7 @@ void mostrarEstadisticasUsuarios()
         cout << "Email";
         gotoxy(85, 13);
         cout << "Rating";
+        color(0);
 
         // Calcular inicio de página actual
         int inicio = (paginaActual - 1) * ITEMS_POR_PAGINA;
@@ -1158,13 +1160,13 @@ void mostrarEstadisticasUsuarios()
         while (actual != nullptr && clientesMostrados < ITEMS_POR_PAGINA) {
             if(actual->usuario.tipo == 0) {
                 if(contador >= inicio) {
-                    gotoxy(20, 15 + (clientesMostrados * 2));
+                    gotoxy(20, 15 + (clientesMostrados));
                     cout << actual->usuario.nombre;
-                    gotoxy(45, 15 + (clientesMostrados * 2));
+                    gotoxy(45, 15 + (clientesMostrados));
                     cout << actual->usuario.ID_Usuario;
-                    gotoxy(60, 15 + (clientesMostrados * 2));
+                    gotoxy(60, 15 + (clientesMostrados));
                     cout << actual->usuario.correoElectronico;
-                    gotoxy(85, 15 + (clientesMostrados * 2));
+                    gotoxy(85, 15 + (clientesMostrados));
                     cout << actual->Peso;
                     
                     clientesMostrados++;
