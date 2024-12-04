@@ -137,7 +137,6 @@ void menu_opcionesPrincipal()
                 }
                 nodoPedidos = nodoPedidos->sgte;
               }
-  
             }
 
             while (actual != nullptr)
@@ -1003,31 +1002,123 @@ void calificar_recepcionista(int id_usuariolog)
   setConsoleBackground(White);
   dibujarTitulo(27, 0, 2, letras);
   estructura_menu2(16, 103, 10, 27);
+
+  string arteAscii = R"(
+                           .               .                .               .               .            
+                          :=:             .=-              -=.             :=:             :=-      
+                       ..:===:..        .:===-...      ...-===:.        ..-===:..       ..:===-..   
+                    .-===========-   :============.  :============:  .-===========-  .-===========-.
+                      :-=======-..   ..-========:     .-========:.   ..:========-.     :-=======-:. 
+                       .=======:       .======+-        -=======.      .:=======.       .=======:   
+                       -=-:::-=-       :=--::-==.      .==-::-==.       -=-::-==-       :=-:::-=-   
+                       ..     ..       ..     ..       ...     ..      ..     ...       ..     ..   )";
+
+  gotoxy(30, 18);
+  cout << arteAscii;
+  estructura_menu2(16, 103, 10, 27);
   gotoxy(46, 12);
   color(2);
   cout << "Calificar al recepcionista";
   gotoxy(27, 14);
   color(0);
-  cout << "Bienvenido, por favor califique el servicio del "<< (char)163<<"ltimo recepcionista";
+  cout << "Bienvenido, por favor califique el servicio del " << (char)163 << "ltimo recepcionista";
   gotoxy(45, 15);
-  cout << "que le atendi"<< (char)162<<" en la biblioteca";
+  cout << "que le atendi" << (char)162 << " en la biblioteca";
   gotoxy(27, 17);
   color(0);
-  cout << "Calificaci"<< (char)162<<"n: ";
+  cout << "Calificaci" << (char)162 << "n: ";
   int calificacion = 0;
   cin >> calificacion;
   if (calificacion < 0 || calificacion > 5)
   {
-    gotoxy(27, 19);
-    cout << "La calificaci"<< (char)162<<"n debe estar entre 0 y 5\n";
+    gotoxy(27, 18);
+    color(4);
+    cout << "La calificaci" << (char)162 << "n debe estar entre 0 y 5\n";
     pausa();
     calificar_recepcionista(id_usuariolog);
   }
   else
   {
+
+    string estrella;
+    switch (calificacion)
+    {
+    case 1:
+      estrella = R"(
+                                                         .           
+                                                        -=.       
+                                                    ...-===:.   
+                                                  :============:
+                                                   .-========:. 
+                                                     -=======.  
+                                                    .==-::-==.  
+                                                    ...     ..                                    )";
+
+      break;
+    case 2:
+      estrella = R"(
+                                                   .               .             
+                                                  -=.             :=:       
+                                              ...-===:.        ..-===:..    
+                                            :============:  .-===========-  
+                                             .-========:.   ..:========-.       
+                                               -=======.      .:=======.    
+                                              .==-::-==.       -=-::-==-    
+                                              ...     ..      ..     ...                          )";
+      break;
+
+    case 3:
+      estrella = R"(
+                                        .               .               .            
+                                       -=.             :=:             :=-      
+                                   ...-===:.        ..-===:..       ..:===-..   
+                                 :============:  .-===========-  .-===========-.
+                                   .-========:.   ..:========-.     :-=======-:. 
+                                    -=======.      .:=======.       .=======:   
+                                   .==-::-==.       -=-::-==-       :=-:::-=-   
+                                   ...     ..      ..     ...       ..     ..                 )";
+      break;
+
+    case 4:
+      estrella = R"(
+                                     .               .                .               .           
+                                    :=:             .=-              -=.             :=:     
+                                 ..:===:..        .:===-...      ...-===:.        ..-===:..  
+                              .-===========-   :============.  :============:  .-===========-
+                                :-=======-..   ..-========:     .-========:.   ..:========-. 
+                                 .=======:       .======+-        -=======.      .:=======.  
+                                 -=-:::-=-       :=--::-==.      .==-::-==.       -=-::-==-  
+                                 ..     ..       ..     ..       ...     ..      ..     ...               )";
+      break;
+
+    default:
+      estrella = R"(
+                           .               .                .               .               .            
+                          :=:             .=-              -=.             :=:             :=-      
+                       ..:===:..        .:===-...      ...-===:.        ..-===:..       ..:===-..   
+                    .-===========-   :============.  :============:  .-===========-  .-===========-.
+                      :-=======-..   ..-========:     .-========:.   ..:========-.     :-=======-:. 
+                       .=======:       .======+-        -=======.      .:=======.       .=======:   
+                       -=-:::-=-       :=--::-==.      .==-::-==.       -=-::-==-       :=-:::-=-   
+                       ..     ..       ..     ..       ...     ..      ..     ...       ..     ..   )";
+      break;
+    }
     // Guardar la calificacion
+    gotoxy(21, 18);
+    color(2);
+    cout << "                                                                                                    " << endl;
+    cout << "                                                                                                    " << endl;
+    cout << "                                                                                                    " << endl;
+    cout << "                                                                                                    " << endl;
+    cout << "                                                                                                    " << endl;
+    cout << "                                                                                                    " << endl;
+    cout << "                                                                                                    " << endl;
+    cout << "                                                                                                    " << endl;
+    gotoxy(30, 18);            
+    cout << estrella;
+    estructura_menu2(16, 103, 10, 27);
     guardarCalificacionRecepcionista(id_usuariolog, calificacion);
-    gotoxy(27, 19);
+    gotoxy(27, 18);
     color(2);
     cout << "Gracias por su calificacion";
     color(0);
