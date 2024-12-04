@@ -340,3 +340,17 @@ struct ListaRecepcionistas{
     NodoRecepcionista *head;
     ListaRecepcionistas(): head(nullptr), longitud(0) {}; 
 };
+
+struct NodoUsuario{
+    Usuario usuario;
+    float Peso;
+    NodoUsuario *sgte;
+    NodoUsuario(Usuario usuario1): usuario(usuario1), Peso(0), sgte(nullptr) {}; 
+    NodoUsuario(): sgte(nullptr) {}; 
+};
+
+struct ListaUsuarios{
+    int longitud;
+    NodoUsuario *head;
+    ListaUsuarios(): head(nullptr), longitud(0) {}; 
+};

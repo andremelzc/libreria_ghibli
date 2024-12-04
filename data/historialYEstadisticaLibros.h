@@ -860,3 +860,146 @@ void mostrarEstadisticasRecepcionistas() {
     }
     pausa();
 }
+
+// -- FUNCIONES PARA ESTADISTICAS DE USUARIOS --
+
+ListaUsuarios cargarUsuariosBaseCSV() {
+    ListaUsuarios listaUsuarios;
+    Lista listaBase = leerUsuariosCSV("output/usuarios.csv");
+    Nodo *actual = listaBase.cabeza;
+
+    while (actual != nullptr) {
+        if (actual->usuario.tipo == 0) // Si es cliente
+        {  
+            NodoUsuario *nodoCliente = new NodoUsuario(actual->usuario);
+            nodoCliente->Peso = 0;  // Inicializar peso en 0
+            
+            // Si la lista está vacía
+            if (listaUsuarios.head == nullptr) {
+                listaUsuarios.head = nodoCliente;
+            }
+            else {
+                // Insertar al final
+                NodoUsuario *ultimo = listaUsuarios.head;
+                while (ultimo->sgte != nullptr) {
+                    ultimo = ultimo->sgte;
+                }
+                ultimo->sgte = nodoCliente;
+            }
+            listaUsuarios.longitud++;
+        }
+        actual = actual->siguiente;
+    }
+    
+    return listaUsuarios;
+}
+
+ListaUsuarios cargarEstadisticaUsuariosCSV() {
+    ListaUsuarios listaUsuarios = cargarUsuariosBaseCSV();
+    fstream archivo("output/pedidos.csv");
+    string linea, campo;
+    
+    const int NUM_CAMPOS = 11;
+    string campos[NUM_CAMPOS];
+
+    while (getline(archivo, linea)) {
+        stringstream ss(linea);
+        int i = 0;
+        
+        while (getline(ss, campo, ',') && i < NUM_CAMPOS) {
+            campos[i] = campo;
+            i++;
+        }
+        
+        if (i == NUM_CAMPOS) {
+            string idCliente = campos[1];  // ID del cliente
+            string estado = campos[3];     // Estado del pedido
+            
+            NodoUsuario* actual = listaUsuarios.head;
+            while (actual != nullptr) {
+                if (actual->usuario.ID_Usuario == idCliente &&  
+            esDelMesActual(convertirFecha(campos[4]))) {
+                    // Aumentar peso para estados positivos
+                    if (estado == "DEVUELTO" || estado == "PRESTADO" || estado == "SOLICITADO") {
+                        actual->Peso++;
+                    }
+                    // Disminuir peso para incidencias
+                    else if (estado == "INCIDENCIA") {
+                        actual->Peso--;
+                    }
+                    break;
+                }
+                actual = actual->sgte;
+            }
+        }
+    }
+    
+    archivo.close();
+    return listaUsuarios;
+}
+
+void mostrarEstadisticasUsuarios() {
+    ListaUsuarios lista = cargarEstadisticaUsuariosCSV();
+    
+    // Ordenar por peso (bubble sort)
+    NodoUsuario *actual = lista.head;
+    while (actual != nullptr) {
+        NodoUsuario *siguiente = actual->sgte;
+        while (siguiente != nullptr) {
+            if (siguiente->Peso > actual->Peso) {
+                // Intercambiar datos
+                Usuario tempUser = actual->usuario;
+                float tempPeso = actual->Peso;
+                
+                actual->usuario = siguiente->usuario;
+                actual->Peso = siguiente->Peso;
+                
+                siguiente->usuario = tempUser;
+                siguiente->Peso = tempPeso;
+            }
+            siguiente = siguiente->sgte;
+        }
+        actual = actual->sgte;
+    }
+
+    // Mostrar resultados
+    limpiarPantalla();
+    setConsoleBackground(White);
+    dibujarTitulo(27, 0, 2, letras);
+    estructura_menu2(10, 130, 10, 35);
+
+    gotoxy(50, 11);
+    color(2);
+    cout << "Cliente del Mes";
+
+    // Encabezados
+    color(0);
+    gotoxy(20, 13);
+    cout << "Nombre";
+    gotoxy(45, 13);
+    cout << "DNI";
+    gotoxy(60, 13);
+    cout << "Email";
+    gotoxy(85, 13);
+    cout << "Rating";
+
+    // Imprimir lista ordenada
+    actual = lista.head;
+    int espacioV = 0;
+    while (actual != nullptr) {
+        if(actual->usuario.tipo == 0) { // Solo mostrar clientes
+            gotoxy(20, 15 + espacioV);
+            cout << actual->usuario.nombre;
+            gotoxy(45, 15 + espacioV);
+            cout << actual->usuario.ID_Usuario;
+            gotoxy(60, 15 + espacioV);
+            cout << actual->usuario.correoElectronico;
+            gotoxy(85, 15 + espacioV);
+            cout << actual->Peso;
+            
+            espacioV += 1;
+        }
+        actual = actual->sgte;
+    }
+    pausa();
+}
