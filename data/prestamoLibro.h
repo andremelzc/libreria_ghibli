@@ -582,6 +582,7 @@ bool verificarMembresia(Lista &Usuarios, int id)
         {
             if (actual->usuario.membresia != "INACTIVA")
             {
+               
                 find = true;
                 return true;
             }
@@ -1028,7 +1029,7 @@ void registrarDevolucionLibro(double &mora, int idRecepcionista)
             cout << "Ingresa el Tipo de incidencia: ";
             color(0);
             string tipo_incidencia;
-            escogerIncidencias(50, 19+contador, tipo_incidencia);
+            escogerIncidencias(65, 19+contador, tipo_incidencia);
 
             gotoxy(19, 23 + contador);
             color(2);

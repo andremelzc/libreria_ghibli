@@ -103,12 +103,12 @@ void filtroIncidencias(int x, int y, string &eleccion)
                     break;
                 }
                 case 2:
-                    eleccion = "HURTADO";
+                    eleccion = "HURTO";
                     mostrarDatosIncidencia(27, 21, eleccion);
                     pausa();
                     break;
                 case 3:
-                    eleccion = "ROBADO";
+                    eleccion = "ROBO";
                     mostrarDatosIncidencia(27, 21, eleccion);
                     pausa();
                     break;
@@ -141,7 +141,7 @@ void escogerIncidencias(int x, int y, string &eleccion)
         // Imprimir las opciones
         for (int i = 0; i < numIncidencias; i++)
         {
-            limpiarArea(x, y + i, 50, 5);
+            limpiarArea(x, y + i, 50, 1);
             setTextColor(0);
             if (i == opt - 1)
             {
@@ -181,11 +181,11 @@ void escogerIncidencias(int x, int y, string &eleccion)
                 break;
             }
             case 2:
-                eleccion = "HURTADO";
+                eleccion = "HURTO";
                 repeat = false;
                 break;
             case 3:
-                eleccion = "ROBADO";
+                eleccion = "ROBO";
                 repeat = false;
                 break;
             case 4:

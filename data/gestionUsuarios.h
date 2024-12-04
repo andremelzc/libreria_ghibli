@@ -673,7 +673,7 @@ void menuInicio_registrarUsuario()
 
     color(2);
     dibujarTextoPuntos(27, 24, "Registrando usuario");
-    gotoxy(36, 24);
+    gotoxy(27, 24);
     cout << "Usuario registrado con exito!";
     pausa();
 
@@ -1059,7 +1059,7 @@ void activarMembresi()
     gotoxy(52, 12);
     color(2);
     cout << "Activando membresia";
-    gotoxy(36, 14);
+    gotoxy(27, 14);
     cout << "DNI del usuario: ";
     color(0);
     getline(cin, dni);
@@ -1152,8 +1152,8 @@ void activarMembresi()
             fecha = diaStr + "/" + mesStr + "/" + añoStr;
             actual->usuario.fechaFinal = fecha;
             color(2);
-            dibujarTextoPuntos(36, 23, "Activando membresia");
-            gotoxy(36, 23);
+            dibujarTextoPuntos(27, 23, "Activando membresia");
+            gotoxy(27, 23);
             cout << "Membresia activada correctamente!";
 
             // LLenamos los otros datos
